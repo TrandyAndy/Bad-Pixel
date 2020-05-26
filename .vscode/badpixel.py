@@ -5,7 +5,7 @@
  * @Date: 2020-05-26 20:13:55
  * @Last Modified by: JLS666
  * @Last Modified time: 2020-05-26 20:35:38
- * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren
+ * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren, To-Do: Datei in OpenCV Format importieren
  */
  """
 
@@ -51,5 +51,3 @@ def hisImportFunction(pImportPath):                                         # Fu
 #importPath = "/Users/julian/Desktop/test/Bildserie1_160kV_0uA.his"
 importPath = "/Users/julian/Desktop/test/Bildserie2_160kV_70uA.his"
 hisImportFunction(importPath)
-
-

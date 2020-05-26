@@ -1,3 +1,17 @@
+# Gute Webseiten:
+# Einführung in OpenCV: https://www.geeksforgeeks.org/opencv-python-tutorial/#images
+# Einfügen von RAW-Dateien: https://stackoverflow.com/questions/18682830/opencv-python-display-raw-image
+# Offizielle Doku zu imwrite(): https://docs.opencv.org/4.3.0/d4/da8/group__imgcodecs.html#ga288b8b3da0892bd651fce07b3bbd3a56
+# Hauptfunktionen in Python: https://docs.python.org/3/library/functions.html#round
+# Eine Datei binär lesen: https://stackoverflow.com/questions/8710456/reading-a-binary-file-with-python
+# Image-Container in OpenCV: https://docs.opencv.org/2.4/doc/tutorials/core/mat_the_basic_image_container/mat_the_basic_image_container.html
+# Einführung in Numpy: https://www.python-kurs.eu/numpy.php
+# Terminal Befehl od (Linux oder MacOS): https://www.geeksforgeeks.org/od-command-linux-example/
+# Element aus Numpy Array holen: https://numpy.org/doc/1.18/reference/generated/numpy.take.html
+# Pfadnamen auswerten: https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format/8384786
+# Pfadnamen auswerten 2: https://stackoverflow.com/questions/678236/how-to-get-the-filename-without-the-extension-from-a-path-in-python
+
+
 
 
 
