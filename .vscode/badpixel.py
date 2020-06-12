@@ -33,7 +33,7 @@ def hisImportFunction(pImportPath):                                         # Fu
     rows = int(np.take(data, 8))                                            # Reihen bestimmen, in int konvertieren, ansonsten overflow Error bei der Funktion fromfile()
     cols = int(np.take(data, 9))                                            # Spalten bestimmen
     numberImages = int(getNumberImages(pImportPath, rows, cols))            # Anzahl der Bilder in der Datei bestimmen
-    print("Ihre Datei hat", rows, "Reihen und", cols, "Spalten und besteht aus", numberImages, "Bildern")
+    print("Ihre Datei hat", rows, "Reihen und", cols, "Spalten und besteht aus", numberImages, "Bild(ern)")
 
     for index in range(numberImages):                                       # Alle Bilder anzeigen und speichern
         f = np.fromfile(fd, dtype=np.uint16, count=rows*cols)               # Pixel lesen und in einem ein dimensionales Array speichern
@@ -50,5 +50,5 @@ def hisImportFunction(pImportPath):                                         # Fu
 #importPath = '/Users/julian/Desktop/test/Bildserie1_160kV_0uA.his' 
 #importPath = "/Users/julian/Desktop/test/Bildserie1_160kV_0uA.his"
 #importPath = "/Users/julian/Desktop/test/Bildserie2_160kV_70uA.his"
-importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
+importPath = "/Users/julian/Desktop/Bildserie1_160kV_0uA.his"
 hisImportFunction(importPath)
