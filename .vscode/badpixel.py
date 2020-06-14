@@ -38,6 +38,12 @@ def hisImportFunction(pImportPath):                                         # Fu
     for index in range(numberImages):                                       # Alle Bilder anzeigen und speichern
         f = np.fromfile(fd, dtype=np.uint16, count=rows*cols)               # Pixel lesen und in einem ein dimensionales Array speichern
         im = f.reshape((rows, cols))                                        # Array in zwei dimensionales Array mit rows x cols erstellen
+        #np.savetxt("foo.csv", im, delimiter=";")
+
+        #for testValue in np.nditer(f):
+        #    if testValue == 65535:
+        #        print("Sehr schwarz hier!")
+
         cv2.imshow('image', im)                                             # Array als Bild anzeigen
         cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
         print("Ihre Datei wurden unter", pathWithoutExtension+"_"+str(index)+".png gespeichert")
