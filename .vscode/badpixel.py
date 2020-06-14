@@ -12,6 +12,7 @@
 import numpy as np                                                          # Für Arrays
 import cv2                                                                  # Import OpenCV
 import os                                                                   # Für die Path-Manipulation
+import matplotlib.pyplot as plt
 
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
@@ -39,12 +40,15 @@ def hisImportFunction(pImportPath, pExport = False):                            
 
     for index in range(numberImages):                                       # Alle Bilder anzeigen und speichern
         f = np.fromfile(fd, dtype=np.uint16, count=rows*cols)               # Pixel lesen und in einem ein dimensionales Array speichern
-        im = f.reshape((rows, cols))                                        # Array in zwei dimensionales Array mit rows x cols erstellen
+        im = f.reshape((rows, cols)) 
+                                              # Array in zwei dimensionales Array mit rows x cols erstellen
         #np.savetxt("foo.csv", im, delimiter=";")
 
         #for testValue in np.nditer(f):
         #    if testValue >= 60000:
         #        print("Sehr schwarz hier!")
+        plt.plot(im)
+        plt.show()
         if pExport == True:
             cv2.imshow('image', im)                                             # Array als Bild anzeigen
             cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
