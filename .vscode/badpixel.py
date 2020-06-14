@@ -15,6 +15,7 @@ import os                                                                   # F�
 #import matplotlib.pyplot as plt
 
 
+
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
     file = open(pImportPath,'rb')                                           # File erneut öffnen, da ansonsten der "Cursor" falsch liegt
     data = np.fromfile(file,dtype=np.uint16)                                # komplettes File einlesen
@@ -64,7 +65,12 @@ def hisImportFunction(pImportPath, pExport = False):                            
 #importPath = '/Users/julian/Desktop/test/Bildserie1_160kV_0uA.his' 
 #importPath = "/Users/julian/Desktop/test/Bildserie1_160kV_0uA.his"
 #importPath = "/Users/julian/Desktop/test/Bildserie2_160kV_70uA.his"
+
 #importPath = "/Users/julian/Desktop/Bildserie1_160kV_0uA.his"
-importPath = "Bildserie1_160kV_0uA.his"
-bildArray = hisImportFunction(importPath,True)
-print(bildArray)
+#importPath = "Bildserie1_160kV_0uA.his"
+#bildArray = hisImportFunction(importPath,True)
+#print(bildArray)
+
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
+importPath = "C:/Users/user/Desktop/Serie 3/Bildserie3_160kV_0uA.his"
+hisImportFunction(importPath)
