@@ -36,4 +36,4 @@ importPath = "Bildserie3_160kV_0uA.his"
 
 
 #ab hier Quasi die main:
-hisImportFunction(importPath)
+detection.DeadPixelFinder(hisImportFunction(importPath))
