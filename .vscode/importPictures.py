@@ -10,7 +10,9 @@
  """
 
 import os    
-import config
+import numpy as np                                                          # Für Arrays
+import cv2                                                                  # Import OpenCV
+
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
     file = open(pImportPath,'rb')                                           # File erneut öffnen, da ansonsten der "Cursor" falsch liegt
@@ -24,7 +26,7 @@ def hisImportFunction(pImportPath, pExport = False):                        # Fu
     print("\n\n*************************************************************")
     print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
     print("*************************************************************\n")
-    fileName, fileExtension = os.path.splitext(os.path.basename(importPath))# Dateinamen und Dateiendung extrahieren    
+    fileName, fileExtension = os.path.splitext(os.path.basename(pImportPath))# Dateinamen und Dateiendung extrahieren    
     print("Die Datei", fileName, "wird jetzt eingelesen.")
     fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
     data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)

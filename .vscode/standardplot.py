@@ -1,3 +1,4 @@
+"""
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -11,3 +12,5 @@ if z>10:
     print("Jo")
 else:
     print("No")
+
+"""
