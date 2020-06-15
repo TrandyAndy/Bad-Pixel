@@ -14,6 +14,18 @@ import cv2                                                                  # Im
 import os                                                                   # Für die Path-Manipulation
 #import matplotlib.pyplot as plt
 
+#how to import numpy und ov2.  Python updaten, pip install, pip3 install numpy, pip3 install opencv-python.
+
+import detection
+detection.fib(100)
+
+#Global         Muss man das in Python überhaupt machen?
+Bildhoehe=512
+Bildbreite=512
+Bilderzahl=0
+#BPM= array([Bildbreite][Bildhoehe]) #Bad Pixel Map
+#ImageArr= array([Bildbreite][Bildhoehe][Bilderzahl])
+BildCounter=0
 
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
@@ -23,7 +35,7 @@ def getNumberImages(pImportPath, rows, cols):                               # Fu
     file.close()                                                            # File schließen
     return numberImages                                                     # Die Anzahl der Bilder zurückgeben
 
-def hisImportFunction(pImportPath, pExport = False):                                         # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
+def hisImportFunction(pImportPath, pExport = False):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
     pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
     print("\n\n*************************************************************")
     print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
@@ -72,5 +84,5 @@ def hisImportFunction(pImportPath, pExport = False):                            
 #print(bildArray)
 
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
-importPath = "C:/Users/user/Desktop/Serie 3/Bildserie3_160kV_0uA.his"
+importPath = "Bildserie3_160kV_0uA.his"
 hisImportFunction(importPath)
