@@ -22,14 +22,6 @@ import importPictures as imP
 #detection.test(3)
 #detection.test(config.Bildhoehe)
 
-#importPath = '/Users/julian/Desktop/test/Bildserie1_160kV_0uA.his' 
-#importPath = "/Users/julian/Desktop/test/Bildserie1_160kV_0uA.his"
-#importPath = "/Users/julian/Desktop/test/Bildserie2_160kV_70uA.his"
-
-#importPath = "/Users/julian/Desktop/Bildserie1_160kV_0uA.his"
-#importPath = "Bildserie1_160kV_0uA.his"
-#bildArray = hisImportFunction(importPath,True)
-#print(bildArray)
 
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
 importPath = "Bildserie3_160kV_0uA.his"
