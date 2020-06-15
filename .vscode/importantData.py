@@ -13,6 +13,24 @@
 
 
 
+"""
+    # Funktionen aus numpy:
+    F = np.array([1, 1, 2, 3, 5, 8, 13, 21])
+    C = np.array(cvalues) # Array erzeugen
+    x = np.arange(0.5, 6.1, 0.8, int)   # start, stop, step, typ    
+    samples, spacing = np.linspace(1, 10, 5, endpoint=False, retstep=True)   # start, stop, anzahlWerte, Endpunkt, Abstand zwischen zwei Werten auch zurückliefern?
+    np.ndim(C)  # dimension des Arrays
+    A = np.array([ [3.4, 8.7, 9.9], 
+               [1.1, -7.8, -0.7],
+               [4.1, 12.3, 4.8]])   # 2D Array mit 3 Spalten und 3 Zeilen
+    B = np.array([ [[111, 112], [121, 122]],
+               [[211, 212], [221, 222]],
+               [[311, 312], [321, 322]] ])  # 3D Array
+    print(np.shape(x))  # Zeilen, Spalten, ... Anzahl des Arrays ausgeben
+    x.shape = (9,2)     # Zeilten, Spalten Verteilung ändern
+"""
+
+
 
 
 # def hisImportFunctionOld(pImportPath):
