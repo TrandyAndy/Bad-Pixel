@@ -15,7 +15,7 @@
 
 #how to import numpy und ov2.  Python updaten, pip install, pip3 install numpy, pip3 install opencv-python.
 
-#import detection
+import detection
 import config
 import importPictures as imP
 
@@ -34,7 +34,7 @@ import importPictures as imP
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
 importPath = "Bildserie3_160kV_0uA.his"
 
-print(imP.hisImportFunction(importPath,True))
+print(imP.hisImportFunction(importPath,False))
 
 #ab hier Quasi die main:
-#detection.DeadPixelFinder(hisImportFunction(importPath))
+detection.DeadPixelFinder(imP.hisImportFunction(importPath))
