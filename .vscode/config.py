@@ -9,7 +9,7 @@ Bildbreite=512
 Bilderzahl=0
 Farbtiefe=16 #in Bit
 #BPM= array([Bildbreite][Bildhoehe]) #Bad Pixel Map
-#ImageArr= array([Bildbreite][Bildhoehe][Bilderzahl])
+#ImageArr= np.array([[Bildbreite][Bildhoehe][Bilderzahl]])
 BildCounter=0
 
 """
