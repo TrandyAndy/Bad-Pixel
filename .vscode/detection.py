@@ -32,13 +32,13 @@ def DeadPixelFinder(Bild):
     for z in (0,512-1):
         for s in (0,config.Bildbreite-1):
             if Bild[z,s]<=SCHWELLWERT_DEAD:
-                BPM[z,s]=100
+                np.array(BPM[z,s])=100
                 Zaehler +=1
             elif Bild[z,s]<=SCHWELLWERT_ALMOST_DEAD:
                 BPM[z,s]=80
                 Zaehler +=1
     print("Tote Pixel: " , Zaehler)
-    return BMP
+    #return BMP
 
 def MultiPicturePixelCompare(Bilder, Bilderanzahl):
     x=4
