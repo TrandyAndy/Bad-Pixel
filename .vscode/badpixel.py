@@ -17,15 +17,10 @@ import os                                                                   # F�
 #how to import numpy und ov2.  Python updaten, pip install, pip3 install numpy, pip3 install opencv-python.
 
 import detection
-detection.fib(100)
+import config
 
-#Global         Muss man das in Python überhaupt machen?
-Bildhoehe=512
-Bildbreite=512
-Bilderzahl=0
-#BPM= array([Bildbreite][Bildhoehe]) #Bad Pixel Map
-#ImageArr= array([Bildbreite][Bildhoehe][Bilderzahl])
-BildCounter=0
+detection.test(3)
+detection.test(config.Bildhoehe)
 
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
@@ -85,4 +80,7 @@ def hisImportFunction(pImportPath, pExport = False):                        # Fu
 
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
 importPath = "Bildserie3_160kV_0uA.his"
+
+
+#ab hier Quasi die main:
 hisImportFunction(importPath)
