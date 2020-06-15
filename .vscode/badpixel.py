@@ -9,8 +9,7 @@
  */
  """
 
-import numpy as np                                                          # Für Arrays
-import cv2                                                                  # Import OpenCV
+
                                                                # Für die Path-Manipulation
 #import matplotlib.pyplot as plt
 
