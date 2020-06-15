@@ -9,30 +9,30 @@
  */
  """
 
-import config
+import   config as cfg
 
-SCHWELLWERT_SUPER_HOT=      int((2**config.Farbtiefe)*0.95)  #obere Genze
-SCHWELLWERT_HOT=            int((2**config.Farbtiefe)*0.85)
-SCHWELLWERT_ALMOST_DEAD=    int((2**config.Farbtiefe)*0.01) 
-SCHWELLWERT_DEAD=           int((2**config.Farbtiefe)*0.001) #untere Grenze
+SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*0.95)  #obere Genze
+SCHWELLWERT_HOT=            int((2**  cfg.Farbtiefe)*0.85)
+SCHWELLWERT_ALMOST_DEAD=    int((2**  cfg.Farbtiefe)*0.01) 
+SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.001) #untere Grenze
 
 # Hot Pixel finder:
 def HotPixelFinder(Bild):
-    for z in config.Bildhoehe:
-        for s in config.Bildbreite:
+    for z in   cfg.Bildhoehe:
+        for s in   cfg.Bildbreite:
             if Bild[z,s]>=SCHWELLWERT_SUPER_HOT:
                 BPM[z,s]=100
             elif Bild[z,s]>=SCHWELLWERT_HOT:
                 BPM[z,s]=80
-    return BMP[]
+    #return BMP[]
 
 # Dead Pixel finder:
 def DeadPixelFinder(Bild):
     Zaehler=0
     for z in (0,512-1):
-        for s in (0,config.Bildbreite-1):
+        for s in (0,  cfg.Bildbreite-1):
             if Bild[z,s]<=SCHWELLWERT_DEAD:
-                np.array(BPM[z,s])=100
+                (BPM[z,s])=100
                 Zaehler +=1
             elif Bild[z,s]<=SCHWELLWERT_ALMOST_DEAD:
                 BPM[z,s]=80
@@ -41,7 +41,13 @@ def DeadPixelFinder(Bild):
     #return BMP
 
 def MultiPicturePixelCompare(Bilder, Bilderanzahl):
-    x=4
+    x=np.shape(Bilder)
+    print(x)
+    for i in (0, x):  #Check for Black
+        DeadPixelFinder(Bilder[i])
+
+
+
 
 def test(n):
     print(n, SCHWELLWERT_DEAD)
