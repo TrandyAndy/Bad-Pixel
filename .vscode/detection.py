@@ -93,9 +93,6 @@ def test(n):
     print(n, SCHWELLWERT_DEAD)
 
 
-
-
-
 def movingWindow(pBild):
     hoehe, breite = np.shape(pBild)
     BPM=np.zeros((hoehe,breite))
@@ -161,10 +158,11 @@ def movingWindow(pBild):
                 durchschnittswert += pBild[z+1, s]
                 durchschnittswert += pBild[z+1, s+1]
                 durchschnittswert = durchschnittswert / 8
+            erg = pBild[z,s] / durchschnittswert
             
-            BPM[z,s] = pBild[z,s] / durchschnittswert
-            if(BPM[z,s] < SCHWELLWERT_WINDOWS_DEAD):
-                print("Der aktuelle Wert ist: ", BPM[z,s])
-            else if(BPM[z,s] > SCHWELLWERT_WINDOWS_HOT)
+            if(erg < SCHWELLWERT_WINDOWS_DEAD):
+                print("Dead-Pixel: ", BPM[z,s]) 
+            else if(erg > SCHWELLWERT_WINDOWS_HOT)
+                print("Hot-Pixel: ", )
     return BPM
 
