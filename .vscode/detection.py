@@ -162,9 +162,9 @@ def movingWindow(pBild):
             
             if(erg < SCHWELLWERT_WINDOWS_DEAD):
                 print("Moving-Windows: Dead-Pixel: ", erg)
-                BPM[z,s] = erg 
+                BPM[z,s] = 100 
             elif(erg > SCHWELLWERT_WINDOWS_HOT):
                 print("Moving-Windows: Hot-Pixel: ", erg)
-                BPM[z,s] = erg 
+                BPM[z,s] = 100 
     return BPM
 
