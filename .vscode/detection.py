@@ -63,3 +63,77 @@ def MultiPicturePixelCompare(Bilder, Bilderanzahl):
 def test(n):
     print(n, SCHWELLWERT_DEAD)
 
+
+
+
+def movingWindow(pBild):
+    hoehe, breite = np.shape(pBild)
+    BPM=np.zeros((hoehe,breite))
+    for z in range(hoehe):
+        for s in range(breite):
+            #print("z : ", z, "s: ",s)
+            durchschnittswert = 0.0
+            if(z == 0 and s == 0):               # Wenn Ecke links oben
+                durchschnittswert += pBild[z, s+1]
+                durchschnittswert += pBild[z+1, s]
+                durchschnittswert += pBild[z+1, s+1]
+                durchschnittswert = durchschnittswert / 3
+            elif(z == 0 and s == breite-1):        # Wenn Ecke rechts oben
+                durchschnittswert += pBild[z, s-1]
+                durchschnittswert += pBild[z+1, s-1]
+                durchschnittswert += pBild[z+1, s]
+                durchschnittswert = durchschnittswert / 3
+            elif(z == hoehe-1 and s == 0):         # Wenn Ecke links unten
+                durchschnittswert += pBild[z-1, s]
+                durchschnittswert += pBild[z-1, s+1]
+                durchschnittswert += pBild[z, s+1]
+                durchschnittswert = durchschnittswert / 3
+            elif(z == hoehe-1 and s == breite-1):    # Wenn Ecke rechts unten
+                durchschnittswert += pBild[z-1, s-1]
+                durchschnittswert += pBild[z-1, s]
+                durchschnittswert += pBild[z, s-1]
+                durchschnittswert = durchschnittswert / 3
+            elif(z == 0):                       # Wenn am oberen Ende
+                durchschnittswert += pBild[z, s-1]
+                durchschnittswert += pBild[z, s+1]
+                durchschnittswert += pBild[z+1, s-1]
+                durchschnittswert += pBild[z+1, s]
+                durchschnittswert += pBild[z+1, s+1]
+                durchschnittswert = durchschnittswert / 5
+            elif(s == 0):                       # Wenn am linken Ende   
+                durchschnittswert += pBild[z-1, s]
+                durchschnittswert += pBild[z-1, s+1]
+                durchschnittswert += pBild[z, s+1]
+                durchschnittswert += pBild[z+1, s]
+                durchschnittswert += pBild[z+1, s+1]
+                durchschnittswert = durchschnittswert / 5
+            elif(s == breite-1):                  # Wenn am rechten Ende
+                durchschnittswert += pBild[z-1, s-1]
+                durchschnittswert += pBild[z-1, s]
+                durchschnittswert += pBild[z, s-1]
+                durchschnittswert += pBild[z+1, s-1]
+                durchschnittswert += pBild[z+1, s]
+                durchschnittswert = durchschnittswert / 5
+            elif(z == hoehe-1):                   # Wenn am unteren Ende 
+                durchschnittswert += pBild[z-1, s-1]
+                durchschnittswert += pBild[z-1, s]
+                durchschnittswert += pBild[z-1, s+1]
+                durchschnittswert += pBild[z, s-1]
+                durchschnittswert += pBild[z, s+1]
+                durchschnittswert = durchschnittswert / 5
+            else:                               # Ansonsten
+                durchschnittswert += pBild[z-1, s-1]
+                durchschnittswert += pBild[z-1, s]
+                durchschnittswert += pBild[z-1, s+1]
+                durchschnittswert += pBild[z, s-1]
+                durchschnittswert += pBild[z, s+1]
+                durchschnittswert += pBild[z+1, s-1]
+                durchschnittswert += pBild[z+1, s]
+                durchschnittswert += pBild[z+1, s+1]
+                durchschnittswert = durchschnittswert / 8
+            
+            BPM[z,s] = pBild[z,s] / durchschnittswert
+            if(BPM[z,s] < 0.6):
+                print("Der aktuelle Wert ist: ", BPM[z,s])
+    return BPM
+

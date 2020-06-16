@@ -33,5 +33,6 @@ anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
 print("Anzahl der Bilder: ", anzahlBilder, "Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 #Beispiel Ende
 
+detection.movingWindow(bildDaten[0])
 #ab hier Quasi die main:
 #detection.DeadPixelFinder(hisImportFunction(importPath))
