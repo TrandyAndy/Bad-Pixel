@@ -92,8 +92,6 @@ def test(n):
     print(n, SCHWELLWERT_DEAD)
 
 
-
-
 def movingWindow(pBild):
     hoehe, breite = np.shape(pBild)
     BPM=np.zeros((hoehe,breite))
