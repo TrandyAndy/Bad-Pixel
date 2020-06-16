@@ -2,3 +2,4 @@
 !.vscode/settings.json
 settings.json
 *.json
+.vscode/settings.json
