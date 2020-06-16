@@ -19,6 +19,7 @@ import numpy as np
 import detection
 import config
 import importPictures as imP
+import markPixels as mP
 
 
 #detection.test(3)
@@ -43,3 +44,6 @@ detection.movingWindow(bildDaten[0])
 #ab hier Quasi die main:
 detection.MultiPicturePixelCompare(bildDaten)
 #detection.MultiPicturePixelCompare(TestImage)
+
+mP.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
+

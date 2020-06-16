@@ -69,12 +69,20 @@ def hisImportFunction(pImportPath, pExport = False):                        # Fu
     cols = int(np.take(data, 9))                                            # Spalten bestimmen
     numberImages = int(getNumberImages(pImportPath, rows, cols))            # Anzahl der Bilder in der Datei bestimmen
     print("Ihre Datei hat", rows, "Reihen und", cols, "Spalten und besteht aus", numberImages, "Bild(ern)")
-    bildDaten = np.zeros((numberImages, rows, cols))                        # leeres 3D-Array der Bilddaten: 1. Nr. des Bildes, 2. Bildhöhe, 3. Bildbreite
+    bildDaten = np.zeros((numberImages, rows, cols),dtype=np.uint16)                        # leeres 3D-Array der Bilddaten: 1. Nr. des Bildes, 2. Bildhöhe, 3. Bildbreite
     for index in range(numberImages):                                       # Alle Bilder anzeigen und speichern
         f = np.fromfile(fd, dtype=np.uint16, count=rows*cols)               # Pixel lesen und in einem ein dimensionales Array speichern
         im = f.reshape((rows, cols))                                        # Array in zwei dimensionales Array mit rows x cols erstellen
         bildDaten[index] = im                                               # Aktuelles Bild speichern
+       #test 
+        #backtorgb = cv2.cvtColor(im,cv2.COLOR_GRAY2RGB)
+        #cv2.imshow('image2', backtorgb)
+        #cv2.imwrite('asdfasf.png', backtorgb, [cv2.IMWRITE_PNG_COMPRESSION,0])
+        #cv2.waitKey()
+        #cv2.destroyAllWindows()
+        #Ende test
         if pExport == True:
+            
             cv2.imshow('image', im)                                             # Array als Bild anzeigen
             cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
             print("Ihre Datei wurden unter", pathWithoutExtension+"_"+str(index)+".png gespeichert")
