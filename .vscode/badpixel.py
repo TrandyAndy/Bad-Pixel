@@ -39,6 +39,7 @@ TestImage=np.array([ [[111, 65535], [121, 65535]],
                [[35535, 35535], [221, 65535]],
                [[311, 65535], [321, 65535]] ])  # 3D Array
 
+detection.movingWindow(bildDaten[0])
 #ab hier Quasi die main:
 detection.MultiPicturePixelCompare(imP.hisImportFunction(importPath))
 #detection.MultiPicturePixelCompare(TestImage)
