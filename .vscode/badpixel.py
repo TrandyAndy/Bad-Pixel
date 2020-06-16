@@ -41,5 +41,5 @@ TestImage=np.array([ [[111, 65535], [121, 65535]],
 
 detection.movingWindow(bildDaten[0])
 #ab hier Quasi die main:
-detection.MultiPicturePixelCompare(imP.hisImportFunction(importPath))
+detection.MultiPicturePixelCompare(bildDaten)
 #detection.MultiPicturePixelCompare(TestImage)
