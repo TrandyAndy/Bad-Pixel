@@ -180,11 +180,10 @@ def bottom(x):
     else:
         return x
 
-def advancedMovingWindow(Bilder, Nr, Fensterbreite=6):
+def advancedMovingWindow(Bilder, Nr, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3
     Anz, hoehe, breite = np.shape(Bilder)
     BPM=np.zeros((hoehe,breite))
     quadrat=int(Fensterbreite/2) #+1
-    Faktor=3
     Zaehler=0
     for y in range(hoehe):
         for x in range(breite):

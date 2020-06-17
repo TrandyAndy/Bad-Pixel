@@ -46,5 +46,5 @@ detection.MultiPicturePixelCompare(bildDaten)
 #detection.MultiPicturePixelCompare(TestImage)
 
 
-mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
+mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6,5)[0],bildDaten[0])
 
