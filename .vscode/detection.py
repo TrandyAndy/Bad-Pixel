@@ -17,7 +17,7 @@ SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*0.95)  #obere Genze
 SCHWELLWERT_HOT=            int((2**  cfg.Farbtiefe)*0.85)
 SCHWELLWERT_ALMOST_DEAD=    int((2**  cfg.Farbtiefe)*0.01) 
 SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.001) #untere Grenze
-SCHWELLWERT_WINDOWS_DEAD = 0.5
+SCHWELLWERT_WINDOWS_DEAD = 0.3
 SCHWELLWERT_WINDOWS_HOT = 1.5
 # Hot Pixel finder:
 def HotPixelFinder(Bild, Nr):
@@ -161,11 +161,11 @@ def movingWindow(pBild):
             erg = pBild[z,s] / durchschnittswert
             
             if(erg < SCHWELLWERT_WINDOWS_DEAD):
-                print("Moving-Windows: Dead-Pixel: ", erg)
-                BPM[z,s] = erg 
+                print("Moving-Windows: Dead-Pixel: ", erg, "Z: ", z, "S: ", s)
+                BPM[z,s] = 100 
             elif(erg > SCHWELLWERT_WINDOWS_HOT):
-                print("Moving-Windows: Hot-Pixel: ", erg)
-                BPM[z,s] = erg 
+                print("Moving-Windows: Hot-Pixel: ", erg, "Z: ", z, "S: ", s)
+                BPM[z,s] = 100 
     return BPM
 
 def top(x,Max):

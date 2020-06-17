@@ -19,6 +19,7 @@ import numpy as np
 import detection
 import config
 import importPictures as imP
+import markPixels as mP
 
 
 #detection.test(3)
@@ -26,7 +27,7 @@ import importPictures as imP
 
 
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
-importPath = "Bildserie1_160kV_0uA.his"
+importPath = "Bildserie3_160kV_0uA.his"
 bildDaten = imP.hisImportFunction(importPath,False)
 
 #Beispiel
@@ -44,3 +45,6 @@ TestImage=np.array([ [[111, 65535], [121, 65535]],
 detection.MultiPicturePixelCompare(bildDaten)
 #detection.MultiPicturePixelCompare(TestImage)
 detection.advancedMovingWindow(bildDaten, 0,6)
+
+mP.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
+
