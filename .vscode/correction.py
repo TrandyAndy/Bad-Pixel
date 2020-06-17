@@ -26,6 +26,6 @@ def nachbar(Bild, BPM):
         if i%breite:
             pass  #Ränder machen wir net
         else:
-            flatImage[i]=(flatImage[i-1]+flatImage[i+1])/2 #Mittelwert einsetzen
+            flatImage[i]=(flatImage[i-1]+flatImage[i+1])/2.0 #Mittelwert einsetzen
     beautiful=flatImage.reshape(hoehe, breite)
     return beautiful
