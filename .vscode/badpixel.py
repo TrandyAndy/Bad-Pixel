@@ -26,8 +26,8 @@ import markPixels as mP
 #detection.test(config.Bildhoehe)
 
 
-#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
-importPath = "Bildserie3_160kV_0uA.his"
+importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
+#importPath = "Bildserie3_160kV_0uA.his"
 bildDaten = imP.hisImportFunction(importPath,False)
 
 #Beispiel
