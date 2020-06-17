@@ -180,7 +180,7 @@ def bottom(x):
     else:
         return x
 
-def advancedMovingWindow(Bilder, Nr, Fensterbreite):
+def advancedMovingWindow(Bilder, Nr, Fensterbreite=6):
     Anz, hoehe, breite = np.shape(Bilder)
     BPM=np.zeros((hoehe,breite))
     quadrat=int(Fensterbreite/2) #+1
@@ -196,8 +196,8 @@ def advancedMovingWindow(Bilder, Nr, Fensterbreite):
             Std=np.sqrt(np.var(supBPM))
             debug= abs(np.mean(supBPM)-Bilder[Nr,x,y])
             if Std*Faktor< abs(np.mean(supBPM)-Bilder[Nr,x,y]):
-                BPM[x,y]=1
+                BPM[x,y]=100
                 Zaehler +=1
                 #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
-    print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Festerbreite)
+    print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
     return BPM ,Zaehler
