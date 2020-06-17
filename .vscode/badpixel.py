@@ -46,5 +46,5 @@ TestImage=np.array([ [[111, 65535], [121, 65535]],
 #detection.MultiPicturePixelCompare(TestImage)
 
 
-mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
-
+#mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
+mP.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
