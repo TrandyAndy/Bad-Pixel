@@ -21,11 +21,19 @@ def nachbar(Bild, BPM):
         print("Digga schau das die Dimensionen passen!")
         return -1
     hoehe, breite = np.shape(Bild)
-    flatImage=Bild.reshape(-1)
-    for i in range(hoehe*breite):
-        if i%breite:
-            pass  #Ränder machen wir net
+    flatImage=np.uint(Bild.reshape(-1))
+    flatBPM=(BPM.reshape(-1))
+    for i in range(hoehe*breite-1):
+        if i%breite and flatBPM[i]:
+            flatImage[i]=(flatImage[i-1]+flatImage[i+1])/2 #Mittelwert einsetzen
+            #print(i)
         else:
-            flatImage[i]=(flatImage[i-1]+flatImage[i+1])/2.0 #Mittelwert einsetzen
-    beautiful=flatImage.reshape(hoehe, breite)
+            #print("Hi")
+            pass  #Ränder machen wir net
+    beautiful=np.uint(flatImage.reshape(hoehe, breite))
     return beautiful
+
+
+#nagumo
+
+#def nagumo():
