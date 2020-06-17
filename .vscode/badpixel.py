@@ -22,6 +22,13 @@ import config
 import importPictures as imP
 import cv2
 import telemetry
+import cProfile 
+
+def pure_python_version(zahl):
+    print(zahlig)
+    X = np.arange(zahl)
+    Y = np.arange(zahl)
+    return X + Y
 
 
 #detection.test(3)
@@ -44,17 +51,27 @@ TestImage=np.array([ [[0, 65535], [121, 65535]],
 
 
 #ab hier Quasi die main:
-k=detection.MultiPicturePixelCompare(bildDaten[0:7])[0]
+#k=detection.MultiPicturePixelCompare(bildDaten[0:7])[0]
 #anzahlZeilen, anzahlReihen = np.shape(k)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
-telemetry.markPixels( k, bildDaten[0], 50) 
+#telemetry.markPixels( k, bildDaten[0], 50) 
 
 
 #mP.markPixels( detection.MultiPicturePixelCompare(bildDaten[0:9])[0], bildDaten[0], 50) 
 #mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
 #mP.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
-image = correction.nachbar(bildDaten[0],k)
-cv2.imwrite('PictureWithCorrection2.png', image, [cv2.IMWRITE_PNG_COMPRESSION,0])
+#image = correction.nachbar(bildDaten[0],k)
+#cv2.imwrite('PictureWithCorrection2.png', image, [cv2.IMWRITE_PNG_COMPRESSION,0])
 #telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
 #telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
-telemetry.plotData()
+testArray = np.array([ [0, 10, 20], 
+               [1, -7.8, 7],
+               [2, -1, -10]
+               ])   # 2D Array mit 3 Spalten und 3 Zeilen  # 2D Array mit 3 Spalten und 3 Zeilen
+#telemetry.plotData(testArray)
+zahlig = 99999999
+#erg = cProfile.run('pure_python_version(zahlig)')
+cProfile.run('detection.advancedMovingWindow(bildDaten,0)')
+
+
+#print(timerObject.timeit(10))

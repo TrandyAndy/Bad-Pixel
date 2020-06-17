@@ -18,18 +18,19 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1):
     print("Bild gespeichert ;D")
     #cv2.waitKey()
     #cv2.destroyAllWindows()
-    
-def plotData():
-    A = np.array([ [0, 10, 20], 
-               [2, 4, 3] ])   # 2D Array mit 3 Spalten und 3 Zeilen
-    plt.plot(A[0],A[1],A[0],A[1],'kx')
+
+# Daten: 2-D Array (1. Spalte: eingestellter Parameter, 2. Spalte: dazugehöriger Funktionswert, z.B. Fehleranzahl)
+# Bildname: String Name des gespeicherten Bildes
+# Algorithmus: String Verwendeter Suchalgorithmus
+# Parameter: String Modifizierter Parameter     
+def plotData(Daten, Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):    
+    plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
     plt.xlabel('parametrisierte Werte')
     plt.ylabel('gefunde Fehler')
-    plt.title('Test: Bildatei - Algorithmus - Parameter')
+    plt.title(Bildname + " - " + Algorithmus + " - " + Parameter)
     #plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
-    #plt.axis([40, 160, 0, 0.03])
     plt.grid(True)
-    plt.savefig('figure2.png', bbox_inches='tight', dpi=300)
+    plt.savefig(Bildname, bbox_inches='tight', dpi=300)
     plt.show()
     
 
