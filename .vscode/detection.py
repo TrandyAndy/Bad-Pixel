@@ -13,10 +13,10 @@ import config as cfg
 import numpy as np
 import math
 
-SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*0.95)  #obere Genze
-SCHWELLWERT_HOT=            int((2**  cfg.Farbtiefe)*0.85)
-SCHWELLWERT_ALMOST_DEAD=    int((2**  cfg.Farbtiefe)*0.01) 
-SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.001) #untere Grenze
+SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*0.99)  #obere Genze
+SCHWELLWERT_HOT=            int((2**  cfg.Farbtiefe)*0.95)
+SCHWELLWERT_ALMOST_DEAD=    int((2**  cfg.Farbtiefe)*0.05) 
+SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.01) #untere Grenze
 SCHWELLWERT_WINDOWS_DEAD = 0.4
 SCHWELLWERT_WINDOWS_HOT = 1.3
 # Hot Pixel finder:
@@ -24,16 +24,18 @@ def HotPixelFinder(Bild, Nr):
     Zaehler=0
     leer, hohe, breite=np.shape(Bild)
     BPM=np.zeros((hohe,breite))
-    for z in range(cfg.Bildhoehe):
-        for s in range(cfg.Bildbreite):
+    for z in range(hohe):
+        for s in range(breite):
             if Bild[Nr,z,s]>=SCHWELLWERT_SUPER_HOT:
                 BPM[z,s]=100
                 Zaehler +=1
             elif Bild[Nr,z,s]>=SCHWELLWERT_HOT:
                 BPM[z,s]=80
                 Zaehler +=1
-    print("Zeile Spalte " , z, s)
     print("Hot Pixel: " , Zaehler)
+    if Zaehler>hohe*breite*0.1: #Break if >10% falsch
+        Zaehler=-1
+        print("Überbelichtet")
     return BPM, Zaehler
 
 # Dead Pixel finder:
@@ -49,45 +51,63 @@ def DeadPixelFinder(Bild, Nr):
             elif Bild[Nr,z,s]<=SCHWELLWERT_ALMOST_DEAD:
                 BPM[z,s]=80
                 Zaehler +=1
-    print("Zeile Spalte " , z, s)
     print("Tote Pixel: " , Zaehler)
+    if Zaehler>hohe*breite*0.05: #Break if >5% falsch
+        Zaehler=-1
+        print("zu viele Dead Pixel")
     return BPM, Zaehler
 
 def MultiPicturePixelCompare(Bilder):
     Bilderanzahl, hohe, breite=np.shape(Bilder) 
     print(Bilderanzahl," Bilder prüfen...")
-
-    BPM_Durchschnitt=np.zeros((hohe,breite))
-    BPM_Alive=np.ones((hohe,breite))
+    Bilderanzahl_Dead=Bilderanzahl
+    Bilderanzahl_HOT =Bilderanzahl
+    BPM_Dead_Alive =np.ones((hohe,breite))
+    BPM_HOT_Alive =np.ones((hohe,breite))
+    BPM_Dead_Durchschnitt=np.zeros((hohe,breite))
     BPM_HOT_Durchschnitt=np.zeros((hohe,breite))
-    BPM_HOT_Alive=np.ones((hohe,breite))
     for i in range(Bilderanzahl):  
         print("Bild Nr. ",i)
-        BPM, Anz =DeadPixelFinder(Bilder, i) #Check for Black
+
+        BPM, Anz_Dead =DeadPixelFinder(Bilder, i) #Check for Black
+        if(Anz_Dead>=0):
+            BPM_Dead_Durchschnitt +=BPM #Durchschnitt
+            BPM_Dead_Alive= BPM_Dead_Alive*BPM #Alive Check
+        else:
+            Bilderanzahl_Dead -=1
+        
         BPM_HOT, Anz_HOT =HotPixelFinder(Bilder, i) #Check HOT
-        #Durchschnitt
-        BPM_Durchschnitt +=BPM
-        BPM_HOT_Durchschnitt +=BPM_HOT
-        #Alive Check
-        BPM_Alive= BPM_Alive*BPM
-        BPM_HOT_Alive= BPM_HOT_Alive*BPM_HOT
-    BPM_Durchschnitt =BPM_Durchschnitt/Bilderanzahl
-    BPM_HOT_Durchschnitt =BPM_HOT_Durchschnitt/Bilderanzahl
+        if(Anz_HOT>=0):
+            BPM_HOT_Durchschnitt +=BPM_HOT
+            BPM_HOT_Alive= BPM_HOT_Alive*BPM_HOT
+        else:
+            Bilderanzahl_HOT -=1
+    
+    BPM_Dead_Alive =(BPM_Dead_Durchschnitt>0)*100
+    BPM_HOT_Alive =(BPM_HOT_Durchschnitt>0)*100
+    BPM_Dead_Durchschnitt =BPM_Dead_Durchschnitt/(Bilderanzahl_Dead)
+    BPM_HOT_Durchschnitt =BPM_HOT_Durchschnitt/(Bilderanzahl_HOT)
+    
 
     #Auswertung
     Zaehler=[0,0,0,0]
+    BPM_Alive=BPM_Dead_Alive
+    BPM_Durchschnitt =BPM_Dead_Durchschnitt
     for z in range(hohe):
         for s in range(breite):
-            if BPM_Alive[z,s]>=100:
+            if BPM_Dead_Alive[z,s]>=100:
                 Zaehler[0] +=1
-            if BPM_Durchschnitt[z,s]>=50:
+            if BPM_Dead_Durchschnitt[z,s]>=50:
                 Zaehler[1] +=1
             if BPM_HOT_Alive[z,s]>=100:
                 Zaehler[2] +=1
+                BPM_Alive[z,s]=BPM_HOT_Alive[z,s]
             if BPM_HOT_Durchschnitt[z,s]>=50:
                 Zaehler[3] +=1
+                BPM_Durchschnitt[z,s] =BPM_HOT_Durchschnitt[z,s]
     print("Es sind noch ",Zaehler[0],"Dead Pixel übrig, und ",Zaehler[2]," HOT. (Nach Alive Check)" )
     print("Es sind noch ",Zaehler[1],"Dead Pixel übrig, und ",Zaehler[3]," HOT. (im Durchschnitt)" )
+    return BPM_Durchschnitt, BPM_Alive #Auswahl
 
 def test(n):
     print(n, SCHWELLWERT_DEAD)
