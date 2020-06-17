@@ -26,13 +26,13 @@ import markPixels as mP
 #detection.test(config.Bildhoehe)
 
 
-#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
-importPath = "Bildserie3_160kV_0uA.his"
+importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
+#importPath = "Bildserie3_160kV_0uA.his"
 bildDaten = imP.hisImportFunction(importPath,False)
 
 #Beispiel
-anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
-print("Anzahl der Bilder: ", anzahlBilder, "Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
+#anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
+#print("Anzahl der Bilder: ", anzahlBilder, "Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 #Beispiel Ende
 
 #9 Pixel Testbild
@@ -42,7 +42,7 @@ TestImage=np.array([ [[111, 65535], [121, 65535]],
 
 #detection.movingWindow(bildDaten[0])
 #ab hier Quasi die main:
-detection.MultiPicturePixelCompare(bildDaten)
+#detection.MultiPicturePixelCompare(bildDaten)
 #detection.MultiPicturePixelCompare(TestImage)
 
 
