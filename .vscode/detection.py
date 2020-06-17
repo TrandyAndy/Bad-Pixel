@@ -17,8 +17,8 @@ SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*0.95)  #obere Genze
 SCHWELLWERT_HOT=            int((2**  cfg.Farbtiefe)*0.85)
 SCHWELLWERT_ALMOST_DEAD=    int((2**  cfg.Farbtiefe)*0.01) 
 SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.001) #untere Grenze
-SCHWELLWERT_WINDOWS_DEAD = 0.3
-SCHWELLWERT_WINDOWS_HOT = 1.5
+SCHWELLWERT_WINDOWS_DEAD = 0.4
+SCHWELLWERT_WINDOWS_HOT = 1.3
 # Hot Pixel finder:
 def HotPixelFinder(Bild, Nr):
     Zaehler=0
