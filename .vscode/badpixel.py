@@ -26,7 +26,7 @@ import markPixels as mP
 #detection.test(config.Bildhoehe)
 
 
-importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/2. Stand der Technik - Recherche/Beispielbilder/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
+importPath = "Bildserie4_75kV_20uA.his"
 #importPath = "Bildserie3_160kV_0uA.his"
 bildDaten = imP.hisImportFunction(importPath,False)
 
@@ -46,5 +46,5 @@ TestImage=np.array([ [[111, 65535], [121, 65535]],
 #detection.MultiPicturePixelCompare(TestImage)
 
 
-mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,8,5)[0],bildDaten[0])
+mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,20,3)[0],bildDaten[0])
 
