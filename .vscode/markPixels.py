@@ -1,23 +1,29 @@
 import cv2
 import numpy as np
 
-def markPixels(bpm, bild):
-    backtorgb = cv2.cvtColor(bild,cv2.COLOR_GRAY2RGB)
-    # backtorgb[Zeile: 0, Spalte: 0, bgr: 1] = maximaler Wert: 65535
-    backtorgb[99,201,1] = 65535
-    backtorgb[100,201,1] = 65535
-    backtorgb[101,199,1] = 65535
-    backtorgb[101,200,1] = 65535
-    backtorgb[101,202,1] = 65535
-    backtorgb[101,203,1] = 65535
-    backtorgb[102,201,1] = 65535
-    backtorgb[103,201,1] = 65535
-    #cv2.imshow('image', backtorgb)
-    print(backtorgb)
-    cv2.imwrite('greenPixels.png', backtorgb, [cv2.IMWRITE_PNG_COMPRESSION,0])
+def markPixels(bpm, pBild, schwelle=100):
+    colorPicture = cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
+    hoehe, breite = np.shape(pBild)
+    for z in range(hoehe):
+        for s in range(breite):
+            if(bpm[z,s] >= schwelle):
+                colorPicture = drawPlus(colorPicture, z, s)
+    #cv2.imshow('image', colorPicture)
+    print(colorPicture)
+    cv2.imwrite('greenPixels.png', colorPicture, [cv2.IMWRITE_PNG_COMPRESSION,0])
     #cv2.waitKey()
     #cv2.destroyAllWindows()
     
 
-def drawPlus(zeile, spalte, bgr):
+def drawPlus(colorPicture, zeile, spalte, bgr = 1, wert = 65535):
+    colorPicture[zeile-2,spalte,bgr] = wert
+    colorPicture[zeile-1,spalte,bgr] = wert
+    colorPicture[zeile,spalte-2,bgr] = wert
+    colorPicture[zeile,spalte-1,bgr] = wert
+    colorPicture[zeile,spalte+1,bgr] = wert
+    colorPicture[zeile,spalte+2,bgr] = wert
+    colorPicture[zeile+1,spalte,bgr] = wert
+    colorPicture[zeile+2,spalte,bgr] = wert
+    return colorPicture
     
+
