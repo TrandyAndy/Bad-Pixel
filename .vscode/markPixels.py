@@ -35,7 +35,7 @@ def bottom(aktuellerWert, minWert = 0):
         return aktuellerWert
 
 def top(aktuellerWert, maxWert):
-    if(aktuellerWert > maxWert):
-        return maxWert
+    if(aktuellerWert > maxWert-1):
+        return maxWert-1
     else:
         return aktuellerWert
