@@ -19,7 +19,7 @@ import numpy as np
 import detection
 import config
 import importPictures as imP
-import markPixels as mP
+import telemetry
 
 
 #detection.test(3)
@@ -46,5 +46,6 @@ TestImage=np.array([ [[111, 65535], [121, 65535]],
 #detection.MultiPicturePixelCompare(TestImage)
 
 
-#mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
-mP.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
+#telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
+#telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
+telemetry.plotData()
