@@ -22,6 +22,7 @@ import config
 import importPictures as imP
 import markPixels as mP
 import cv2
+import telemetry
 
 
 #detection.test(3)
@@ -55,3 +56,6 @@ mP.markPixels( k, bildDaten[0], 50)
 #mP.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
 
 cv2.imwrite('PictureWithCorrection.png', (correction.nachbar(bildDaten[0],k), [cv2.IMWRITE_PNG_COMPRESSION,0])
+#telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
+#telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
+telemetry.plotData()
