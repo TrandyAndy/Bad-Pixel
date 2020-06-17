@@ -168,3 +168,36 @@ def movingWindow(pBild):
                 BPM[z,s] = 100 
     return BPM
 
+def top(x,Max):
+    if x>=Max:
+        return Max
+    else:
+        return x
+
+def bottom(x):
+    if x<0:
+        return 0
+    else:
+        return x
+
+def advancedMovingWindow(Bilder, Nr, Fensterbreite=6):
+    Anz, hoehe, breite = np.shape(Bilder)
+    BPM=np.zeros((hoehe,breite))
+    quadrat=int(Fensterbreite/2) #+1
+    Faktor=3
+    Zaehler=0
+    for y in range(hoehe):
+        for x in range(breite):
+            supBPM=Bilder[Nr,bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
+            a= np.shape(supBPM)[0]+1
+            b= np.shape(supBPM)[1]+1
+            Elemente=a+b
+            #print("Elemente",Elemente," a=",a," b=",b)
+            Std=np.sqrt(np.var(supBPM))
+            debug= abs(np.mean(supBPM)-Bilder[Nr,x,y])
+            if Std*Faktor< abs(np.mean(supBPM)-Bilder[Nr,x,y]):
+                BPM[x,y]=100
+                Zaehler +=1
+                #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
+    print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
+    return BPM ,Zaehler
