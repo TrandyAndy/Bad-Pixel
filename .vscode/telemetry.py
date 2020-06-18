@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import cProfile 
 
 def markPixels(bpm, pBild, schwelle=100, bgr = 1):
     cv2.imwrite('PictureWithNoMarkings.png', pBild, [cv2.IMWRITE_PNG_COMPRESSION,0])
@@ -58,3 +59,6 @@ def top(aktuellerWert, maxWert):
         return maxWert-1
     else:
         return aktuellerWert
+
+def timeTest(pythonFile = "detection", funktionsAufruf = "movingWindow(bildDaten[0])" ):
+    cProfile.run(pythonFile + "." + funktionsAufruf)

@@ -1,3 +1,4 @@
 #Gitignore settings.json, da hier der Pfad der Python Installation gespeichert ist
 *.json
 
+Testbilder/

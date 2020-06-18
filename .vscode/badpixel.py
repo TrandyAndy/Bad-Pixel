@@ -22,7 +22,6 @@ import config
 import importPictures as imP
 import cv2
 import telemetry
-import cProfile 
 
 def pure_python_version(zahl):
     print(zahlig)
@@ -70,8 +69,8 @@ testArray = np.array([ [0, 10, 20],
                ])   # 2D Array mit 3 Spalten und 3 Zeilen  # 2D Array mit 3 Spalten und 3 Zeilen
 #telemetry.plotData(testArray)
 #erg = cProfile.run('pure_python_version(zahlig)')
-cProfile.run('detection.MultiPicturePixelCompare(bildDaten)')
-
+#cProfile.run("detection.movingWindow(bildDaten[0])")
+telemetry.timeTest("telemetry","plotData(testArray)")
 
 
 #print(timerObject.timeit(10))
