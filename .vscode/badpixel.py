@@ -23,13 +23,6 @@ import importPictures as imP
 import cv2
 import telemetry
 
-def pure_python_version(zahl):
-    print(zahlig)
-    X = np.arange(zahl)
-    Y = np.arange(zahl)
-    return X + Y
-
-
 #detection.test(3)
 #detection.test(config.Bildhoehe)
 
@@ -68,10 +61,10 @@ testArray = np.array([ [0, 10, 20],
                [2, -1, -10]
                ])   # 2D Array mit 3 Spalten und 3 Zeilen  # 2D Array mit 3 Spalten und 3 Zeilen
 #telemetry.plotData(testArray)
-#erg = cProfile.run('pure_python_version(zahlig)')
 #cProfile.run("detection.movingWindow(bildDaten[0])")
-telemetry.timeTest("telemetry","plotData(testArray)")
-
+#telemetry.timeTest("telemetry","plotData(testArray)")
+telemetry.logDetection(bildDaten[0],startwert= 0.5,stopwert=1,messpunkte=101)
+#telemetry.timeTest("telemetry","logDetection2(bildDaten[0],startwert= 0,stopwert=1,messpunkte=50)")
 
 #print(timerObject.timeit(10))
 #u=np.uint16(correction.nachbar(bildDaten[0],k))
@@ -82,3 +75,7 @@ telemetry.timeTest("telemetry","plotData(testArray)")
 #telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
 #telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
 #telemetry.plotData()
+
+#print("{:.3f}".format(5))
+#print("{:.3f}".format(round(10,3)))
+#str(round(xArray[index],3))
