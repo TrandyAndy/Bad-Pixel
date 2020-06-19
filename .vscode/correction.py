@@ -16,7 +16,7 @@ import math
 
 # Direkte Nachbarn:
 
-def nachbar(Bild, BPM):
+def nachbar(Bild, BPM, Methode=0):  #NARC=0 oder NMFC=1
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1

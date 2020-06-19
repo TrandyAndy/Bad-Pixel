@@ -23,6 +23,7 @@ import importPictures as imP
 import cv2
 import telemetry
 import cProfile 
+import verpixler
 
 def pure_python_version(zahl):
     print(zahlig)
@@ -51,10 +52,10 @@ TestImage=np.array([ [[0, 65535], [121, 65535]],
 
 
 #ab hier Quasi die main:
-k=detection.MultiPicturePixelCompare(bildDaten[0:2])[0]
-anzahlZeilen, anzahlReihen = np.shape(k)
+#k=detection.MultiPicturePixelCompare(bildDaten[0:2])[0]
+#anzahlZeilen, anzahlReihen = np.shape(k)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
-telemetry.markPixels( k, bildDaten[0], 50) 
+#telemetry.markPixels( k, bildDaten[0], 50) 
 
 
 #mP.markPixels( detection.MultiPicturePixelCompare(bildDaten[0:9])[0], bildDaten[0], 50) 
@@ -71,15 +72,31 @@ testArray = np.array([ [0, 10, 20],
 #telemetry.plotData(testArray)
 zahlig = 99999999
 #erg = cProfile.run('pure_python_version(zahlig)')
-cProfile.run('detection.advancedMovingWindow(bildDaten,0)')
+#cProfile.run('detection.advancedMovingWindow(bildDaten,0)')
 
 
 #print(timerObject.timeit(10))
-u=np.uint16(correction.nachbar(bildDaten[0],k))
-anzahlZeilen, anzahlReihen = np.shape(u)
-print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
+#u=np.uint16(correction.nachbar(bildDaten[0],k))
+#anzahlZeilen, anzahlReihen = np.shape(u)
+#print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 
-cv2.imwrite('PictureWithCorrection.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
+c=verpixler.verpixeln(bildDaten[0],180,4)[0]
+cv2.imwrite('PictureWithPixels.png', c , [cv2.IMWRITE_PNG_COMPRESSION,0])
+
+#cv2.imwrite('PictureWithCorrection.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
 #telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
 #telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
 #telemetry.plotData()
+
+
+# def Controller(Bilder, Detection=0, Correction=0, sollZahl=1):
+
+#     #Detection aufrufen.
+#     if Detection==1:
+
+#     elif Detection==2:
+
+#     #Correction aufrufen
+
+#     #Rückgabe
+#     return Bild, BPM, Pixelanzahl
