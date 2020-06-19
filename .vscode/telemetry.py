@@ -1,11 +1,16 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import cProfile
+import detection
+import os
+from datetime import datetime
 
-def markPixels(bpm, pBild, schwelle=100, bgr = 1):
-    cv2.imwrite('PictureWithNoMarkings.png', pBild, [cv2.IMWRITE_PNG_COMPRESSION,0])
+
+def markPixels(bpm, pBild, schwelle=100, bgr = 1, Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):
+    cv2.imwrite(Bildname + "_original.png", pBild, [cv2.IMWRITE_PNG_COMPRESSION,0])
     colorPicture = cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
-    if(np.shape(pBild) !=np.shape(bpm)):
+    if(np.shape(pBild) !=np.shape(bpm)):        # Wann kann das passieren?
         print("Digga schau das die Dimensionen passen!")
     hoehe, breite = np.shape(pBild)
     for z in range(hoehe):
@@ -14,8 +19,10 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1):
                 colorPicture = drawPlus(colorPicture, z, s, hoehe, breite, bgr)
     #cv2.imshow('image', colorPicture)
     #print(colorPicture)
-    cv2.imwrite('PictureWithMarkings.png', colorPicture, [cv2.IMWRITE_PNG_COMPRESSION,0])
-    print("Bild gespeichert ;D")
+    #for index in range(10):
+        #cv2.imwrite(Bildname + "_" + Algorithmus + "_" + Parameter + str(index) + ".png", colorPicture, [cv2.IMWRITE_PNG_COMPRESSION,index])
+    cv2.imwrite(Bildname + "_" + Algorithmus + "_" + Parameter + ".png", colorPicture, [cv2.IMWRITE_PNG_COMPRESSION,1])
+    #print("Bild gespeichert ;D")
     #cv2.waitKey()
     #cv2.destroyAllWindows()
 
@@ -25,14 +32,30 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1):
 # Parameter: String Modifizierter Parameter     
 def plotData(Daten, Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):    
     plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
-    plt.xlabel('parametrisierte Werte')
+    plt.xlabel(Parameter)
     plt.ylabel('gefunde Fehler')
     plt.title(Bildname + " - " + Algorithmus + " - " + Parameter)
     #plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
     plt.grid(True)
-    plt.savefig(Bildname, bbox_inches='tight', dpi=300)
-    plt.show()
-    
+    aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
+    #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit, bbox_inches='tight', dpi=300)
+    plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_lin", bbox_inches='tight', dpi=300)
+    #plt.show()
+
+def plotDataLog(Daten, Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):    
+    plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
+    plt.xlabel(Parameter)
+    plt.ylabel('gefunde Fehler')
+    plt.title(Bildname + " - " + Algorithmus + " - " + Parameter)
+    plt.xscale('linear')
+    plt.yscale('symlog')
+    #plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
+    plt.grid(True)
+    aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
+    print(aktuelleZeit)
+    #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit + "_log", bbox_inches='tight', dpi=300)
+    plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_log", bbox_inches='tight', dpi=300)
+    #plt.show()
 
 
 def drawPlus(colorPicture, zeile, spalte,  hoehe, breite, bgr, wert = 65535,):
@@ -58,3 +81,33 @@ def top(aktuellerWert, maxWert):
         return maxWert-1
     else:
         return aktuellerWert
+
+def timeTest(pythonFile = "detection", funktionsAufruf = "movingWindow(bildDaten[0])" ):
+    cProfile.run(pythonFile + "." + funktionsAufruf)
+
+
+def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10):
+    xArray = np.linspace(start= startwert, stop= stopwert, num= messpunkte,dtype= np.float) # erstellen von der x-Achse
+    yArray = np.zeros((messpunkte),dtype= np.float) # erstellen von der y-Achse
+    hoehe, breite = np.shape(pBild)
+    bpm = np.zeros((hoehe,breite))
+    print("Das x-Array: ", xArray, type(xArray))
+    print("Das y-Array: ", yArray, type(yArray))
+    aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
+    aktuellerPfad = "Testbilder/" + aktuelleZeit
+    os.mkdir(aktuellerPfad)
+    for index in range(len(xArray)):
+        bpm = detection.movingWindow(pBild,xArray[index],1000)
+        print("Aktuelle Messreihe: ", index)
+        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Bildserie1_160kV_70uA", "Moving Window", "Schwellwert Dead-Pixel_" + "{:.3f}".format(round(xArray[index],3))   )
+        for z in range(hoehe):
+            for s in range(breite):
+                if bpm[z,s] >= bpmFehlerSchwellert:
+                    yArray[index] += 1 
+    dataArray = np.array([xArray, yArray],dtype= np.float)
+    print(dataArray)
+    #plotData(dataArray,"Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
+    #plotDataLog(dataArray,"Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
+    aktuelleZeit = "test"
+    plotData(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
+    plotDataLog(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")

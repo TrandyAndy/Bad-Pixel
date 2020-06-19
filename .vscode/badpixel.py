@@ -74,6 +74,10 @@ zahlig = 99999999
 #erg = cProfile.run('pure_python_version(zahlig)')
 #cProfile.run('detection.advancedMovingWindow(bildDaten,0)')
 
+#cProfile.run("detection.movingWindow(bildDaten[0])")
+#telemetry.timeTest("telemetry","plotData(testArray)")
+###telemetry.logDetection(bildDaten[0],startwert= 0.5,stopwert=1,messpunkte=101)
+#telemetry.timeTest("telemetry","logDetection2(bildDaten[0],startwert= 0,stopwert=1,messpunkte=50)")
 
 #print(timerObject.timeit(10))
 #u=np.uint16(correction.nachbar(bildDaten[0],k))
