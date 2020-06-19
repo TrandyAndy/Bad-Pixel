@@ -84,8 +84,9 @@ zahlig = 99999999
 #anzahlZeilen, anzahlReihen = np.shape(u)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 
-c=verpixler.verpixeln(bildDaten[0],180,4)[0]
+c,j=verpixler.verpixeln(bildDaten[0],190,7,8)
 cv2.imwrite('PictureWithPixels.png', c , [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite('PictureBPM.png', j , [cv2.IMWRITE_PNG_COMPRESSION,0])
 
 #cv2.imwrite('PictureWithCorrection.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
 #telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
