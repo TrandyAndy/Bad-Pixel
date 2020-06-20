@@ -198,23 +198,51 @@ def bottom(x):
     else:
         return x
 
-def advancedMovingWindow(Bilder, Nr, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3
-    Anz, hoehe, breite = np.shape(Bilder)
+def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3
+    hoehe, breite = np.shape(D2_Bild)
     BPM=np.zeros((hoehe,breite))
     quadrat=int(Fensterbreite/2) #+1
     Zaehler=0
     for y in range(hoehe):
         for x in range(breite):
-            supBPM=Bilder[Nr,bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
+            supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
             a= np.shape(supBPM)[0]+1
             b= np.shape(supBPM)[1]+1
             Elemente=a+b
             #print("Elemente",Elemente," a=",a," b=",b)
             Std=np.sqrt(np.var(supBPM))
-            debug= abs(np.mean(supBPM)-Bilder[Nr,x,y])
-            if Std*Faktor< abs(np.mean(supBPM)-Bilder[Nr,x,y]):
+            debug= abs(np.mean(supBPM)-D2_Bild[x,y])
+            if Std*Faktor< abs(np.mean(supBPM)-D2_Bild[x,y]):
                 BPM[x,y]=100
                 Zaehler +=1
                 #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
     return BPM ,Zaehler
+
+def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle und Dunkle!) , Faktor ist Schwellwert für Erkennung.
+    Anz, hoehe, breite = np.shape(D3_Bilder)
+    BPM=np.zeros((hoehe,breite))
+    Zaehler=0
+    #Hell Dunken erstellen
+    Hellste=np.ones((hoehe,breite))
+    Dunkelste=np.ones((hoehe,breite))*2**cfg.Farbtiefe
+    for Nr in range(Anz):
+        for s in range(hoehe):
+            for z in range(breite):
+                if Hellste[s,z]<D3_Bilder[Nr,s,z]:
+                    Hellste[s,z]=D3_Bilder[Nr,s,z]
+                if Dunkelste[s,z]>D3_Bilder[Nr,s,z]:
+                    Dunkelste[s,z]=D3_Bilder[Nr,s,z]
+    #Mittlere Dynamik
+    Dynamik=(Hellste-Dunkelste)/Hellste
+    DynamikNorm=np.mean(Dynamik)
+    print("Dynamik Norm = ", DynamikNorm)
+    for s in range(hoehe):
+        for z in range(breite):
+            if Dynamik[s,z]<DynamikNorm/Faktor:
+                BPM[s,z]=int((DynamikNorm-Dynamik[s,z])/DynamikNorm*100)
+                BPM[s,z]=100 #Digital 
+                Zaehler+=1
+    print(Zaehler," Fehler gefunden (DynamikCheck).")
+    return BPM, Zaehler
+
