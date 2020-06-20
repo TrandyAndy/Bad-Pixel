@@ -94,8 +94,14 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
     FalschErkannt=DetectedAnz/(hoehe*breite-BadPixelAnz)*100
 
     #Plot
-    Zaehler[4]=Zaehler[0]/(Zaehler[0]+Zaehler[3]) #TPR
-    Zaehler[5]=Zaehler[2]/(Zaehler[2]+Zaehler[1]) #FPR
+    if Zaehler[0]==0:
+        Zaehler[4]=5666
+    else:
+        Zaehler[4]=Zaehler[0]/(Zaehler[0]+Zaehler[3]) #TPR
+    if Zaehler[2]==0:
+        Zaehler[5]=5666
+    else:
+        Zaehler[5]=Zaehler[2]/(Zaehler[2]+Zaehler[1]) #FPR
 
     np.savetxt("Auswertung_"+Namenszusatz+".csv", Zaehler,fmt="%1.3f")
     print("Auswertung: True Pos, True Neg, False Pos, False Neg")
