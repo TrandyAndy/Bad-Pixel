@@ -5,7 +5,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-05-26 20:13:55
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-06-20 22:09:41
+ * @Last Modified time: 2020-06-20 23:36:21
  * @Description: 
  */
  """
@@ -41,7 +41,7 @@ bildDaten = imP.hisImportFunction(importPath,False)
 #Beispiel Ende
 
 #9 Pixel Testbild
-TestImage=np.array([ [[0, 65535], [121, 65535]],
+testImage=np.array([ [[0, 65535], [121, 65535]],
                [[35535, 35535], [0, 65535]],
                [[311, 65535], [321, 65535]] ])  # 3D Array
 
@@ -70,7 +70,7 @@ testArray = np.array([ [0, 10, 20],
 
 #cProfile.run("detection.movingWindow(bildDaten[0])")
 #telemetry.timeTest("telemetry","plotData(testArray)")
-telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=5)
+#telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=5)
 #telemetry.logDetection(bildDaten, startwert=1, stopwert=10, messpunkte=3) #7
 ###telemetry.logDetection(bildDaten[0],startwert= 0.5,stopwert=1,messpunkte=101)
 #telemetry.timeTest("telemetry","logDetection2(bildDaten[0],startwert= 0,stopwert=1,messpunkte=50)")
@@ -119,3 +119,7 @@ BPM1=detection.movingWindow(bildDaten[0])
 BPM2=detection.advancedMovingWindow(bildDaten[0],10,5)[0]
 verpixler.auswertung(BPM1,BPM0)
 """
+
+
+
+telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=2)
