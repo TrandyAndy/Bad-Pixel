@@ -102,5 +102,5 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
     print(Zaehler)
     print("Nicht Erkannt = ",NichtErkannt," Falsch Erkannt = ",FalschErkannt )
 
-    return Zaehler, NichtErkannt, FalschErkannt
+    return Zaehler, NichtErkannt, FalschErkannt, Zaehler[4:6]
 
