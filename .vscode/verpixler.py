@@ -79,7 +79,7 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
         for z in range(breite):
             if(BPM_Original[s,z]>0 and BPM_2test[s,z]>0):
                 Zaehler[0]+=1
-            elif (BPM_Original[s,z]==0 and BPM_2test[s,z]==0 and Zaehler[1]<262140):
+            elif (BPM_Original[s,z]==0 and BPM_2test[s,z]==0):
                 Zaehler[1]+=1
             elif (BPM_Original[s,z]>0 and BPM_2test[s,z]==0):
                 Zaehler[2]+=1
@@ -99,7 +99,7 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
     else:
         Zaehler[4]=Zaehler[0]/(Zaehler[0]+Zaehler[3]) #TPR
     if Zaehler[2]==0:
-        Zaehler[5]=1.1
+        Zaehler[5]=0
     else:
         Zaehler[5]=Zaehler[2]/(Zaehler[2]+Zaehler[1]) #FPR
 
