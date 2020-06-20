@@ -4,7 +4,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-06-15 18:03:39
+ * @Last Modified time: 2020-06-20 21:41:01
  * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren, To-Do: Datei in OpenCV Format importieren
  */
  """
@@ -18,7 +18,7 @@ def getNumberImages(pImportPath, rows, cols):                               # Fu
     data = np.fromfile(file,dtype=np.uint16)                                # komplettes File einlesen
     numberImages = (np.size(data) - 50) / (rows*cols)                       # Die Anzahl der Bilder bestimmen: die Größe des uint16 Arrays bestimmen, dann minus 50 Elemten (der Header der Datei) und dann geteilt durch die Pixel-Anzahl eines Bildes
     file.close()                                                            # File schließen
-    return numberImages                                                     # Die Anzahl der Bilder zurückgeben
+    return numberImages                                                    # Die Anzahl der Bilder zurückgeben
 
 def hisImportFunction2(pImportPath, pExport = False):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
     pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
@@ -92,4 +92,7 @@ def hisImportFunction(pImportPath, pExport = False):                        # Fu
     fd.close()                                                              # File schließen
     return bildDaten
 
-    
+def tifImportFunction(pImportPath, pExport = False):
+    bild = cv2.imread(pImportPath, flags= -1)
+    bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]) )
+    return bildDaten

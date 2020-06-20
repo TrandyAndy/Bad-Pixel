@@ -89,7 +89,7 @@ def timeTest(pythonFile = "detection", funktionsAufruf = "movingWindow(bildDaten
 def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10):
     xArray = np.linspace(start= startwert, stop= stopwert, num= messpunkte,dtype= np.float) # erstellen von der x-Achse
     yArray = np.zeros((messpunkte),dtype= np.float) # erstellen von der y-Achse
-    hoehe, breite = np.shape(pBild)
+    hoehe, breite = np.shape(pBild[0])
     bpm = np.zeros((hoehe,breite))
     print("Das x-Array: ", xArray, type(xArray))
     print("Das y-Array: ", yArray, type(yArray))
@@ -97,9 +97,11 @@ def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, 
     aktuellerPfad = "Testbilder/" + aktuelleZeit
     os.mkdir(aktuellerPfad)
     for index in range(len(xArray)):
-        bpm = detection.movingWindow(pBild,xArray[index],1000)
+        #bpm = detection.movingWindow(pBild,xArray[index],1000)
+        bpm = detection.advancedMovingWindow(pBild,0,Faktor=xArray[index]) [0]
         print("Aktuelle Messreihe: ", index)
-        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Bildserie1_160kV_70uA", "Moving Window", "Schwellwert Dead-Pixel_" + "{:.3f}".format(round(xArray[index],3))   )
+        #markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Bildserie1_160kV_70uA", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
+        markPixels(bpm, pBild[0], bpmFehlerSchwellert, 1,  aktuellerPfad + "/Bildserie1_160kV_70uA", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
         for z in range(hoehe):
             for s in range(breite):
                 if bpm[z,s] >= bpmFehlerSchwellert:
@@ -108,6 +110,7 @@ def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, 
     print(dataArray)
     #plotData(dataArray,"Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
     #plotDataLog(dataArray,"Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
-    aktuelleZeit = "test"
-    plotData(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
-    plotDataLog(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
+    #aktuelleZeit = "test"
+    np.savetxt(aktuellerPfad + "/messdaten.csv", dataArray, delimiter=";", fmt="%1.3f")
+    plotData(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Advanced Moving Window", "Fensterbreite")
+    plotDataLog(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Advanced Moving Window", "Fensterbreite_")
