@@ -110,7 +110,8 @@ zahlig = 99999999
 # telemetry.markPixels(u,Bilder[0])
 #cv2.imwrite('PictureWithMarks.png', u2 , [cv2.IMWRITE_PNG_COMPRESSION,0])
 
-Bild, BPM0=verpixler.verpixeln(bildDaten[0],190,7,8)
+Bild, BPM0=verpixler.verpixeln(bildDaten[0],190,7,0)
 BPM1=detection.movingWindow(bildDaten[0])
-BPM2=detection.advancedMovingWindow(bildDaten[0])[0]
+BPM2=detection.advancedMovingWindow(bildDaten[0],10,5)[0]
 verpixler.auswertung(BPM1,BPM0)
+verpixler.auswertung(BPM2,BPM0)
