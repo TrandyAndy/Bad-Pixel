@@ -18,18 +18,18 @@ SCHWELLWERT_HOT=            int((2**  cfg.Farbtiefe)*0.95)
 SCHWELLWERT_ALMOST_DEAD=    int((2**  cfg.Farbtiefe)*0.05) 
 SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.01) #untere Grenze
 # Hot Pixel finder:
-def HotPixelFinder(Bild, Nr):
+def HotPixelFinder(D2_Bild):
     Zaehler=0
-    leer, hohe, breite=np.shape(Bild)
+    hohe, breite=np.shape(D2_Bild)
     BPM=np.zeros((hohe,breite))
     for z in range(hohe):
         for s in range(breite):
-            if Bild[Nr,z,s]>=SCHWELLWERT_SUPER_HOT:
+            if D2_Bild[z,s]>=SCHWELLWERT_SUPER_HOT:
                 BPM[z,s]=100
                 Zaehler +=1
-            elif Bild[Nr,z,s]>=SCHWELLWERT_HOT:
-                BPM[z,s]=80
-                Zaehler +=1
+            # elif D2_Bild[z,s]>=SCHWELLWERT_HOT:
+            #     BPM[z,s]=80
+            #     Zaehler +=1
     print("Hot Pixel: " , Zaehler)
     if Zaehler>hohe*breite*0.1: #Break if >10% falsch
         Zaehler=-1
@@ -37,26 +37,28 @@ def HotPixelFinder(Bild, Nr):
     return BPM, Zaehler
 
 # Dead Pixel finder:
-def DeadPixelFinder(Bild, Nr):
+def DeadPixelFinder(D2_Bild):
     Zaehler=0
-    leer, hohe, breite=np.shape(Bild) 
+    leer, hohe, breite=np.shape(D2_Bild) 
     BPM=np.zeros((hohe,breite))
     for z in range(hohe):
         for s in range(breite):
-            if Bild[Nr,z,s]<=SCHWELLWERT_DEAD:
+            if D2_Bild[z,s]<=SCHWELLWERT_DEAD:
                 BPM[z,s]=100
                 Zaehler +=1
-            elif Bild[Nr,z,s]<=SCHWELLWERT_ALMOST_DEAD:
-                BPM[z,s]=80
-                Zaehler +=1
+            # elif D2_Bild[z,s]<=SCHWELLWERT_ALMOST_DEAD:
+            #     BPM[z,s]=80
+            #     Zaehler +=1
     print("Tote Pixel: " , Zaehler)
     if Zaehler>hohe*breite*0.05: #Break if >5% falsch
         Zaehler=-1
         print("zu viele Dead Pixel")
     return BPM, Zaehler
 
-def MultiPicturePixelCompare(Bilder):
-    Bilderanzahl, hohe, breite=np.shape(Bilder) 
+def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
+    SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*GrenzeHot) #obere Genze
+    SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*GrezeDead) #untere Grenz
+    Bilderanzahl, hohe, breite=np.shape(D3_Bilder) 
     print(Bilderanzahl," Bilder prüfen...")
     Bilderanzahl_Dead=Bilderanzahl
     Bilderanzahl_HOT =Bilderanzahl
@@ -67,14 +69,14 @@ def MultiPicturePixelCompare(Bilder):
     for i in range(Bilderanzahl):  
         print("Bild Nr. ",i)
 
-        BPM, Anz_Dead =DeadPixelFinder(Bilder, i) #Check for Black
+        BPM, Anz_Dead =DeadPixelFinder(D3_Bilder[i]) #Check for Black
         if(Anz_Dead>=0):
             BPM_Dead_Durchschnitt +=BPM #Durchschnitt
             BPM_Dead_Alive= BPM_Dead_Alive*BPM #Alive Check
         else:
             Bilderanzahl_Dead -=1
         
-        BPM_HOT, Anz_HOT =HotPixelFinder(Bilder, i) #Check HOT
+        BPM_HOT, Anz_HOT =HotPixelFinder(D3_Bilder[i]) #Check HOT
         if(Anz_HOT>=0):
             BPM_HOT_Durchschnitt +=BPM_HOT
             BPM_HOT_Alive= BPM_HOT_Alive*BPM_HOT

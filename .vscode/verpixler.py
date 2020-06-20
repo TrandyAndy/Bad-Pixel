@@ -72,7 +72,7 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
         print("Digga Dimensionen!")
         return -1
     hoehe, breite = np.shape(BPM_2test)
-    Zaehler=[0,0,0,0] #True Pos, True Neg, False Pos, False Neg
+    Zaehler=[0,0,0,0,0,0] #True Pos, True Neg, False Pos, False Neg, TPR, FPR
     BadPixelAnz=0
     DetectedAnz=0
     for s in range(hoehe):
@@ -94,11 +94,13 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
     FalschErkannt=DetectedAnz/(hoehe*breite-BadPixelAnz)*100
 
     #Plot
+    Zaehler[4]=Zaehler[0]/(Zaehler[0]+Zaehler[3]) #TPR
+    Zaehler[5]=Zaehler[2]/(Zaehler[2]+Zaehler[1]) #FPR
 
-    np.savetxt("Auswertung_"+Namenszusatz+".csv", Zaehler)
+    np.savetxt("Auswertung_"+Namenszusatz+".csv", Zaehler,fmt="%1.3f")
     print("Auswertung: True Pos, True Neg, False Pos, False Neg")
     print(Zaehler)
     print("Nicht Erkannt = ",NichtErkannt," Falsch Erkannt = ",FalschErkannt )
 
-    return Zaehler, NichtErkannt, FalschErkannt
+    return Zaehler, NichtErkannt, FalschErkannt, Zaehler[4:6]
 

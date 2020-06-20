@@ -5,7 +5,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-05-26 20:13:55
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-06-20 23:15:40
+ * @Last Modified time: 2020-06-20 23:36:21
  * @Description: 
  */
  """
@@ -116,7 +116,7 @@ testArray = np.array([ [0, 10, 20],
 """
 Bild, BPM0=verpixler.verpixeln(bildDaten[0],190,7,8)
 BPM1=detection.movingWindow(bildDaten[0])
-BPM2=detection.advancedMovingWindow(bildDaten[0])[0]
+BPM2=detection.advancedMovingWindow(bildDaten[0],10,5)[0]
 verpixler.auswertung(BPM1,BPM0)
 """
 
