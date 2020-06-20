@@ -30,7 +30,7 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1, Bildname="Bildname", Algorithm
 # Bildname: String Name des gespeicherten Bildes
 # Algorithmus: String Verwendeter Suchalgorithmus
 # Parameter: String Modifizierter Parameter     
-def plotData(Daten, Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):    
+def plotData(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):    
     plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
     plt.xlabel(Parameter)
     plt.ylabel('gefunde Fehler')
@@ -39,10 +39,10 @@ def plotData(Daten, Bildname="Bildname", Algorithmus="Suchalgorithmus", Paramete
     plt.grid(True)
     aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
     #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit, bbox_inches='tight', dpi=300)
-    plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_lin", bbox_inches='tight', dpi=300)
+    plt.savefig(Pfadname + Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_lin", bbox_inches='tight', dpi=300)
     #plt.show()
 
-def plotDataLog(Daten, Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):    
+def plotDataLog(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):    
     plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
     plt.xlabel(Parameter)
     plt.ylabel('gefunde Fehler')
@@ -54,7 +54,7 @@ def plotDataLog(Daten, Bildname="Bildname", Algorithmus="Suchalgorithmus", Param
     aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
     print(aktuelleZeit)
     #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit + "_log", bbox_inches='tight', dpi=300)
-    plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_log", bbox_inches='tight', dpi=300)
+    plt.savefig(Pfadname + Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_log", bbox_inches='tight', dpi=300)
     #plt.show()
 
 
@@ -89,19 +89,23 @@ def timeTest(pythonFile = "detection", funktionsAufruf = "movingWindow(bildDaten
 def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10):
     xArray = np.linspace(start= startwert, stop= stopwert, num= messpunkte,dtype= np.float) # erstellen von der x-Achse
     yArray = np.zeros((messpunkte),dtype= np.float) # erstellen von der y-Achse
-    hoehe, breite = np.shape(pBild[0])
+    hoehe, breite = np.shape(pBild)
     bpm = np.zeros((hoehe,breite))
     print("Das x-Array: ", xArray, type(xArray))
     print("Das y-Array: ", yArray, type(yArray))
     aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
     aktuellerPfad = "Testbilder/" + aktuelleZeit
+    aktuellerPfadBilder = aktuellerPfad + "/Bilder/"
     os.mkdir(aktuellerPfad)
+    os.mkdir(aktuellerPfadBilder)
     for index in range(len(xArray)):
-        #bpm = detection.movingWindow(pBild,xArray[index],1000)
-        bpm = detection.advancedMovingWindow(pBild,0,Faktor=xArray[index]) [0]
+        #bpm = detection.movingWindow(pBild,xArray[index],1000)             # Schwellwert unten
+        #bpm = detection.movingWindow(pBild,0,xArray[index])                # Schwellwert oben
+        bpm = detection.movingWindow(pBild,0 + 1 - xArray[index],1+ xArray[index])    # Schwelltwert beide
+        #bpm = detection.advancedMovingWindow(pBild,0,Faktor=xArray[index]) [0]
         print("Aktuelle Messreihe: ", index)
+        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfadBilder + "/Bildserie1_160kV_70uA", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
         #markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Bildserie1_160kV_70uA", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
-        markPixels(bpm, pBild[0], bpmFehlerSchwellert, 1,  aktuellerPfad + "/Bildserie1_160kV_70uA", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
         for z in range(hoehe):
             for s in range(breite):
                 if bpm[z,s] >= bpmFehlerSchwellert:
@@ -112,5 +116,5 @@ def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, 
     #plotDataLog(dataArray,"Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
     #aktuelleZeit = "test"
     np.savetxt(aktuellerPfad + "/messdaten.csv", dataArray, delimiter=";", fmt="%1.3f")
-    plotData(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Advanced Moving Window", "Fensterbreite")
-    plotDataLog(dataArray, aktuellerPfad + "/Bildserie1_160kV_70uA","Advanced Moving Window", "Fensterbreite_")
+    plotData(dataArray, aktuellerPfad + "/", "Bildserie1_160kV_70uA","Moving Window", "Schwellwert")
+    plotDataLog(dataArray, aktuellerPfad + "/", "Bildserie1_160kV_70uA","´Moving Window", "Schwellwert")

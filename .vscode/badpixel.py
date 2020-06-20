@@ -5,7 +5,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-05-26 20:13:55
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-06-20 21:44:34
+ * @Last Modified time: 2020-06-20 22:09:41
  * @Description: 
  */
  """
@@ -25,21 +25,15 @@ import telemetry
 import cProfile 
 import verpixler
 
-def pure_python_version(zahl):
-    print(zahlig)
-    X = np.arange(zahl)
-    Y = np.arange(zahl)
-    return X + Y
-
 
 #detection.test(3)
 #detection.test(config.Bildhoehe)
 
 
 #importPath = "Bildserie4_75kV_20uA.his"
-#importPath = "Bildserie1_160kV_70uA.his"
-importPath = "simulationsbild.tif"
-#bildDaten = imP.hisImportFunction(importPath,False)
+importPath = "Bildserie1_160kV_70uA.his"
+#importPath = "simulationsbild.tif"
+bildDaten = imP.hisImportFunction(importPath,False)
 
 #Beispiel
 #anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
@@ -71,13 +65,12 @@ testArray = np.array([ [0, 10, 20],
                [2, -1, -10]
                ])   # 2D Array mit 3 Spalten und 3 Zeilen  # 2D Array mit 3 Spalten und 3 Zeilen
 #telemetry.plotData(testArray)
-zahlig = 99999999
 #erg = cProfile.run('pure_python_version(zahlig)')
 #cProfile.run('detection.advancedMovingWindow(bildDaten,0)')
 
 #cProfile.run("detection.movingWindow(bildDaten[0])")
 #telemetry.timeTest("telemetry","plotData(testArray)")
-#telemetry.logDetection(bildDaten[0],startwert= 0.5,stopwert=1,messpunkte=101)
+telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=5)
 #telemetry.logDetection(bildDaten, startwert=1, stopwert=10, messpunkte=3) #7
 ###telemetry.logDetection(bildDaten[0],startwert= 0.5,stopwert=1,messpunkte=101)
 #telemetry.timeTest("telemetry","logDetection2(bildDaten[0],startwert= 0,stopwert=1,messpunkte=50)")
@@ -99,7 +92,11 @@ zahlig = 99999999
 #print("{:.3f}".format(5))
 #print("{:.3f}".format(round(10,3)))
 #str(round(xArray[index],3))
-imP.tifImportFunction(importPath)
+
+
+#imP.tifImportFunction(importPath)
+
+
 #Bild erszeugen:
 # importPath = "Bildserie1_160kV_70uA.his"
 # bildDaten = imP.hisImportFunction(importPath,False)
@@ -116,8 +113,9 @@ imP.tifImportFunction(importPath)
 # u=detection.dynamicCheck(Bilder,1.1)[0]
 # telemetry.markPixels(u,Bilder[0])
 #cv2.imwrite('PictureWithMarks.png', u2 , [cv2.IMWRITE_PNG_COMPRESSION,0])
-
+"""
 Bild, BPM0=verpixler.verpixeln(bildDaten[0],190,7,8)
 BPM1=detection.movingWindow(bildDaten[0])
 BPM2=detection.advancedMovingWindow(bildDaten[0])[0]
 verpixler.auswertung(BPM1,BPM0)
+"""
