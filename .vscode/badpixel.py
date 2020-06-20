@@ -5,7 +5,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-05-26 20:13:55
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-06-15 18:03:53
+ * @Last Modified time: 2020-06-20 21:44:34
  * @Description: 
  */
  """
@@ -37,8 +37,9 @@ def pure_python_version(zahl):
 
 
 #importPath = "Bildserie4_75kV_20uA.his"
-importPath = "Bildserie1_160kV_70uA.his"
-bildDaten = imP.hisImportFunction(importPath,False)
+#importPath = "Bildserie1_160kV_70uA.his"
+importPath = "simulationsbild.tif"
+#bildDaten = imP.hisImportFunction(importPath,False)
 
 #Beispiel
 #anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
@@ -76,6 +77,8 @@ zahlig = 99999999
 
 #cProfile.run("detection.movingWindow(bildDaten[0])")
 #telemetry.timeTest("telemetry","plotData(testArray)")
+#telemetry.logDetection(bildDaten[0],startwert= 0.5,stopwert=1,messpunkte=101)
+#telemetry.logDetection(bildDaten, startwert=1, stopwert=10, messpunkte=3) #7
 ###telemetry.logDetection(bildDaten[0],startwert= 0.5,stopwert=1,messpunkte=101)
 #telemetry.timeTest("telemetry","logDetection2(bildDaten[0],startwert= 0,stopwert=1,messpunkte=50)")
 
@@ -93,6 +96,10 @@ zahlig = 99999999
 #telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
 #telemetry.plotData()
 
+#print("{:.3f}".format(5))
+#print("{:.3f}".format(round(10,3)))
+#str(round(xArray[index],3))
+imP.tifImportFunction(importPath)
 #Bild erszeugen:
 # importPath = "Bildserie1_160kV_70uA.his"
 # bildDaten = imP.hisImportFunction(importPath,False)
