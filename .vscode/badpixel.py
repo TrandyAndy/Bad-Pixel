@@ -94,18 +94,23 @@ zahlig = 99999999
 #telemetry.plotData()
 
 #Bild erszeugen:
-importPath = "Bildserie1_160kV_70uA.his"
-bildDaten = imP.hisImportFunction(importPath,False)
-Bilder=bildDaten[0:4]
-importPath = "Bildserie1_160kV_0uA.his"
-bildDaten = imP.hisImportFunction(importPath,False)
-Bilder[1]=bildDaten[0]
+# importPath = "Bildserie1_160kV_70uA.his"
+# bildDaten = imP.hisImportFunction(importPath,False)
+# Bilder=bildDaten[0:4]
+# importPath = "Bildserie1_160kV_0uA.his"
+# bildDaten = imP.hisImportFunction(importPath,False)
+# Bilder[1]=bildDaten[0]
 # importPath = "Bildserie2_160kV_70uA.his"
 # bildDaten = imP.hisImportFunction(importPath,False)
 # Bilder[2]=bildDaten[0]
 # importPath = "Bildserie4_75kV_20uA.his"
 # bildDaten = imP.hisImportFunction(importPath,False)
 # Bilder[3]=bildDaten[0]
-u=detection.dynamicCheck(Bilder,1.1)[0]
-telemetry.markPixels(u,Bilder[0])
+# u=detection.dynamicCheck(Bilder,1.1)[0]
+# telemetry.markPixels(u,Bilder[0])
 #cv2.imwrite('PictureWithMarks.png', u2 , [cv2.IMWRITE_PNG_COMPRESSION,0])
+
+Bild, BPM0=verpixler.verpixeln(bildDaten[0],190,7,8)
+BPM1=detection.movingWindow(bildDaten[0])
+BPM2=detection.advancedMovingWindow(bildDaten[0])[0]
+verpixler.auswertung(BPM1,BPM0)

@@ -73,7 +73,8 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
         return -1
     hoehe, breite = np.shape(BPM_2test)
     Zaehler=[0,0,0,0] #True Pos, True Neg, False Pos, False Neg
-
+    BadPixelAnz=0
+    DetectedAnz=0
     for s in range(hoehe):
         for z in range(breite):
             if(BPM_Original[s,z]>0 and BPM_2test[s,z]>0):
@@ -84,9 +85,11 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
                 Zaehler[2]+=1
             elif (BPM_Original[s,z]==0 and BPM_2test[s,z]>0):
                 Zaehler[3]+=1
+            if BPM_Original[s,z]:
+                BadPixelAnz+=1
+            if BPM_2test[s,z]:
+                DetectedAnz+=1
     
-    BadPixelAnz=leng(BPM_Original)
-    DetectedAnz=leng(BPM_2test)
     NichtErkannt=(1-DetectedAnz/BadPixelAnz)*100 #Prozent
     FalschErkannt=DetectedAnz/(hoehe*breite-BadPixelAnz)*100
 
