@@ -32,6 +32,7 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1, Bildname="Bildname", Algorithm
 # Algorithmus: String Verwendeter Suchalgorithmus
 # Parameter: String Modifizierter Parameter     
 def plotData(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter", xBeschriftung="Parameter", yBeschriftung="gefundene Fehler"):    
+    plt.clf()
     plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
     plt.xlabel(xBeschriftung)
     plt.ylabel(yBeschriftung)
@@ -44,6 +45,7 @@ def plotData(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Su
     #plt.show()
 
 def plotDataLog(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter", xBeschriftung="Parameter", yBeschriftung="gefundene Fehler"):    
+    plt.clf()
     plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
     plt.xlabel(xBeschriftung)
     plt.ylabel(yBeschriftung)
@@ -59,10 +61,13 @@ def plotDataLog(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus=
     #plt.show()
 
 def plotDataAuswertung(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter", xBeschriftung="Parameter", yBeschriftung="gefundene Fehler"):    
+    plt.clf()
     plt.plot(Daten[0], Daten[1], label='richtig gefundene Fehler')
     plt.plot(Daten[0], Daten[1], 'kx') 
     plt.plot(Daten[0], Daten[2], label='falsch gefundene Fehler')
-    plot.plot(Daten[0], Daten[2], 'kx')
+    plt.plot(Daten[0], Daten[2], 'kx')
+    plt.xscale('linear')
+    plt.yscale('linear')
     plt.xlabel(xBeschriftung)
     plt.ylabel(yBeschriftung)
     plt.title(Bildname + " - " + Algorithmus + " - " + Parameter)
@@ -72,6 +77,25 @@ def plotDataAuswertung(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algor
     #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit, bbox_inches='tight', dpi=300)
     plt.savefig(Pfadname + Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_lin", bbox_inches='tight', dpi=300)
     #plt.show()
+
+def plotDataAuswertungLog(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter", xBeschriftung="Parameter", yBeschriftung="gefundene Fehler"):    
+    plt.clf()
+    plt.plot(Daten[0], Daten[1], label='richtig gefundene Fehler')
+    plt.plot(Daten[0], Daten[1], 'kx') 
+    plt.plot(Daten[0], Daten[2], label='falsch gefundene Fehler')
+    plt.plot(Daten[0], Daten[2], 'kx')
+    plt.xscale('linear')
+    plt.yscale('symlog')
+    plt.xlabel(xBeschriftung)
+    plt.ylabel(yBeschriftung)
+    plt.title(Bildname + " - " + Algorithmus + " - " + Parameter)
+    plt.grid(True)
+    plt.legend()
+    aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
+    #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit, bbox_inches='tight', dpi=300)
+    plt.savefig(Pfadname + Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_log", bbox_inches='tight', dpi=300)
+    #plt.show()
+
 
 def drawPlus(colorPicture, zeile, spalte,  hoehe, breite, bgr, wert = 65535,):
     colorPicture[bottom(zeile-2),spalte,bgr] = wert
@@ -103,7 +127,7 @@ def timeTest(pythonFile = "detection", funktionsAufruf = "movingWindow(bildDaten
 
 def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10):
     #Andys Funktion:
-    Bild, BPM0 = verpixler.verpixeln(pBild, 190, 7, 8)
+    Bild, BPM0 = verpixler.verpixeln(pBild, 8000, 4, 0)
     pBild = Bild
     # Andys Funktion Ende
 
@@ -127,25 +151,29 @@ def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, 
         bpm = detection.movingWindow(pBild,0 + 1 - xArray[index],1+ xArray[index])    # Schwelltwert beide
         #bpm = detection.advancedMovingWindow(pBild,0,Faktor=xArray[index]) [0]
         print("Aktuelle Messreihe: ", index)
-        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfadBilder + "/Bildserie1_160kV_70uA", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
+        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfadBilder + "/Simulationsbild", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
 
         ergAuswertung[index] = verpixler.auswertung(bpm,BPM0) [0]
 
-        #markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Bildserie1_160kV_70uA", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
+        #markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Simulationsbild", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
         for z in range(hoehe):
             for s in range(breite):
                 if bpm[z,s] >= bpmFehlerSchwellert:
                     yArray[index] += 1 
     dataArray = np.array([xArray, yArray],dtype= np.float)
     print(dataArray)
-    #plotData(dataArray,"Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
-    #plotDataLog(dataArray,"Bildserie1_160kV_70uA","Moving Window", "Schwellwert Dead-Pixel")
+    #plotData(dataArray,"Simulationsbild","Moving Window", "Schwellwert Dead-Pixel")
+    #plotDataLog(dataArray,"Simulationsbild","Moving Window", "Schwellwert Dead-Pixel")
     np.savetxt(aktuellerPfad + "/messdaten.csv", dataArray, delimiter=";", fmt="%1.3f")
-    plotData(dataArray, aktuellerPfad + "/", "Bildserie1_160kV_70uA","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
-    plotDataLog(dataArray, aktuellerPfad + "/", "Bildserie1_160kV_70uA","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
+
+    np.savetxt(aktuellerPfad + "/Auswertung.csv", ergAuswertung,fmt="%1.3f")
+
+    plotData(dataArray, aktuellerPfad + "/", "Simulationsbild","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
+    plotDataLog(dataArray, aktuellerPfad + "/", "Simulationsbild","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
     print(ergAuswertung)
-    
-    #ergAuswertungPlotten = np.array(  ergAuswertung[:,4:6]   )
-    #ergAuswertungPlotten2 = np.array([xArray,ergAuswertung[:,0], ergAuswertung[:,2]])
-    #plotData(ergAuswertungPlotten, aktuellerPfad + "/", "Bildserie1_160kV_70uA","Moving Window", Parameter="ROC-Kurve" , xBeschriftung="false positive rate", yBeschriftung="true positive rate")
-    #plotDataAuswertung(ergAuswertungPlotten2, aktuellerPfad + "/", "Bildserie1_160kV_70uA","Moving Window", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
+    #ergAuswertungPlotten2 = [ [1, 2, 3, 4 ], [4 ,3 ,2,1 ], [1, 2, 3, 4,] ]
+    ergAuswertungPlotten = np.array( [ ergAuswertung[:,5], ergAuswertung[:,4]  ] )
+    ergAuswertungPlotten2 = np.array([xArray,ergAuswertung[:,0], ergAuswertung[:,3]])   # richtigen Werte und falsch erkanten Werte
+    plotData(ergAuswertungPlotten, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="ROC-Kurve" , xBeschriftung="false positive rate", yBeschriftung="true positive rate")
+    plotDataAuswertungLog(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
+    plotDataAuswertung(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
