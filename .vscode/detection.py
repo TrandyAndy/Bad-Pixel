@@ -184,7 +184,7 @@ def movingWindow(pBild, schwellwertDead = 0.5, schwellwertHot = 1.5):
                 #print("Moving-Windows: Dead-Pixel: ", erg, "Z: ", z, "S: ", s)
                 BPM[z,s] = 100 
             elif(erg >= schwellwertHot):
-                print("Moving-Windows: Hot-Pixel: ", erg, "Z: ", z, "S: ", s)
+                #print("Moving-Windows: Hot-Pixel: ", erg, "Z: ", z, "S: ", s)
                 BPM[z,s] = 100 
     return BPM
 
