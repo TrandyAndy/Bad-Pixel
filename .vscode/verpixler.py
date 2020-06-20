@@ -67,3 +67,35 @@ def cluster (D2_Bild, Durchmesser=8, Anz=1, Dichte=1/3):
         
     return D2_Bild, BPM, Zaehler
 
+def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
+    if np.shape(BPM_2test) != np.shape(BPM_Original):
+        print("Digga Dimensionen!")
+        return -1
+    hoehe, breite = np.shape(BPM_2test)
+    Zaehler=[0,0,0,0] #True Pos, True Neg, False Pos, False Neg
+
+    for s in range(hoehe):
+        for z in range(breite):
+            if(BPM_Original[s,z]>0 and BPM_2test[s,z]>0):
+                Zaehler[0]+=1
+            elif (BPM_Original[s,z]==0 and BPM_2test[s,z]==0):
+                Zaehler[1]+=1
+            elif (BPM_Original[s,z]>0 and BPM_2test[s,z]==0):
+                Zaehler[2]+=1
+            elif (BPM_Original[s,z]==0 and BPM_2test[s,z]>0):
+                Zaehler[3]+=1
+    
+    BadPixelAnz=leng(BPM_Original)
+    DetectedAnz=leng(BPM_2test)
+    NichtErkannt=(1-DetectedAnz/BadPixelAnz)*100 #Prozent
+    FalschErkannt=DetectedAnz/(hoehe*breite-BadPixelAnz)*100
+
+    #Plot
+
+    np.savetxt("Auswertung_"+Namenszusatz+".csv", Zaehler)
+    print("Auswertung: True Pos, True Neg, False Pos, False Neg")
+    print(Zaehler)
+    print("Nicht Erkannt = ",NichtErkannt," Falsch Erkannt = ",FalschErkannt )
+
+    return Zaehler, NichtErkannt, FalschErkannt
+

@@ -84,24 +84,28 @@ zahlig = 99999999
 #anzahlZeilen, anzahlReihen = np.shape(u)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 
-c,j=verpixler.verpixeln(bildDaten[0],190,7,8)
-cv2.imwrite('PictureWithPixels.png', c , [cv2.IMWRITE_PNG_COMPRESSION,0])
-cv2.imwrite('PictureBPM.png', j , [cv2.IMWRITE_PNG_COMPRESSION,0])
+# c,j=verpixler.verpixeln(bildDaten[0],190,7,8)
+# cv2.imwrite('PictureWithPixels.png', c , [cv2.IMWRITE_PNG_COMPRESSION,0])
+# cv2.imwrite('PictureBPM.png', j , [cv2.IMWRITE_PNG_COMPRESSION,0])
 
 #cv2.imwrite('PictureWithCorrection.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
 #telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
 #telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
 #telemetry.plotData()
 
-
-# def Controller(Bilder, Detection=0, Correction=0, sollZahl=1):
-
-#     #Detection aufrufen.
-#     if Detection==1:
-
-#     elif Detection==2:
-
-#     #Correction aufrufen
-
-#     #Rückgabe
-#     return Bild, BPM, Pixelanzahl
+#Bild erszeugen:
+importPath = "Bildserie1_160kV_70uA.his"
+bildDaten = imP.hisImportFunction(importPath,False)
+Bilder=bildDaten[0:4]
+importPath = "Bildserie1_160kV_0uA.his"
+bildDaten = imP.hisImportFunction(importPath,False)
+Bilder[1]=bildDaten[0]
+# importPath = "Bildserie2_160kV_70uA.his"
+# bildDaten = imP.hisImportFunction(importPath,False)
+# Bilder[2]=bildDaten[0]
+# importPath = "Bildserie4_75kV_20uA.his"
+# bildDaten = imP.hisImportFunction(importPath,False)
+# Bilder[3]=bildDaten[0]
+u=detection.dynamicCheck(Bilder,1.1)[0]
+telemetry.markPixels(u,Bilder[0])
+#cv2.imwrite('PictureWithMarks.png', u2 , [cv2.IMWRITE_PNG_COMPRESSION,0])
