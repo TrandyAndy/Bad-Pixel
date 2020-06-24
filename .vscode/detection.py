@@ -31,15 +31,18 @@ def HotPixelFinder(D2_Bild):
             #     BPM[z,s]=80
             #     Zaehler +=1
     print("Hot Pixel: " , Zaehler)
+    """
     if Zaehler>hohe*breite*0.1: #Break if >10% falsch
         Zaehler=-1
         print("Überbelichtet")
+    """    
     return BPM, Zaehler
 
 # Dead Pixel finder:
 def DeadPixelFinder(D2_Bild):
     Zaehler=0
-    leer, hohe, breite=np.shape(D2_Bild) 
+    #leer, hohe, breite=np.shape(D2_Bild) 
+    hohe, breite=np.shape(D2_Bild) 
     BPM=np.zeros((hohe,breite))
     for z in range(hohe):
         for s in range(breite):
@@ -57,7 +60,7 @@ def DeadPixelFinder(D2_Bild):
 
 def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*GrenzeHot) #obere Genze
-    SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*GrezeDead) #untere Grenz
+    SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*GrenzeDead) #untere Grenz
     Bilderanzahl, hohe, breite=np.shape(D3_Bilder) 
     print(Bilderanzahl," Bilder prüfen...")
     Bilderanzahl_Dead=Bilderanzahl
@@ -184,7 +187,7 @@ def movingWindow(pBild, schwellwertDead = 0.5, schwellwertHot = 1.5):
                 erg = pBild[z,s] / durchschnittswert
             
             if(erg <= schwellwertDead):
-                #print("Moving-Windows: Dead-Pixel: ", erg, "Z: ", z, "S: ", s)
+                print("Moving-Windows: Dead-Pixel: ", erg, "Z: ", z, "S: ", s)
                 BPM[z,s] = 100 
             elif(erg >= schwellwertHot):
                 #print("Moving-Windows: Hot-Pixel: ", erg, "Z: ", z, "S: ", s)
