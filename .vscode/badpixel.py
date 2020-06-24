@@ -123,6 +123,11 @@ BPM2=detection.advancedMovingWindow(bildDaten[0],10,5)[0]
 verpixler.auswertung(BPM1,BPM0)
 """
 
+A,B,X,Anzahl=verpixler.Julian(bildDaten[0],bildDaten[1])
+cv2.imshow('Hell',A)
+cv2.imshow('Dunkel',B)
+cv2.waitKey()
+cv2.destroyAllWindows()
 
 
 #telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=0.999,messpunkte=50)
@@ -152,3 +157,4 @@ print(ergMeanImage)
 # print(type(meanImage))
 
 telemetry.logDetectionOld(bildDaten[0],startwert= 3,stopwert=5,messpunkte=2)
+#telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=2)
