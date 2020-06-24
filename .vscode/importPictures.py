@@ -4,7 +4,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-06-20 21:41:01
+ * @Last Modified time: 2020-06-21 00:53:41
  * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren, To-Do: Datei in OpenCV Format importieren
  */
  """
@@ -94,5 +94,10 @@ def hisImportFunction(pImportPath, pExport = False):                        # Fu
 
 def tifImportFunction(pImportPath, pExport = False):
     bild = cv2.imread(pImportPath, flags= -1)
-    bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]) )
+    bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
+    bildDaten[0] = bild
+    #cv2.imshow('image', bildDaten[0])
+    #cv2.waitKey()
+    #cv2.destroyAllWindows()
     return bildDaten
+ 

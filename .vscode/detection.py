@@ -178,7 +178,10 @@ def movingWindow(pBild, schwellwertDead = 0.5, schwellwertHot = 1.5):
                 durchschnittswert += pBild[z+1, s]
                 durchschnittswert += pBild[z+1, s+1]
                 durchschnittswert = durchschnittswert / 8
-            erg = pBild[z,s] / durchschnittswert
+            if (durchschnittswert == 0):
+                erg = pBild[z,s] / 0.00001
+            else:    
+                erg = pBild[z,s] / durchschnittswert
             
             if(erg <= schwellwertDead):
                 #print("Moving-Windows: Dead-Pixel: ", erg, "Z: ", z, "S: ", s)

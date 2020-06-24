@@ -5,7 +5,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-05-26 20:13:55
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-06-20 23:36:21
+ * @Last Modified time: 2020-06-21 01:32:30
  * @Description: 
  */
  """
@@ -29,11 +29,12 @@ import verpixler
 #detection.test(3)
 #detection.test(config.Bildhoehe)
 
-
 #importPath = "Bildserie4_75kV_20uA.his"
-importPath = "Bildserie1_160kV_70uA.his"
-#importPath = "simulationsbild.tif"
-bildDaten = imP.hisImportFunction(importPath,False)
+#importPath = "Bildserie1_160kV_70uA.his"
+importPath = "simulationsbild.tif"
+#bildDaten = imP.hisImportFunction(importPath,False)
+
+bildDaten = imP.tifImportFunction(importPath)
 
 #Beispiel
 #anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
@@ -94,7 +95,7 @@ testArray = np.array([ [0, 10, 20],
 #str(round(xArray[index],3))
 
 
-#imP.tifImportFunction(importPath)
+
 
 
 #Bild erszeugen:
