@@ -56,7 +56,7 @@ def hisImportFunction2(pImportPath, pExport = False):                        # F
     return im
 
 
-def hisImportFunction(pImportPath, pExport = False):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
+def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
     pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
     print("\n\n*************************************************************")
     print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
@@ -89,15 +89,39 @@ def hisImportFunction(pImportPath, pExport = False):                        # Fu
             cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird              
     if pExport == True:
         cv2.destroyAllWindows()                                                 # Alle Fenster schließen    
+    
+    if pMittelwert == True:
+        meanImage = np.zeros([rows,cols],dtype=np.uint32)
+        #print(meanImage)
+        #print(np.size(bildDaten))
+        #print(np.shape(meanImage))
+        #print(np.shape(bildDaten)[0])
+        for index in range(np.shape(bildDaten)[0]):     # Anzahl der Bilddateien
+            meanImage = meanImage + bildDaten[index]
+        meanImage = meanImage / np.shape(bildDaten)[0]
+        ergMeanImage = np.array(meanImage, dtype=np.uint16)
+        #print(ergMeanImage)
+
+        
+        cv2.imshow("Mittelwert",ergMeanImage)
+        cv2.imwrite(pathWithoutExtension+ "_mittelwert.png",ergMeanImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+        print("Ihre Datei wurden unter", pathWithoutExtension + "_mittelwert.png gespeichert")
+        cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird              
     fd.close()                                                              # File schließen
     return bildDaten
 
-def tifImportFunction(pImportPath, pExport = False):
+def importFunction(pImportPath, pExport = False):
     bild = cv2.imread(pImportPath, flags= -1)
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
     bildDaten[0] = bild
     #cv2.imshow('image', bildDaten[0])
     #cv2.waitKey()
     #cv2.destroyAllWindows()
+    if pExport == True:
+        cv2.imshow('image', bild)                                             # Array als Bild anzeigen
+        cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+        cv2.waitKey()
+        cv2.destroyAllWindows()      
     return bildDaten
+ 
  

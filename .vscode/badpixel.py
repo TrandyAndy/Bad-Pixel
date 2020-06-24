@@ -9,8 +9,6 @@
  * @Description: 
  */
  """
-
-
          
 #import matplotlib.pyplot as plt
 import numpy as np
@@ -28,7 +26,9 @@ import verpixler
 
 #detection.test(3)
 #detection.test(config.Bildhoehe)
-
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 1/Bildserie1_160kV_0uA.his"
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 1/Bildserie1_160kV_70uA.his"
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 3/Bildserie3_160kV_69uA.his"
 #importPath = "Bildserie4_75kV_20uA.his"
 importPath = "Bildserie3_160kV_0uA.his"
 #importPath = "dark_image_10_percent_rauschen.png"
@@ -134,4 +134,32 @@ cv2.imshow('Dunkel',B)
 cv2.waitKey()
 cv2.destroyAllWindows() """
 
+
+#telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=0.999,messpunkte=50)
+#telemetry.logDetectionOld(bildDaten[0],startwert=0,stopwert=0.5,messpunkte=6)
+"""
+print(bildDaten[0,436,472])
+
+print(np.size(bildDaten))
+
+meanImage = np.zeros([512,512],dtype=np.uint32)
+print(meanImage)
+print(np.size(bildDaten))
+print(np.shape(meanImage))
+print(np.shape(bildDaten)[0])
+
+for index in range(np.shape(bildDaten)[0]):
+    meanImage = meanImage + bildDaten[index]
+meanImage = meanImage / np.shape(bildDaten)[0]
+ergMeanImage = np.array(meanImage, dtype=np.uint16)
+print(ergMeanImage)
+
+"""
+# meanImage = meanImage + bildDaten[0] + bildDaten[1]
+
+# meanImage = np.add(bildDaten[0], bildDaten[1])
+# print(meanImage)
+# print(type(meanImage))
+
+telemetry.logDetectionOld(bildDaten[0],startwert= 3,stopwert=5,messpunkte=2)
 #telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=2)
