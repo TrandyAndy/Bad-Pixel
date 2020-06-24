@@ -103,10 +103,22 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
     else:
         Zaehler[5]=Zaehler[2]/(Zaehler[2]+Zaehler[1]) #FPR
 
-    np.savetxt("Auswertung_"+Namenszusatz+".csv", Zaehler,fmt="%1.3f")
+    #np.savetxt("Auswertung_"+Namenszusatz+".csv", Zaehler,fmt="%1.3f")
     print("Auswertung: True Pos, True Neg, False Pos, False Neg")
     print(Zaehler)
     print("Nicht Erkannt = ",NichtErkannt," Falsch Erkannt = ",FalschErkannt )
 
     return Zaehler, NichtErkannt, FalschErkannt, Zaehler[4:6]
 
+def Julian(Hell, Dunkel):
+    hoehe, breite = np.shape(Hell)
+    SchwarzBild=np.zeros((hoehe,breite))
+    Zaehler=0
+    Fehler,BPM=verpixeln(SchwarzBild,lineEnable=3,Cluster=3, minAbweichung=1)
+    for s in range(hoehe):
+            for z in range(breite):
+                if (BPM[s,z]>0):
+                    Hell[s,z]=Fehler[s,z]
+                    Dunkel[s,z]=Fehler[s,z]
+                    Zaehler+=1
+    return Hell, Dunkel, BPM, Zaehler
