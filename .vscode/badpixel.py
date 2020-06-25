@@ -30,6 +30,11 @@ import verpixler
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 1/Bildserie1_160kV_70uA.his"
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA_mittelwert.png"
 #importPath = "Bildserie4_75kV_20uA.his"
+#importPath = "Bildserie3_160kV_0uA.his"
+importPath = "dark_image_10_percent_rauschen.png"
+importPathB = "light_image_90_percent_rauschen.png"
+importPathC = "Dunkelbild_Verpixelt.png"
+#bildDaten = imP.hisImportFunction(importPath,False)
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
 #
 # 
@@ -60,8 +65,9 @@ BPM0_example = imP.importFunction(importPathBPM0)
 #importPathB = "light_image_90_percent_rauschen.png"
 #bildDaten = imP.hisImportFunction(importPath,False)
 
-#bildDaten = imP.tifImportFunction(importPath)
-#bildDatenB = imP.tifImportFunction(importPathB)
+bildDaten = imP.importFunction(importPath)
+bildDatenB = imP.importFunction(importPathB)
+bildDatenC = imP.importFunction(importPathC)
 
 #Beispiel
 #anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
@@ -141,9 +147,9 @@ testArray = np.array([ [0, 10, 20],
 # importPath = "Bildserie4_75kV_20uA.his"
 # bildDaten = imP.hisImportFunction(importPath,False)
 # Bilder[3]=bildDaten[0]
-# u=detection.dynamicCheck(Bilder,1.1)[0]
-# telemetry.markPixels(u,Bilder[0])
-#cv2.imwrite('PictureWithMarks.png', u2 , [cv2.IMWRITE_PNG_COMPRESSION,0])
+# u=detection.dynamicCheck(Bilder,1.04)[0]
+# telemetry.markPixels(u,Bilder[3])
+# cv2.imwrite('PictureWithMarks.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
 """
 Bild, BPM0=verpixler.verpixeln(bildDaten[0],190,7,8)
 BPM1=detection.movingWindow(bildDaten[0])
@@ -158,9 +164,11 @@ cv2.waitKey()
 cv2.destroyAllWindows()
 """
 
-""" A,B,X,Anzahl=verpixler.Julian(bildDatenB[0],bildDaten[0])
+""" A,B,C,BPM,Anzahl=verpixler.Julian(bildDatenB[0],bildDaten[0],bildDatenC[0])
 cv2.imwrite('HellBild_Verpixelt.png', A , [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite('Dunkelbild_Verpixelt.png', B , [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite('Simbild_Verpixelt.png', C , [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite('BMP_0.png', BPM , [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imshow('Hell',A)
 cv2.imshow('Dunkel',B)
 cv2.waitKey()

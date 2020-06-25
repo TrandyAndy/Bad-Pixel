@@ -110,7 +110,7 @@ def auswertung(BPM_2test, BPM_Original, Namenszusatz='0'):
 
     return Zaehler, NichtErkannt, FalschErkannt, Zaehler[4:6]
 
-def Julian(Hell, Dunkel):
+def Julian(Hell, Dunkel, Noch_eins):
     hoehe, breite = np.shape(Hell)
     SchwarzBild=np.zeros((hoehe,breite))
     Zaehler=0
@@ -120,5 +120,6 @@ def Julian(Hell, Dunkel):
                 if (BPM[s,z]>0):
                     Hell[s,z]=Fehler[s,z]
                     Dunkel[s,z]=Fehler[s,z]
+                    Noch_eins[s,z]=Fehler[s,z]
                     Zaehler+=1
-    return Hell, Dunkel, BPM, Zaehler
+    return Hell, Dunkel, Noch_eins, BPM, Zaehler
