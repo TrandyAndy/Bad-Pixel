@@ -42,6 +42,8 @@ def plotData(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Su
     plt.grid(True)
     aktuelleZeit = str(datetime.now())[:-7].replace(":","-") # aktuelle Zeit mit Datum und Uhrzeit
     #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit, bbox_inches='tight', dpi=300)
+    #plt.savefig(Pfadname + Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_lin", bbox_inches='tight', dpi=300)
+    #plt.savefig("plotbild", bbox_inches='tight', dpi=300)
     plt.savefig(Pfadname + Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_lin", bbox_inches='tight', dpi=300)
     #plt.show()
 
@@ -148,11 +150,13 @@ def timeTest(pythonFile = "detection", funktionsAufruf = "movingWindow(bildDaten
     cProfile.run(pythonFile + "." + funktionsAufruf)
 
 
-def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10):
+def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10, BPM0 = 0):
     #Andys Funktion:
-    Bild, BPM0 = verpixler.verpixeln(pBild, 8000, 4, 0)
-    pBild = Bild
+    #Bild, BPM0 = verpixler.verpixeln(pBild, 8000, 4, 0)
+    #pBild = Bild
     # Andys Funktion Ende
+    Bild3D = pBild
+    pBild = pBild[0]
 
     xArray = np.linspace(start= startwert, stop= stopwert, num= messpunkte,dtype= np.float) # erstellen von der x-Achse
     yArray = np.zeros((messpunkte),dtype= np.float) # erstellen von der y-Achse
@@ -171,11 +175,12 @@ def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, 
     for index in range(len(xArray)):
         #bpm = detection.movingWindow(pBild,xArray[index],1000)             # Schwellwert unten
         #bpm = detection.movingWindow(pBild,0,xArray[index])                # Schwellwert oben
-        #bpm = detection.movingWindow(pBild,0 + 1 - xArray[index],1+ xArray[index])    # Schwelltwert beide
-        #bpm = detection.advancedMovingWindow(pBild,0,Faktor=xArray[index]) [0]
+        #bpm = detection.movingWindow(pBild,1 - xArray[index],1 + xArray[index])    # Schwelltwert beide
+        #bpm = detection.advancedMovingWindow(pBild,10,Faktor=xArray[index]) [0]
         
+        bpm = detection.MultiPicturePixelCompare(Bild3D, 1-xArray[index],0+xArray[index]) [0]
         print("Aktuelle Messreihe: ", index)
-        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfadBilder + "/Simulationsbild", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
+        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfadBilder + "/Simulationsbild Bauteil", "Moving Window Advance", "Schwellwert_" + "{:.3f}".format(round(xArray[index],3))   )
 
         ergAuswertung[index] = verpixler.auswertung(bpm,BPM0) [0]
 
@@ -192,15 +197,15 @@ def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, 
 
     np.savetxt(aktuellerPfad + "/Auswertung.csv", ergAuswertung,fmt="%1.3f")
 
-    plotData(dataArray, aktuellerPfad + "/", "Simulationsbild","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
-    plotDataLog(dataArray, aktuellerPfad + "/", "Simulationsbild","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
+    plotData(dataArray, aktuellerPfad + "/", "Simulationsbild Bauteil","Moving Window Advance", "Schwellwert", xBeschriftung="Schwellwert")
+    plotDataLog(dataArray, aktuellerPfad + "/", "Simulationsbild Bauteil","Moving Window Advance", "Schwellwert", xBeschriftung="Schwellwert")
     print(ergAuswertung)
     #ergAuswertungPlotten2 = [ [1, 2, 3, 4 ], [4 ,3 ,2,1 ], [1, 2, 3, 4,] ]
     ergAuswertungPlotten = np.array( [ ergAuswertung[:,5], ergAuswertung[:,4]  ] )
     ergAuswertungPlotten2 = np.array([xArray,ergAuswertung[:,0], ergAuswertung[:,3]])   # richtigen Werte und falsch erkanten Werte
-    plotData(ergAuswertungPlotten, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="ROC-Kurve" , xBeschriftung="false positive rate", yBeschriftung="true positive rate")
-    plotDataAuswertungLog(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
-    plotDataAuswertung(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
+    plotData(ergAuswertungPlotten, aktuellerPfad + "/", "Simulationsbild Bauteil","Moving Window Advance", Parameter="ROC-Kurve" , xBeschriftung="false positive rate", yBeschriftung="true positive rate")
+    plotDataAuswertungLog(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild Bauteil","Moving Window Advance", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
+    plotDataAuswertung(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild Bauteil","Moving Window Advance", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
 
 
 def logDetectionOld(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10):
@@ -229,15 +234,15 @@ def logDetectionOld(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 
     for index in range(len(xArray)):
         #bpm = detection.movingWindow(pBild,xArray[index],1000)             # Schwellwert unten
         #bpm = detection.movingWindow(pBild,0,xArray[index])                # Schwellwert oben
-        #bpm = detection.movingWindow(pBild,0 + 1 - xArray[index],1+ xArray[index])    # Schwelltwert beide
-        bpm = detection.advancedMovingWindow(pBild,Fensterbreite=xArray[index], Faktor=3) [0]
+        bpm = detection.movingWindow(pBild,0 + 1 - xArray[index],1+ xArray[index])    # Schwelltwert beide
+        #bpm = detection.advancedMovingWindow(pBild,Fensterbreite=12, Faktor=xArray[index]) [0]
         print("Aktuelle Messreihe: ", index)
         #bpm = detection.MultiPicturePixelCompare(fullBild, 1-xArray[index],0+xArray[index])[0]
-        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfadBilder + "/Simulationsbild", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
+        markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfadBilder + "/Bildserie2_160kV_70uA_mittelwert", "Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
 
         #ergAuswertung[index] = verpixler.auswertung(bpm,BPM0) [0]
 
-        #markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Simulationsbild", "Advanced Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
+        #markPixels(bpm, pBild, bpmFehlerSchwellert, 1,  aktuellerPfad + "/Simulationsbild", "Moving Window", "Fensterbreite_" + "{:.3f}".format(round(xArray[index],3))   )
         for z in range(hoehe):
             for s in range(breite):
                 if bpm[z,s] >= bpmFehlerSchwellert:
@@ -249,9 +254,8 @@ def logDetectionOld(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 
     np.savetxt(aktuellerPfad + "/messdaten.csv", dataArray, delimiter=";", fmt="%1.3f")
 
     #np.savetxt(aktuellerPfad + "/Auswertung.csv", ergAuswertung,fmt="%1.3f")
-
-    plotData(dataArray, aktuellerPfad + "/", "Simulationsbild","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
-    plotDataLog(dataArray, aktuellerPfad + "/", "Simulationsbild","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
+    plotData(dataArray, aktuellerPfad + "/", "Bildserie2_160kV_70uA_mittelwert","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
+    plotDataLog(dataArray, aktuellerPfad + "/", "Bildserie2_160kV_70uA_mittelwert","Moving Window", "Schwellwert", xBeschriftung="Schwellwert")
     #print(ergAuswertung)
     #ergAuswertungPlotten2 = [ [1, 2, 3, 4 ], [4 ,3 ,2,1 ], [1, 2, 3, 4,] ]
     #ergAuswertungPlotten = np.array( [ ergAuswertung[:,5], ergAuswertung[:,4]  ] )
