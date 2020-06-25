@@ -28,7 +28,7 @@ import verpixler
 #detection.test(config.Bildhoehe)
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 1/Bildserie1_160kV_0uA.his"
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 1/Bildserie1_160kV_70uA.his"
-importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA_mittelwert.png"
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA_mittelwert.png"
 #importPath = "Bildserie4_75kV_20uA.his"
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
 #
@@ -40,10 +40,10 @@ importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronisc
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA_mittelwert.png"
 
 
-#importPath = "SimBilder/Dunkelbild_Verpixelt.png"
+importPath = "SimBilder/Dunkelbild_Verpixelt.png"
 #importPath = "SimBilder/HellBild_Verpixelt.png"
 #importPath = "SimBilder/Simbild_Verpixelt.png"
-#importPathBPM0 = "BMP_0.png"
+importPathBPM0 = "BMP_0.png"
 
 #importPath = "Bildserie1_160kV_70uA.his"
 #importPath =  "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Simulationsbilder/dark_image_10_percent_rauschen.png"
@@ -54,11 +54,11 @@ importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronisc
 #bildDaten = imP.hisImportFunction(importPath)
 
 bildDaten = imP.importFunction(importPath)
-#BPM0 = imP.importFunction(importPathBPM0)
-importPath = "Bildserie3_160kV_0uA.his"
+BPM0_example = imP.importFunction(importPathBPM0)
+#importPath = "Bildserie3_160kV_0uA.his"
 #importPath = "dark_image_10_percent_rauschen.png"
 #importPathB = "light_image_90_percent_rauschen.png"
-bildDaten = imP.hisImportFunction(importPath,False)
+#bildDaten = imP.hisImportFunction(importPath,False)
 
 #bildDaten = imP.tifImportFunction(importPath)
 #bildDatenB = imP.tifImportFunction(importPathB)
@@ -75,14 +75,14 @@ testImage=np.array([ [[0, 65535], [121, 65535]],
 
 
 #ab hier Quasi die main:
-k,u=detection.MultiPicturePixelCompare(bildDaten[0:30:3],0.90)
+#k,u=detection.MultiPicturePixelCompare(bildDaten[0:30:3],0.90)
 #k=detection.advancedMovingWindow(bildDaten[1],Faktor=4)[0]
 #k=detection.advancedMovingWindow(bildDaten[9],Faktor=4)[0]
 #anzahlZeilen, anzahlReihen = np.shape(k)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
-telemetry.markPixels( k, bildDaten[0], 50, Bildname='A') 
+#telemetry.markPixels( k, bildDaten[0], 50, Bildname='A') 
 # k=detection.MultiPicturePixelCompare(bildDaten[30:35],1)[0]
-telemetry.markPixels( u, bildDaten[0], 50, Bildname='B') 
+#telemetry.markPixels( u, bildDaten[0], 50, Bildname='B') 
 
 #mP.markPixels( detection.MultiPicturePixelCompare(bildDaten[0:9])[0], bildDaten[0], 50) 
 #mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
@@ -193,7 +193,7 @@ print(ergMeanImage)
 # print(meanImage)
 # print(type(meanImage))
 
-telemetry.logDetectionOld(bildDaten[0],startwert= 0,stopwert=1,messpunkte=11)
-#telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=2)
+#telemetry.logDetectionOld(bildDaten[0],startwert= 0,stopwert=1,messpunkte=11)
+telemetry.logDetection(bildDaten,startwert= 0,stopwert=1,messpunkte=2, BPM0=BPM0_example[0])
 
 #telemetry.logDetection(bildDaten,bpmFehlerSchwellert= 50, startwert= 0.00, stopwert= 0.12, messpunkte=7, BPM0=BPM0[0])
