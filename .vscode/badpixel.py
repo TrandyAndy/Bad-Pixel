@@ -28,13 +28,42 @@ import verpixler
 #detection.test(config.Bildhoehe)
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 1/Bildserie1_160kV_0uA.his"
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 1/Bildserie1_160kV_70uA.his"
-#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel/Serie 3/Bildserie3_160kV_69uA.his"
+importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA_mittelwert.png"
 #importPath = "Bildserie4_75kV_20uA.his"
 #importPath = "Bildserie3_160kV_0uA.his"
 importPath = "dark_image_10_percent_rauschen.png"
 importPathB = "light_image_90_percent_rauschen.png"
 importPathC = "Dunkelbild_Verpixelt.png"
 #bildDaten = imP.hisImportFunction(importPath,False)
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie4/Bildserie4_75kV_20uA.his"
+#
+# 
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA.his"
+
+
+
+#importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA_mittelwert.png"
+
+
+#importPath = "SimBilder/Dunkelbild_Verpixelt.png"
+#importPath = "SimBilder/HellBild_Verpixelt.png"
+#importPath = "SimBilder/Simbild_Verpixelt.png"
+#importPathBPM0 = "BMP_0.png"
+
+#importPath = "Bildserie1_160kV_70uA.his"
+#importPath =  "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Simulationsbilder/dark_image_10_percent_rauschen.png"
+#importPath = "simulationsbild.tif"
+#bildDaten = imP.importFunction(importPath,True)
+#bildDaten = imP.importFunction(importPath, True)
+
+#bildDaten = imP.hisImportFunction(importPath)
+
+bildDaten = imP.importFunction(importPath)
+#BPM0 = imP.importFunction(importPathBPM0)
+importPath = "Bildserie3_160kV_0uA.his"
+#importPath = "dark_image_10_percent_rauschen.png"
+#importPathB = "light_image_90_percent_rauschen.png"
+bildDaten = imP.hisImportFunction(importPath,False)
 
 bildDaten = imP.importFunction(importPath)
 bildDatenB = imP.importFunction(importPathB)
@@ -127,6 +156,13 @@ BPM1=detection.movingWindow(bildDaten[0])
 BPM2=detection.advancedMovingWindow(bildDaten[0],10,5)[0]
 verpixler.auswertung(BPM1,BPM0)
 """
+"""
+A,B,X,Anzahl=verpixler.Julian(bildDaten[0],bildDaten[1])
+cv2.imshow('Hell',A)
+cv2.imshow('Dunkel',B)
+cv2.waitKey()
+cv2.destroyAllWindows()
+"""
 
 """ A,B,C,BPM,Anzahl=verpixler.Julian(bildDatenB[0],bildDaten[0],bildDatenC[0])
 cv2.imwrite('HellBild_Verpixelt.png', A , [cv2.IMWRITE_PNG_COMPRESSION,0])
@@ -165,5 +201,7 @@ print(ergMeanImage)
 # print(meanImage)
 # print(type(meanImage))
 
-#telemetry.logDetectionOld(bildDaten[0],startwert= 3,stopwert=5,messpunkte=2)
+telemetry.logDetectionOld(bildDaten[0],startwert= 0,stopwert=1,messpunkte=11)
 #telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=2)
+
+#telemetry.logDetection(bildDaten,bpmFehlerSchwellert= 50, startwert= 0.00, stopwert= 0.12, messpunkte=7, BPM0=BPM0[0])
