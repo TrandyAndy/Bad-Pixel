@@ -13,9 +13,9 @@ import config as cfg
 import numpy as np
 import math
 
+global SCHWELLWERT_SUPER_HOT
+global SCHWELLWERT_DEAD
 SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*0.99)  #obere Genze
-SCHWELLWERT_HOT=            int((2**  cfg.Farbtiefe)*0.95)
-SCHWELLWERT_ALMOST_DEAD=    int((2**  cfg.Farbtiefe)*0.05) 
 SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.01) #untere Grenze
 # Hot Pixel finder:
 def HotPixelFinder(D2_Bild):
@@ -58,6 +58,8 @@ def DeadPixelFinder(D2_Bild):
     return BPM, Zaehler
 
 def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
+    global SCHWELLWERT_SUPER_HOT
+    global SCHWELLWERT_DEAD
     SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*GrenzeHot) #obere Genze
     SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*GrenzeDead) #untere Grenz
     Bilderanzahl, hohe, breite=np.shape(D3_Bilder) 
@@ -205,7 +207,7 @@ def bottom(x):
     else:
         return x
 
-def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3
+def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
     hoehe, breite = np.shape(D2_Bild)
     BPM=np.zeros((hoehe,breite))
     quadrat=int(Fensterbreite/2) #+1
@@ -226,7 +228,7 @@ def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
     return BPM ,Zaehler
 
-def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle und Dunkle!) , Faktor ist Schwellwert für Erkennung.
+def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle und Dunkle!) , Faktor ist Schwellwert für Erkennung. 1.03-1.2
     Anz, hoehe, breite = np.shape(D3_Bilder)
     BPM=np.zeros((hoehe,breite))
     Zaehler=0
