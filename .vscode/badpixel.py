@@ -55,6 +55,13 @@ importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronisc
 
 bildDaten = imP.importFunction(importPath)
 #BPM0 = imP.importFunction(importPathBPM0)
+importPath = "Bildserie3_160kV_0uA.his"
+#importPath = "dark_image_10_percent_rauschen.png"
+#importPathB = "light_image_90_percent_rauschen.png"
+bildDaten = imP.hisImportFunction(importPath,False)
+
+#bildDaten = imP.tifImportFunction(importPath)
+#bildDatenB = imP.tifImportFunction(importPathB)
 
 #Beispiel
 #anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
@@ -68,11 +75,14 @@ testImage=np.array([ [[0, 65535], [121, 65535]],
 
 
 #ab hier Quasi die main:
-#k=detection.MultiPicturePixelCompare(bildDaten[0:2])[0]
+k,u=detection.MultiPicturePixelCompare(bildDaten[0:30:3],0.90)
+#k=detection.advancedMovingWindow(bildDaten[1],Faktor=4)[0]
+#k=detection.advancedMovingWindow(bildDaten[9],Faktor=4)[0]
 #anzahlZeilen, anzahlReihen = np.shape(k)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
-#telemetry.markPixels( k, bildDaten[0], 50) 
-
+telemetry.markPixels( k, bildDaten[0], 50, Bildname='A') 
+# k=detection.MultiPicturePixelCompare(bildDaten[30:35],1)[0]
+telemetry.markPixels( u, bildDaten[0], 50, Bildname='B') 
 
 #mP.markPixels( detection.MultiPicturePixelCompare(bildDaten[0:9])[0], bildDaten[0], 50) 
 #mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
@@ -102,8 +112,8 @@ testArray = np.array([ [0, 10, 20],
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 
 # c,j=verpixler.verpixeln(bildDaten[0],190,7,8)
-# cv2.imwrite('PictureWithPixels.png', c , [cv2.IMWRITE_PNG_COMPRESSION,0])
-# cv2.imwrite('PictureBPM.png', j , [cv2.IMWRITE_PNG_COMPRESSION,0])
+#cv2.imwrite('PictureWithPixels.png', c , [cv2.IMWRITE_PNG_COMPRESSION,0])
+#cv2.imwrite('PictureBPM.png', j , [cv2.IMWRITE_PNG_COMPRESSION,0])
 
 #cv2.imwrite('PictureWithCorrection.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
 #telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
@@ -147,6 +157,15 @@ cv2.imshow('Dunkel',B)
 cv2.waitKey()
 cv2.destroyAllWindows()
 """
+
+""" A,B,X,Anzahl=verpixler.Julian(bildDatenB[0],bildDaten[0])
+cv2.imwrite('HellBild_Verpixelt.png', A , [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite('Dunkelbild_Verpixelt.png', B , [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imshow('Hell',A)
+cv2.imshow('Dunkel',B)
+cv2.waitKey()
+cv2.destroyAllWindows() """
+
 
 #telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=0.999,messpunkte=50)
 #telemetry.logDetectionOld(bildDaten[0],startwert=0,stopwert=0.5,messpunkte=6)

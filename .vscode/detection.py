@@ -41,7 +41,6 @@ def HotPixelFinder(D2_Bild):
 # Dead Pixel finder:
 def DeadPixelFinder(D2_Bild):
     Zaehler=0
-    #leer, hohe, breite=np.shape(D2_Bild) 
     hohe, breite=np.shape(D2_Bild) 
     BPM=np.zeros((hohe,breite))
     for z in range(hohe):
