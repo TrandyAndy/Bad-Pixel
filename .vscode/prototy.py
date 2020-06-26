@@ -81,8 +81,8 @@ testImage=np.array([ [[0, 65535], [121, 65535]],
 
 
 #ab hier Quasi die main:
-k,u=detection.MultiPicturePixelCompare(bildDaten[0:30:3],0.60)
-k2=detection.advancedMovingWindow(bildDaten[1],12,Faktor=3)[0]
+k,u=detection.MultiPicturePixelCompare(bildDaten[0:30:3],0.50)
+k2=detection.advancedMovingWindow(bildDaten[1],13,Faktor=2.7)[0]
 #k=detection.advancedMovingWindow(bildDaten[9],Faktor=4)[0]
 #anzahlZeilen, anzahlReihen = np.shape(k)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)

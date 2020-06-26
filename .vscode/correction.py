@@ -52,13 +52,15 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
     hoehe, breite = np.shape(Bild)
     Richtung=-1
     l=int(Laenge/2)
-    for z in range(l,hoehe-l):
-        for s in range(l,breite-l):
+    großBild=np.zeros((hoehe+Laenge,breite+Laenge))
+    großBild[l:hoehe+l,l:breite+l]=Bild
+    for z in range(l,hoehe):
+        for s in range(l,breite):
             if BPM[z,s] !=0:
                 #Gradienten legen
-                vertikal=Bild[z-l:z+l,s]
-                horizontal=Bild[z,s-l:s+l]
-                sub=Bild[z-l:z+l,s-l:s+l]
+                vertikal=großBild[z-l:z+l,s]
+                horizontal=großBild[z,s-l:s+l]
+                sub=großBild[z-l:z+l,s-l:s+l]
                 nordost=np.diagonal(sub)
                 nordwest=np.fliplr(sub).diagonal()
                 #low Gradient berechnen
