@@ -54,9 +54,11 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
     l=int(Laenge/2)
     großBild=np.zeros((hoehe+Laenge,breite+Laenge))
     großBild[l:hoehe+l,l:breite+l]=Bild
+    großBPM=np.zeros((hoehe+Laenge,breite+Laenge))
+    großBPM[l:hoehe+l,l:breite+l]=BPM
     for z in range(l,hoehe):
         for s in range(l,breite):
-            if BPM[z,s] !=0:
+            if BPM[z-l,s-l] !=0:
                 #Gradienten legen
                 vertikal=großBild[z-l:z+l,s]
                 horizontal=großBild[z,s-l:s+l]
@@ -64,9 +66,11 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
                 nordost=np.diagonal(sub)
                 nordwest=np.fliplr(sub).diagonal()
                 #low Gradient berechnen
-                Gradient=[max(np.gradient(vertikal)),max(np.gradient(horizontal)),max(np.gradient(nordost)),max(np.gradient(nordwest)),2**16]
-                for i in range(len(Gradient)-1):
-                    if Gradient[i]<Gradient[i+1]:
+                Gradient=[max(np.gradient(vertikal)),max(np.gradient(horizontal)),max(np.gradient(nordost)),max(np.gradient(nordwest))]
+                Low=2**16
+                for i in range(len(Gradient)):
+                    if Low>Gradient[i]:
+                        Low=Gradient[i]
                         Richtung=i
                 #Grauwert berechen
                 if Richtung==0:
@@ -79,8 +83,7 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
                     Grau=np.mean(nordwest)
                 else:
                     print("Error")
-            
-                Bild[z,s]=Grau
+                Bild[z-l,s-l]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
     return Bild
                 
 
