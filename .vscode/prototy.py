@@ -70,11 +70,16 @@ print(np.shape(bildDaten))
 #bildDaten = imP.importFunction(importPath)
 BPM0_example = imP.importFunction(importPathBPM0)
 #importPath = "Bildserie3_160kV_0uA.his"
+
+#bildDaten = imP.importFunction(importPath)
+#BPM0 = imP.importFunction(importPathBPM0)
+importPath = "Bildserie3_160kV_0uA.his"
 #importPath = "dark_image_10_percent_rauschen.png"
 #importPathB = "light_image_90_percent_rauschen.png"
 #bildDaten = imP.hisImportFunction(importPath,False)
 
 ##bildDaten = imP.importFunction(importPath)
+#bildDaten = imP.importFunction(importPath)
 #bildDatenB = imP.importFunction(importPathB)
 #bildDatenC = imP.importFunction(importPathC)
 
@@ -90,14 +95,17 @@ testImage=np.array([ [[0, 65535], [121, 65535]],
 
 
 #ab hier Quasi die main:
-#k,u=detection.MultiPicturePixelCompare(bildDaten[0:30:3],0.90)
-#k=detection.advancedMovingWindow(bildDaten[1],Faktor=4)[0]
+k,u=detection.MultiPicturePixelCompare(bildDaten[0:30:3],0.50)
+k2=detection.advancedMovingWindow(bildDaten[1],13,Faktor=2.7)[0]
 #k=detection.advancedMovingWindow(bildDaten[9],Faktor=4)[0]
 #anzahlZeilen, anzahlReihen = np.shape(k)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 #telemetry.markPixels( k, bildDaten[0], 50, Bildname='A') 
 # k=detection.MultiPicturePixelCompare(bildDaten[30:35],1)[0]
 #telemetry.markPixels( u, bildDaten[0], 50, Bildname='B') 
+#k=detection.MultiPicturePixelCompare(bildDatenC,0.5)[0]
+telemetry.markPixels( k, bildDaten[0], 50, Bildname='A') 
+telemetry.markPixels( k2, bildDaten[0], 50, Bildname='B') 
 
 #mP.markPixels( detection.MultiPicturePixelCompare(bildDaten[0:9])[0], bildDaten[0], 50) 
 #mP.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
@@ -123,6 +131,8 @@ testArray = np.array([ [0, 10, 20],
 
 #print(timerObject.timeit(10))
 #u=np.uint16(correction.nachbar(bildDaten[0],k))
+u=np.uint16(correction.Gradient(bildDaten[0],k))
+u=np.uint16(correction.Gradient(u,k2))
 #anzahlZeilen, anzahlReihen = np.shape(u)
 #print("Anzahl der Zeilen: ",anzahlZeilen, "Anzahl der Spalten: ",anzahlReihen)
 
@@ -130,7 +140,7 @@ testArray = np.array([ [0, 10, 20],
 #cv2.imwrite('PictureWithPixels.png', c , [cv2.IMWRITE_PNG_COMPRESSION,0])
 #cv2.imwrite('PictureBPM.png', j , [cv2.IMWRITE_PNG_COMPRESSION,0])
 
-#cv2.imwrite('PictureWithCorrection.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite('PictureWithCorrection.png', u , [cv2.IMWRITE_PNG_COMPRESSION,0])
 #telemetry.markPixels(detection.advancedMovingWindow(bildDaten, 0,6)[0],bildDaten[0])
 #telemetry.markPixels(detection.movingWindow(bildDaten[0]),bildDaten[0])
 #telemetry.plotData()
@@ -212,5 +222,6 @@ print(ergMeanImage)
 
 #telemetry.logDetectionOld(bildDaten[0],startwert= 0,stopwert=1,messpunkte=11)
 telemetry.logDetection(bildDaten,startwert= 0,stopwert=0.5,messpunkte=11, BPM0=BPM0_example[0])
+#telemetry.logDetection(bildDaten[0],startwert= 0,stopwert=1,messpunkte=2)
 
 #telemetry.logDetection(bildDaten,bpmFehlerSchwellert= 50, startwert= 0.00, stopwert= 0.12, messpunkte=7, BPM0=BPM0[0])

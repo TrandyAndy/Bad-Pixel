@@ -16,7 +16,7 @@ import math
 
 # Direkte Nachbarn:
 
-def nachbar(Bild, BPM, Methode=0):  #NARC=0 oder NMFC=1
+def nachbar(Bild, BPM, Methode=0):  #Mittelwert der beiden Nachbarn
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -34,6 +34,63 @@ def nachbar(Bild, BPM, Methode=0):  #NARC=0 oder NMFC=1
     return beautiful
 
 
-#nagumo
+""" #NARC=0 NMFC=1 NSRC=2
+def neigborhood(Bild, BPM, Methode=0):
+    if(np.shape(Bild) != np.shape(BPM)):
+        print("Digga schau das die Dimensionen passen!")
+        return -1
+    hoehe, breite = np.shape(Bild)
+        
+    return beautiful """
 
-#def nagumo():
+# Gradient
+
+def Gradient(Bild, BPM, Methode=0, Laenge=10):
+    if(np.shape(Bild) != np.shape(BPM)):
+        print("Digga schau das die Dimensionen passen!")
+        return -1
+    hoehe, breite = np.shape(Bild)
+    Richtung=-1
+    l=int(Laenge/2)
+    großBild=np.zeros((hoehe+Laenge,breite+Laenge))
+    großBild[l:hoehe+l,l:breite+l]=Bild
+    großBPM=np.zeros((hoehe+Laenge,breite+Laenge))
+    großBPM[l:hoehe+l,l:breite+l]=BPM
+    for z in range(l,hoehe):
+        for s in range(l,breite):
+            if BPM[z-l,s-l] !=0:
+                #Gradienten legen
+                vertikal=großBild[z-l:z+l,s]
+                horizontal=großBild[z,s-l:s+l]
+                sub=großBild[z-l:z+l,s-l:s+l]
+                nordost=np.diagonal(sub)
+                nordwest=np.fliplr(sub).diagonal()
+                #low Gradient berechnen
+                Gradient=[max(np.gradient(vertikal)),max(np.gradient(horizontal)),max(np.gradient(nordost)),max(np.gradient(nordwest))]
+                Low=2**16
+                for i in range(len(Gradient)):
+                    if Low>Gradient[i]:
+                        Low=Gradient[i]
+                        Richtung=i
+                #Grauwert berechen
+                if Richtung==0:
+                    Grau=np.mean(vertikal)
+                elif Richtung==1:
+                    Grau=np.mean(horizontal)
+                elif Richtung==2:
+                    Grau=np.mean(nordost)
+                elif Richtung==3:
+                    Grau=np.mean(nordwest)
+                else:
+                    print("Error")
+                Bild[z-l,s-l]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
+    return Bild
+                
+
+
+
+
+
+#Nagao
+
+#def Nagao():

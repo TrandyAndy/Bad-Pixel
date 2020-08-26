@@ -31,11 +31,9 @@ def HotPixelFinder(D2_Bild):
             #     BPM[z,s]=80
             #     Zaehler +=1
     print("Hot Pixel: " , Zaehler)
-    """
     if Zaehler>hohe*breite*0.1: #Break if >10% falsch
         Zaehler=-1
         print("Überbelichtet")
-    """    
     return BPM, Zaehler
 
 # Dead Pixel finder:
