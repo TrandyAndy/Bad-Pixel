@@ -45,9 +45,9 @@ importPathC = "Dunkelbild_Verpixelt.png"
 #importPath = "/Users/julian/Google Drive/Studium/Master/1. Semester/Mechatronische Systeme/Mecha. Systeme/F&E Bad-Pixel/7. Evaluation und Tests/Messdaten Analyse/Daten/Aufnahmen zur Korrektur Panel Version 2/Serie2/Bildserie2_160kV_70uA_mittelwert.png"
 
 
-importPath = "SimBilder/Dunkelbild_Verpixelt.png"
-#importPath = "SimBilder/HellBild_Verpixelt.png"
-#importPath = "SimBilder/Simbild_Verpixelt.png"
+importPath3 = "SimBilder/Dunkelbild_Verpixelt.png"
+importPath2 = "SimBilder/HellBild_Verpixelt.png"
+importPath1 = "SimBilder/Simbild_Verpixelt.png"
 importPathBPM0 = "BMP_0.png"
 
 #importPath = "Bildserie1_160kV_70uA.his"
@@ -57,17 +57,26 @@ importPathBPM0 = "BMP_0.png"
 #bildDaten = imP.importFunction(importPath, True)
 
 #bildDaten = imP.hisImportFunction(importPath)
+bildDaten = np.zeros([3,500,500],dtype=np.uint16)
 
-bildDaten = imP.importFunction(importPath)
+bildDaten1 = imP.importFunction(importPath1)
+bildDaten2 = imP.importFunction(importPath2)
+bildDaten3 = imP.importFunction(importPath3)
+print(np.shape(bildDaten3))
+bildDaten[0] = bildDaten1[0]
+bildDaten[1] = bildDaten2[0]
+bildDaten[2] = bildDaten3[0]
+print(np.shape(bildDaten))
+#bildDaten = imP.importFunction(importPath)
 BPM0_example = imP.importFunction(importPathBPM0)
 #importPath = "Bildserie3_160kV_0uA.his"
 #importPath = "dark_image_10_percent_rauschen.png"
 #importPathB = "light_image_90_percent_rauschen.png"
 #bildDaten = imP.hisImportFunction(importPath,False)
 
-bildDaten = imP.importFunction(importPath)
-bildDatenB = imP.importFunction(importPathB)
-bildDatenC = imP.importFunction(importPathC)
+##bildDaten = imP.importFunction(importPath)
+#bildDatenB = imP.importFunction(importPathB)
+#bildDatenC = imP.importFunction(importPathC)
 
 #Beispiel
 #anzahlBilder, anzahlZeilen, anzahlReihen = np.shape(bildDaten)
@@ -202,6 +211,6 @@ print(ergMeanImage)
 # print(type(meanImage))
 
 #telemetry.logDetectionOld(bildDaten[0],startwert= 0,stopwert=1,messpunkte=11)
-telemetry.logDetection(bildDaten,startwert= 0,stopwert=1,messpunkte=2, BPM0=BPM0_example[0])
+telemetry.logDetection(bildDaten,startwert= 0,stopwert=0.5,messpunkte=11, BPM0=BPM0_example[0])
 
 #telemetry.logDetection(bildDaten,bpmFehlerSchwellert= 50, startwert= 0.00, stopwert= 0.12, messpunkte=7, BPM0=BPM0[0])
