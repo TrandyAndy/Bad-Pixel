@@ -4,6 +4,7 @@ import PyQt5.QtWidgets as widgets
 import PyQt5.QtGui as gui
 import PyQt5.uic as uic
 import types
+from Mainwindow import MainWindow
 abc = list()
 abc.append(widgets.QTableWidgetItem("ABC Text"))
 abc.append(widgets.QTableWidgetItem("ABC Text2"))
@@ -18,7 +19,7 @@ aktuellerTab = 0
 
 #### UI Vorraussetzungen ####
 app = widgets.QApplication(sys.argv)
-mW = uic.loadUi("QT/badPixelMainWindow.ui")        # UI-Fenster MainWindow laden
+mW = uic.loadUi("badPixelMainWindow.ui")        # UI-Fenster MainWindow laden
 
 #### UI Aktionen Funktionen #### 
 
