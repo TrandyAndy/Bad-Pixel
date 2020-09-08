@@ -4,6 +4,11 @@ import PyQt5.QtWidgets as widgets
 import PyQt5.QtGui as gui
 import PyQt5.uic as uic
 import types
+
+# Unterprogramme
+#import importPictures as imP
+
+import os   
 abc = list()
 abc.append(widgets.QTableWidgetItem("ABC Text"))
 abc.append(widgets.QTableWidgetItem("ABC Text2"))
@@ -92,8 +97,13 @@ def buttonBilddatenDurchsuchen():
     print("Ordnerdialog Bilddaten geöffnet", filename)
     mW.lineEditBildatenDurchsuchen.setText(filename)
 def buttonBilddatenAddDurchsuchen():
-    filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation)) [0]
+    filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.png *.jpg *.jpeg *.tif *.tiff)") [0]
     print(filename)
+    print(os.path.basename(filename[0]))
+    mW.tableWidgetBilddaten.setItem(0,0, widgets.QTableWidgetItem( os.path.basename(filename[0]) ))
+    
+    imP.importUIFunction(filename)
+
     print("buttonBilddatenAddDurchsuchen")
     
 def buttonBilddatenDelete():

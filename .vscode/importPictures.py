@@ -123,5 +123,19 @@ def importFunction(pImportPath, pExport = False):
         cv2.waitKey()
         cv2.destroyAllWindows()      
     return bildDaten
+
+def importUIFunction(pImportPath, pExport = False):
+    bild = cv2.imread(pImportPath, flags= -1)
+    bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
+    bildDaten[0] = bild
+    #cv2.imshow('image', bildDaten[0])
+    #cv2.waitKey()
+    #cv2.destroyAllWindows()
+    if pExport == True:
+        cv2.imshow('image', bild)                                             # Array als Bild anzeigen
+        cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+        cv2.waitKey()
+        cv2.destroyAllWindows()      
+    return bildDaten, 23
  
  
