@@ -18,3 +18,4 @@ BildCounter=0
                [[211, 212], [221, 222]],
                [[311, 312], [321, 322]] ])  # 3D Array
 """
+Methoden=['NARC', 'NMFC', 'NSRC'] #zur Korrektur

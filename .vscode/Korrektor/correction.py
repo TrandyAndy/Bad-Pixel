@@ -16,7 +16,7 @@ import math
 
 # Direkte Nachbarn:
 
-def nachbar(Bild, BPM, Methode=0):  #Mittelwert der beiden Nachbarn
+def nachbar(Bild, BPM):  #Mittelwert der beiden Nachbarn
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -33,8 +33,38 @@ def nachbar(Bild, BPM, Methode=0):  #Mittelwert der beiden Nachbarn
     beautiful=np.uint(flatImage.reshape(hoehe, breite))
     return beautiful
 
+def nachbar2(Bild, BPM, Methode=0):  #Mittelwert der beiden Nachbarn
+    if(np.shape(Bild) != np.shape(BPM)):
+        print("Digga schau das die Dimensionen passen!")
+        return -1
+    hoehe, breite = np.shape(Bild)
+    Q_halbe=3
+    beautiful=Bild
+    for z in range(hoehe):
+        for s in range(breite):
+            if BPM[z,s] !=0:
+                #Fester aufspannen.
+                oben=z-Q_halbe
+                if oben<0:
+                    oben=0
+                unten=z+Q_halbe
+                if unten>hoehe:
+                    unten=hoehe
+                if (links=s-Q_halbe)<0: #geht das?
+                #if links<0:        
+                    links=0
+                rechts=s+Q_halbe
+                if rechts>breite:
+                    rechts=breite
+                Fenster=Bild[oben:unten,links:rechts]
+                beautiful[z,s]=Methoden(Fenster,Methode)
+    return beautiful
 
 """ #NARC=0 NMFC=1 NSRC=2
+SR=Simpel Replacement
+MF=Median Filter
+AR=Average Relacement
+
 def neigborhood(Bild, BPM, Methode=0):
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
@@ -74,7 +104,7 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
                         Richtung=i
                 #Grauwert berechen
                 if Richtung==0:
-                    Grau=np.mean(vertikal)
+                    Grau=Methoden(vertikal,Methode)
                 elif Richtung==1:
                     Grau=np.mean(horizontal)
                 elif Richtung==2:
@@ -87,7 +117,17 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
     return Bild
                 
 
-
+def Methoden(Pixels, Methode)
+    if Methode==NMFC:
+        return np.mean(Pixels)
+    else if Methode==NARC:
+        return np.average(Pixels) #ohne den Bad??
+    else if Methode==NSRC:
+        flatPixels=(Pixels.reshape(-1))
+        l=range(flatPixels)
+        return flatPixels[l/2-1]
+    else:
+        return -1
 
 
 
