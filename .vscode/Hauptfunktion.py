@@ -23,4 +23,19 @@ import telemetry
 import cProfile 
 import verpixler
 
+""" Pfad der Bilddateien:______________________________________________________________________________________ """
+importPath = "PictureWithNoMarkings.png"
 
+""" Import der Bilddateien:______________________________________________________________________________________ """
+bildDaten = imP.importFunction(importPath)
+
+""" Aufruf der Detection Funktion:______________________________________________________________________________________ """
+if True:
+    BAD=detection.advancedMovingWindow(bildDaten[1],Faktor=4)[0]
+
+""" Aufruf der Correction Funktion:______________________________________________________________________________________ """
+if True:
+    GOOD=np.uint16(correction.nachbar(bildDaten[0],BAD))
+
+""" Audgabe der Bilder Plots und Ergebnisse:______________________________________________________________________________________ """
+telemetry.markPixels(BAD,bildDaten[0])
