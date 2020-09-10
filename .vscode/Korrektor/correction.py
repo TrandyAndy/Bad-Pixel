@@ -9,9 +9,10 @@
  */
  """
 
-import config as cfg
+import vscode.config as cfg
 import numpy as np
 import math
+
 
 
 # Direkte Nachbarn:
@@ -33,7 +34,8 @@ def nachbar(Bild, BPM):  #Mittelwert der beiden Nachbarn
     beautiful=np.uint(flatImage.reshape(hoehe, breite))
     return beautiful
 
-def nachbar2(Bild, BPM, Methode=0):  #Mittelwert der beiden Nachbarn
+# Nachbar
+def nachbar2(Bild, BPM, Methode=0):  # Fenster um BadPixel
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -50,9 +52,8 @@ def nachbar2(Bild, BPM, Methode=0):  #Mittelwert der beiden Nachbarn
                 unten=z+Q_halbe
                 if unten>hoehe:
                     unten=hoehe
-                if (links=s-Q_halbe)<0: #geht das?
-                #if links<0:        
-                    links=0
+                links=s
+                links-=Q_halbe if (s>Q_halbe) else 0
                 rechts=s+Q_halbe
                 if rechts>breite:
                     rechts=breite
@@ -117,12 +118,12 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
     return Bild
                 
 
-def Methoden(Pixels, Methode)
+def Methoden(Pixels, Methode):
     if Methode==NMFC:
         return np.mean(Pixels)
-    else if Methode==NARC:
+    elif Methode==NARC:
         return np.average(Pixels) #ohne den Bad??
-    else if Methode==NSRC:
+    elif Methode==NSRC:
         flatPixels=(Pixels.reshape(-1))
         l=range(flatPixels)
         return flatPixels[l/2-1]
@@ -133,4 +134,39 @@ def Methoden(Pixels, Methode)
 
 #Nagao
 
-#def Nagao():
+""" def Nagao(Bild, BPM):
+    if(np.shape(Bild) != np.shape(BPM)):
+        print("Digga schau das die Dimensionen passen!")
+        return -1
+    hoehe, breite = np.shape(Bild)
+    Q_Fenster=2
+    NagaoSub_a=([1,1,1,1,1]
+                [0,1,1,1,0]
+                [0,0,0,0,0]
+                [0,0,0,0,0]
+                [0,0,0,0,0])
+    NagaoSub_a2=np.rot(NagaoSub_a)
+    NagaoSub_b=([0,0,0,0,0]
+                [0,0,0,0,0]
+                [0,0,0,1,1]
+                [0,0,1,1,1]
+                [0,0,1,1,1])
+    NagaoSub_c=([0,0,0,0,0]
+                [0,1,1,1,0]
+                [0,1,0,1,0]
+                [0,1,1,1,0]
+                [0,0,0,0,0])
+    
+    großBild=Bild
+    v_rand=np.ones([:(Q_Fenster*breite)]).reshape(Q_Fenster,breite)
+    h_rand=np-ones([:(Q_Fenster*(heohe+Q_Fenster))]).reshape((heohe+Q_Fenster),Q_Fenster)
+    np.vstack([großBild,v_rand])
+    np.hstack([großBild,h_rand])
+    beautiful=Bild
+    for z in range(hoehe):
+        for s in range(breite):
+            if BPM[z,s] !=0:
+                #Fenster aufspannen
+                #...
+                
+                Fenster*a """
