@@ -8,7 +8,7 @@
  * @Description: Grafische Oberfläche
  */
  """
-
+ 
 import sys
 import PyQt5.QtCore as core
 import PyQt5.QtWidgets as widgets
