@@ -4,7 +4,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-09-14 12:56:03
+ * @Last Modified time: 2020-09-14 13:15:13
  * @Description: Grafische Oberfläche
  */
  """
@@ -44,6 +44,26 @@ msgBox = widgets.QMessageBox()  # Die Message Box
 #### UI Aktionen Funktionen #### 
 ### Allgemein
 def startClicked():
+    # Check BPM 
+
+    # Check Bilddaten
+
+    # Check Speicherort
+    if os.path.exists(mW.lineEditSpeicherort.text()) == False:
+        aktuellerTab = 2
+        mW.tabWidget.setCurrentIndex(aktuellerTab)
+        msgBox.setIcon(widgets.QMessageBox.Information)
+        msgBox.setText("Der eingegebene Pfad für den Speicherort ist nicht gültig")
+        msgBox.setInformativeText("Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.")
+        msgBox.setWindowTitle("Kein gültiger Pfad")
+        msgBox.setStandardButtons(widgets.QMessageBox.Ok) # | widgets.QMessageBox.Cancel)
+        msgBox.buttonClicked.connect(msgButtonClick)
+        returnValue = msgBox.exec()
+        print(returnValue)
+        if returnValue == widgets.QMessageBox.Ok:
+            print('OK clicked')
+    # Check Algorithmus
+
     print("startClicked")   # debug
     
 def mainBackClicked():
