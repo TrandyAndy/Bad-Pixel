@@ -112,7 +112,7 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):       
     fd.close()                                                              # File schließen
     return bildDaten
 
-def importFunction(pImportPath, pExport = False):
+def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
     bild = cv2.imread(pImportPath, flags= -1)
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
     bildDaten[0] = bild
