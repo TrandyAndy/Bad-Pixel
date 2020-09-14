@@ -103,7 +103,7 @@ def buttonBilddatenAddDurchsuchen():
     print(os.path.basename(filename[0]))
     mW.tableWidgetBilddaten.setItem(0,0, widgets.QTableWidgetItem( os.path.basename(filename[0]) ))
     
-    imP.importUIFunction(filename)
+    #imP.importUIFunction(filename)
 
     print("buttonBilddatenAddDurchsuchen")
     
