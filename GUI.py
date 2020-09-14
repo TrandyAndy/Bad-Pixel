@@ -4,7 +4,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-09-14 13:15:13
+ * @Last Modified time: 2020-09-14 13:54:07
  * @Description: Grafische Oberfläche
  */
  """
@@ -35,14 +35,26 @@ app = widgets.QApplication(sys.argv)
 mW = uic.loadUi("badPixelMainWindow.ui")        # UI-Fenster MainWindow laden
 eS = uic.loadUi("einstellungenSuchen.ui")
 eK = uic.loadUi("einstellungenKorrigieren.ui")
+msgBox = widgets.QMessageBox()  # Die Message Box
 def msgButtonClick():
     print("message")
 
-msgBox = widgets.QMessageBox()  # Die Message Box
+
 
 
 #### UI Aktionen Funktionen #### 
 ### Allgemein
+def openMessageBox(icon, text, informativeText, windowTitle, standardButtons, pFunction):
+    msgBox.setIcon(icon) # msgBox.setIcon(widgets.QMessageBox.Information)
+    msgBox.setText(text) # msgBox.setText("Der eingegebene Pfad für den Speicherort ist nicht gültig")
+    msgBox.setInformativeText(informativeText) # msgBox.setInformativeText("Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.")
+    msgBox.setWindowTitle(windowTitle) #msgBox.setWindowTitle("Kein gültiger Pfad")
+    msgBox.setStandardButtons(standardButtons) #msgBox.setStandardButtons(widgets.QMessageBox.Ok) # | widgets.QMessageBox.Cancel)
+    msgBox.buttonClicked.connect(pFunction) # msgBox.buttonClicked.connect(msgButtonClick)
+    returnValue = msgBox.exec()
+    if returnValue == widgets.QMessageBox.Ok:
+        print('OK clicked')
+    return returnValue
 def startClicked():
     # Check BPM 
 
@@ -52,16 +64,7 @@ def startClicked():
     if os.path.exists(mW.lineEditSpeicherort.text()) == False:
         aktuellerTab = 2
         mW.tabWidget.setCurrentIndex(aktuellerTab)
-        msgBox.setIcon(widgets.QMessageBox.Information)
-        msgBox.setText("Der eingegebene Pfad für den Speicherort ist nicht gültig")
-        msgBox.setInformativeText("Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.")
-        msgBox.setWindowTitle("Kein gültiger Pfad")
-        msgBox.setStandardButtons(widgets.QMessageBox.Ok) # | widgets.QMessageBox.Cancel)
-        msgBox.buttonClicked.connect(msgButtonClick)
-        returnValue = msgBox.exec()
-        print(returnValue)
-        if returnValue == widgets.QMessageBox.Ok:
-            print('OK clicked')
+        openMessageBox()
     # Check Algorithmus
 
     print("startClicked")   # debug
