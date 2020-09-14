@@ -56,15 +56,26 @@ def openMessageBox(icon, text, informativeText, windowTitle, standardButtons, pF
         print('OK clicked')
     return returnValue
 def startClicked():
+    global aktuellerTab
     # Check BPM 
-
     # Check Bilddaten
-
+    if mW.tableWidgetBilddaten.rowCount() == 0:
+        openMessageBox(icon=widgets.QMessageBox.Information, text="Keine Bilder importiert",informativeText="Bitte importieren Sie Bilder.",windowTitle="Keine Bilder importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        aktuellerTab = 1
+        mW.tabWidget.setCurrentIndex(aktuellerTab)
+        return False
+    for aktuelleZeile in range(mW.tableWidgetBilddaten.rowCount()):
+        if mW.tableWidgetBilddaten.item(0, 1).text() != mW.tableWidgetBilddaten.item(aktuelleZeile, 1).text():
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            aktuellerTab = 1
+            mW.tabWidget.setCurrentIndex(aktuellerTab)
+            return False
     # Check Speicherort
     if os.path.exists(mW.lineEditSpeicherort.text()) == False:
+        openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         aktuellerTab = 2
         mW.tabWidget.setCurrentIndex(aktuellerTab)
-        openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        return False
     # Check Algorithmus
 
     print("startClicked")   # debug
@@ -81,12 +92,14 @@ def mainBackClicked():
     # print(aktuellerTab)   # debug
 def mainForwardClicked():
     global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
+    if aktuellerTab >= 3:
+        startClicked()
+        return
     if aktuellerTab < 3:
         aktuellerTab = aktuellerTab + 1 
     mW.tabWidget.setCurrentIndex(aktuellerTab)
     if aktuellerTab >= 3:
         mW.pushButtonMainForward.setText("Start")
-        startClicked()
     if aktuellerTab > 0:
         mW.pushButtonMainBack.setVisible(True)
     # print(aktuellerTab)   # debug
@@ -179,16 +192,7 @@ def buttonBilddatenImportieren():
             print("Keine Unterordner importieren")
 
     else:
-        msgBox.setIcon(widgets.QMessageBox.Information)
-        msgBox.setText("Der eingegebene Pfad ist nicht gültig")
-        msgBox.setInformativeText("Der Pfad: \"" + dirname + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.")
-        msgBox.setWindowTitle("Kein gültiger Pfad")
-        msgBox.setStandardButtons(widgets.QMessageBox.Ok) # | widgets.QMessageBox.Cancel)
-        msgBox.buttonClicked.connect(msgButtonClick)
-        returnValue = msgBox.exec()
-        print(returnValue)
-        if returnValue == widgets.QMessageBox.Ok:
-            print('OK clicked')
+        openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad ist nicht gültig",informativeText="Der Pfad: \"" + dirname + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
     
         
 def buttonBilddatenAddDurchsuchen():    # Bilddateien importieren
