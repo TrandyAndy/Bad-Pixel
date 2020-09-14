@@ -119,11 +119,11 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
                 
 
 def Methoden(Pixels, Methode):
-    if Methode==NMFC:
+    if Methode==Methoden.NMFC:
         return np.mean(Pixels)
-    elif Methode==NARC:
+    elif Methode==Methoden.NARC:
         return np.average(Pixels) #ohne den Bad??
-    elif Methode==NSRC:
+    elif Methode==Methoden.NSRC:
         flatPixels=(Pixels.reshape(-1))
         l=range(flatPixels)
         return flatPixels[l/2-1]
@@ -170,3 +170,8 @@ def Methoden(Pixels, Methode):
                 #...
                 
                 Fenster*a """
+
+def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
+    #Rechenvorschrift. Dunkel/(Hell-Dunkel)
+    #Wiki: New=(Input-Dark)/(Flat_Field-Dark)
+    return 0
