@@ -4,7 +4,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-09-14 13:54:07
+ * @Last Modified time: 2020-09-14 13:55:56
  * @Description: Grafische Oberfläche
  */
  """
@@ -64,7 +64,7 @@ def startClicked():
     if os.path.exists(mW.lineEditSpeicherort.text()) == False:
         aktuellerTab = 2
         mW.tabWidget.setCurrentIndex(aktuellerTab)
-        openMessageBox()
+        openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
     # Check Algorithmus
 
     print("startClicked")   # debug
