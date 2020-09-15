@@ -22,8 +22,8 @@ import cProfile
 import verpixler
 
 """ Pfad der Bilddateien:______________________________________________________________________________________ """
-importPath = ".vscode\PictureWithNoMarkings.png"
-
+#importPath = ".vscode\Serie 4 original.png"
+importPath = "Methodentest.bmp"
 
 
 """ Import der Bilddateien:______________________________________________________________________________________ """
@@ -32,12 +32,20 @@ bildDaten = imP.importFunction(importPath)
 
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
 if True:
-    BAD=detection.advancedMovingWindow(bildDaten[0],Faktor=4)[0]
+    BAD=detection.advancedMovingWindow(bildDaten[0],Faktor=2.5,Fensterbreite=5)[0] #F=4
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:
-    GOOD=np.uint16(correction.nachbar2(bildDaten[0],BAD))
+    GOOD_NB2_NARC=np.uint16(correction.nachbar2(bildDaten[0],BAD,1))
+    GOOD_NB2_NMFC=np.uint16(correction.nachbar2(bildDaten[0],BAD,2))
+    GOOD_NB2_NSRC=np.uint16(correction.nachbar2(bildDaten[0],BAD,3))
+    GOOD_NB_NARC=np.uint16(correction.nachbar(bildDaten[0],BAD))
+    GOOD_Grad_NARC=np.uint16(correction.Gradient(bildDaten[0],BAD,1))
 
 """ Audgabe der Bilder Plots und Ergebnisse:______________________________________________________________________________________ """
 telemetry.markPixels(BAD,bildDaten[0])
-cv2.imwrite("_korriegiert.png", GOOD, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_NB2_NARC.png", GOOD_NB2_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_NB2_NMFC.png", GOOD_NB2_NMFC, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_NB2_NSRC.png", GOOD_NB2_NSRC, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_NB_NARC.png", GOOD_NB_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_Grad_NARC.png", GOOD_Grad_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])

@@ -35,12 +35,12 @@ def nachbar(Bild, BPM):  #Mittelwert der beiden Nachbarn
     return beautiful
 
 # Nachbar
-def nachbar2(Bild, BPM, Methode=0):  # Fenster um BadPixel
+def nachbar2(Bild, BPM, Methode=1, Fester=6):  # Fenster um BadPixel
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
     hoehe, breite = np.shape(Bild)
-    Q_halbe=3
+    Q_halbe=int(Fester/2)
     beautiful=Bild
     for z in range(hoehe):
         for s in range(breite):
@@ -76,7 +76,7 @@ def neigborhood(Bild, BPM, Methode=0):
 
 # Gradient
 
-def Gradient(Bild, BPM, Methode=0, Laenge=10):
+def Gradient(Bild, BPM, Methode=1, Laenge=10):
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -119,14 +119,15 @@ def Gradient(Bild, BPM, Methode=0, Laenge=10):
                 
 
 def Methoden(Pixels, Methode):
-    if Methode==Methoden.NMFC:
+    if Methode==1: #Methoden.NMFC:
         return np.mean(Pixels)
-    elif Methode==Methoden.NARC:
+    elif Methode==2: #NARC
         return np.average(Pixels) #ohne den Bad??
-    elif Methode==Methoden.NSRC:
-        flatPixels=(Pixels.reshape(-1))
-        l=range(flatPixels)
-        return flatPixels[l/2-1]
+    elif Methode==3: #NSRC
+        flatPixels=(np.reshape(Pixels,-1))
+        l=len(flatPixels)
+        m=int(l/2-1)
+        return flatPixels[m]
     else:
         return -1
 
@@ -173,5 +174,6 @@ def Methoden(Pixels, Methode):
 
 def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     #Rechenvorschrift. Dunkel/(Hell-Dunkel)
-    #Wiki: New=(Input-Dark)/(Flat_Field-Dark)
-    return 0
+    #Wiki: New=(Input-Dark)/(Flat_Field-Dark) Dark=ohne X-Ray; Flat_Field=ohne Bauteil
+    # Gain und Dunkelstrom
+    return (Bild-Dunkel_Mittel_Bild)/(Hell_Mittel_Bild-Dunkel_Mittel_Bild)

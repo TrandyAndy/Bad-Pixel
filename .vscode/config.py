@@ -19,7 +19,7 @@ BildCounter=0
                [[211, 212], [221, 222]],
                [[311, 312], [321, 322]] ])  # 3D Array
 """
-#Methoden=['NARC', 'NMFC', 'NSRC'] #zur Korrektur
+Methoden_Liste=['NARC', 'NMFC', 'NSRC'] #zur Korrektur
 class Methoden(Enum): #zur Korrektur
     NARC = 1
     NMFC = 2
