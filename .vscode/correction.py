@@ -176,4 +176,14 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     #Rechenvorschrift. Dunkel/(Hell-Dunkel)
     #Wiki: New=(Input-Dark)/(Flat_Field-Dark) Dark=ohne X-Ray; Flat_Field=ohne Bauteil
     # Gain und Dunkelstrom
-    return (Bild-Dunkel_Mittel_Bild)/(Hell_Mittel_Bild-Dunkel_Mittel_Bild)
+    if(np.shape(Bild) != np.shape(Hell_Mittel_Bild) or np.shape(Bild) != np.shape(Dunkel_Mittel_Bild)):
+        print("Digga schau das die Dimensionen passen!")
+        return -1
+    a= Bild-Dunkel_Mittel_Bild
+    b= Hell_Mittel_Bild-Dunkel_Mittel_Bild
+    #b=np.array([1,2,3,4,5,6,7,0,0,8,9,0])
+    Zero=np.where(b==0)
+    print(Zero)
+    for z in Zero:
+        b[z]=1 #zu groß
+    return (a/b)*2**16
