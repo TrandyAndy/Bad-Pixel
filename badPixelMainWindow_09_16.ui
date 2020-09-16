@@ -34,39 +34,38 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="labelBPM">
               <property name="text">
-               <string>Sensor/Gerät auswählen:</string>
+               <string>Bad-Pixel-Map laden:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox"/>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_7">
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Bad-Pixel-Map auswählen:</string>
+             <widget class="QLineEdit" name="lineEditBPM">
+              <property name="readOnly">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox_2"/>
+             <widget class="QPushButton" name="pushButtonBPM">
+              <property name="text">
+               <string>Durchsuchen ...</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+             </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButtonBPM">
-            <property name="text">
-             <string>Neue Bad-Pixel-Map erstellen ...</string>
-            </property>
-           </widget>
           </item>
           <item>
            <widget class="QTextEdit" name="textEditBPM">
@@ -86,8 +85,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Gelesene Bilder:	2200&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Anzahl Pixelfehler:	30&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Anteil Pixelfehler:	21 %&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Erstellungsadatum:	21.12.20&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Änderungsdatum:	01.08.21&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Erstellungsadatum:	21.22.20&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Neue Bad-Pixel-Map erstellen ...</string>
             </property>
            </widget>
           </item>
@@ -331,9 +336,6 @@ p, li { white-space: pre-wrap; }
               <widget class="QRadioButton" name="radioButton_9">
                <property name="text">
                 <string>Nachbar-Verfahren</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
                </property>
               </widget>
              </item>

@@ -33,6 +33,7 @@ anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der T
 #### UI Vorraussetzungen ####
 app = widgets.QApplication(sys.argv)
 mW = uic.loadUi("badPixelMainWindow.ui")        # UI-Fenster MainWindow laden
+nB = uic.loadUi("neueBPM.ui")
 eS = uic.loadUi("einstellungenSuchen.ui")
 eK = uic.loadUi("einstellungenKorrigieren.ui")
 msgBox = widgets.QMessageBox()  # Die Message Box
@@ -144,12 +145,17 @@ def uiSetup():
         # print("not Checked") # debug
     mW.checkBoxBilddaten.setVisible(False) # noch nicht implementiert
 ### Tab Sensor / BPM
-def dateiOeffnen():
+def neueBPM():
     # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
     # filename = widgets.QFileDialog.getOpenFileNames() [0]      
-    filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "UI-Dateien (*.ui)")
+    #filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "UI-Dateien (*.ui)")
     # mW.lineEditBPM.setText(filename)
-    print("Ordnerdialog geöffnet", filename)
+    #print("Ordnerdialog geöffnet", filename)
+    if nB.exec() == widgets.QDialog.Accepted:
+        print("Läuft 3")
+    print("NeueBPM geöffnet")   # debug
+
+
     
 
 ### Tab Bilddaten
@@ -313,7 +319,7 @@ mW.pushButtonMainForward.clicked.connect(mainForwardClicked)
 mW.tabWidget.currentChanged.connect(tabChanged)
 
 ### Tab Sensor / BPM
-mW.pushButtonBPM.clicked.connect(dateiOeffnen)
+mW.pushButtonBPM.clicked.connect(neueBPM)
 
 ### Tab Bilddaten
 mW.pushButtonBilddatenDurchsuchen.clicked.connect(buttonBilddatenDurchsuchen)
