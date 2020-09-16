@@ -24,7 +24,7 @@ import Speichern
 
 """ Pfad der Bilddateien:______________________________________________________________________________________ """
 importPath = ".vscode\Serie 4 original.png"
-#importPath = "Methodentest.bmp"
+importPath = "MethodentestBearbeitet.png"
 
 
 """ Import der Bilddateien:______________________________________________________________________________________ """
