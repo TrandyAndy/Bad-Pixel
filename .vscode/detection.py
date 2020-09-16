@@ -207,21 +207,21 @@ def bottom(x):
 
 def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
     hoehe, breite = np.shape(D2_Bild)
-    print(hoehe,breite)
+    #print(hoehe,breite)
     BPM=np.zeros((hoehe,breite))
     quadrat=int(Fensterbreite/2) #+1
     Zaehler=0
-    for y in range(hoehe):
-        for x in range(breite):
+    for y in range(breite):
+        for x in range(hoehe):
             supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
             a= np.shape(supBPM)[0]+1
             b= np.shape(supBPM)[1]+1
             Elemente=a+b
             #print("Elemente",Elemente," a=",a," b=",b)
             Std=np.sqrt(np.var(supBPM))
-            debug= abs(np.mean(supBPM)-D2_Bild[y,x])
-            if Std*Faktor< abs(np.mean(supBPM)-D2_Bild[y,x]):
-                BPM[y,x]=100
+            debug= abs(np.mean(supBPM)-D2_Bild[x,y])
+            if Std*Faktor< abs(np.mean(supBPM)-D2_Bild[x,y]):
+                BPM[x,y]=100
                 Zaehler +=1
                 #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)

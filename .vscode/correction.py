@@ -12,6 +12,7 @@
 import config as cfg
 import numpy as np
 import math
+import copy
 
 
 
@@ -41,7 +42,7 @@ def nachbar2(Bild, BPM, Methode=1, Fester=6):  # Fenster um BadPixel
         return -1
     hoehe, breite = np.shape(Bild)
     Q_halbe=int(Fester/2)
-    beautiful=Bild
+    beautiful=copy.copy(Bild)
     for z in range(hoehe):
         for s in range(breite):
             if BPM[z,s] !=0:
@@ -82,6 +83,7 @@ def Gradient(Bild, BPM, Methode=1, Laenge=10):
         return -1
     hoehe, breite = np.shape(Bild)
     Richtung=-1
+    beautiful=copy.copy(Bild)
     l=int(Laenge/2)
     großBild=np.zeros((hoehe+Laenge,breite+Laenge))
     großBild[l:hoehe+l,l:breite+l]=Bild
@@ -114,15 +116,15 @@ def Gradient(Bild, BPM, Methode=1, Laenge=10):
                     Grau=np.mean(nordwest)
                 else:
                     print("Error")
-                Bild[z-l,s-l]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
-    return Bild
+                beautiful[z-l,s-l]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
+    return beautiful
                 
 
 def Methoden(Pixels, Methode):
     if Methode==1: #Methoden.NMFC:
-        return np.mean(Pixels)
+        return np.median(Pixels)
     elif Methode==2: #NARC
-        return np.average(Pixels) #ohne den Bad??
+        return np.mean(Pixels) #ohne den Bad??
     elif Methode==3: #NSRC
         flatPixels=(np.reshape(Pixels,-1))
         l=len(flatPixels)
