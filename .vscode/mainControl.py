@@ -35,9 +35,9 @@ bildDaten = imP.importFunction(importPath)
 if True:
     BAD=detection.advancedMovingWindow(bildDaten[0],Faktor=2.5,Fensterbreite=5)[0] #F=4
     #Speichern
-    Speichern.BPM_Save(r"C:\Users\u2887166\Documents\GitHub\Bad-Pixel\BPM_Speicher",BAD,"X-Ray1")
-else:
-    BAD=BPM_Read(0,"Peter") #Aus Speicher laden.
+#     Speichern.BPM_Save(r"C:\Users\u2887166\Documents\GitHub\Bad-Pixel\BPM_Speicher",BAD,"X-Ray1")
+# else:
+#     BAD=BPM_Read(0,"Peter") #Aus Speicher laden.
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:
