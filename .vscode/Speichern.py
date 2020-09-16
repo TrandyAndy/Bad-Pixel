@@ -3,7 +3,7 @@ import cv2
 
 def BPM_Save(pBPM_Path, BPM, Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
-    x=os.listdir(pBPM_Path)
+    x=str(os.listdir(pBPM_Path))
     print(len(x))
     #Davon Sensor
     for i in x:
