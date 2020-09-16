@@ -1,39 +1,57 @@
 import os
 import cv2
+import importPictures as imP
 
-def BPM_Save(pBPM_Path, BPM, Sensor_Name):
+def BPM_Save(BPM, Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
-    x=str(os.listdir(pBPM_Path))
-    print(len(x))
+    x=(os.listdir(dir_path))
+    print(len(x)," Dateien im Ordner")
     #Davon Sensor
-    for i in x:
-        if x.find(Sensor_Name):
-            Start=x[i].find("V",len(Sensor_Name))
-            Ende=x[i].find(".",len(Sensor_Name))
-            sZahl=x[i,Start:Ende]
-            print(sZahl)
-            Zahl=str(sZahl)
+    Nr=0
+    for i in range(len(x)):
+        DatName=str(x[i])
+        if DatName.find(Sensor_Name) !=-1:
+            Start=DatName.find("V",len(Sensor_Name))
+            Ende=DatName.find(".",len(Sensor_Name))
+            sZahl=DatName[Start+1:Ende]
+            #print(sZahl)
+            Zahl=int(sZahl)
             if(Zahl>Nr):
                 Nr=Zahl
                 y=x[i]
-    if len(y)>500:
+    if len(x)>200:
+        Print("Speicher voll")
         return -1
-    else:
-        #Höchste Nr Finden:
-        Nr=0
+    else:     
         #Schreiben
         Nr=Nr+1
-        cv2.imwrite(pBPM_Path + "/" + Sensor_Name + "_V" + str(Nr) + ".png", BPM, [cv2.IMWRITE_PNG_COMPRESSION,0])
+        cv2.imwrite(dir_path + "/" + Sensor_Name + "_V" + str(Nr) + ".png", BPM, [cv2.IMWRITE_PNG_COMPRESSION,0])
         return 0
 
-def BPM_Read(pBPM_Path, Sensor_Name):
+def BPM_Read(Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
-    x=os.listdir(pBPM_Path)
+    x=os.listdir(dir_path)
     #Davon Sensor
-    #x=sort....
-    if x==0:
+    Nr=0
+    for i in range(len(x)):
+        DatName=str(x[i])
+        if DatName.find(Sensor_Name) !=-1:
+            Start=DatName.find("V",len(Sensor_Name))
+            Ende=DatName.find(".",len(Sensor_Name))
+            sZahl=DatName[Start+1:Ende]
+            #print(sZahl)
+            Zahl=int(sZahl)
+            if(Zahl>Nr):
+                Nr=Zahl
+                y=x[i]
+    if Nr==0:
         Print("Kein Korrekturdatensatz vorhanden, muss Erstellt werden") #Error Meldungen in GUI?
         return -1
     else:
-        BPM = imP.importFunction(pBPM_Path+"/"+Sensor_Name+"_V"+Nr+".png") #???
-        return BPM
+        BPM = imP.importFunction(dir_path+"//"+Sensor_Name+"_V"+str(Nr)+".png") #???
+        return BPM[0]
+
+global dir_path
+dir_path = '%s\\Bad_Pixel Map\\' %  os.environ['APPDATA'] 
+if not os.path.exists(dir_path):
+    os.makedirs(dir_path)

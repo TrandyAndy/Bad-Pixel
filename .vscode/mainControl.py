@@ -31,12 +31,12 @@ importPath = "MethodentestBearbeitet.png"
 bildDaten = imP.importFunction(importPath)
 bildDaten[0,0,0]=12 #Unfug
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
-if True:
+if False:
     BAD=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
     #Speichern
-#     Speichern.BPM_Save(r"C:\Users\u2887166\Documents\GitHub\Bad-Pixel\BPM_Speicher",BAD,"X-Ray1")
-# else:
-#     BAD=BPM_Read(0,"Peter") #Aus Speicher laden.
+    Speichern.BPM_Save(BAD,"X-Ray1")
+else:
+    BAD=Speichern.BPM_Read("Paint") #Aus Speicher laden.
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:
@@ -54,7 +54,7 @@ telemetry.markPixels(BAD,bildDaten[0])
 cv2.imwrite("_korriegiert GOOD_NB2_NARC.png", GOOD_NB2_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_NB2_NMFC.png", GOOD_NB2_NMFC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_NB2_NSRC.png", GOOD_NB2_NSRC, [cv2.IMWRITE_PNG_COMPRESSION,0])
-cv2.imwrite("_korriegiert GOOD_NB.png", GOOD_NB_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_NB.png", GOOD_NB, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NARC.png", GOOD_Grad_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NMFC.png", GOOD_Grad_NMFC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NSRC.png", GOOD_Grad_NSRC, [cv2.IMWRITE_PNG_COMPRESSION,0])
