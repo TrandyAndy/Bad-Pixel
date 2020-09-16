@@ -20,10 +20,11 @@ import cv2
 import telemetry
 import cProfile 
 import verpixler
+import Speichern
 
 """ Pfad der Bilddateien:______________________________________________________________________________________ """
-#importPath = ".vscode\Serie 4 original.png"
-importPath = "MethodentestBearbeitet.png"
+importPath = ".vscode\Serie 4 original.png"
+#importPath = "Methodentest.bmp"
 
 
 """ Import der Bilddateien:______________________________________________________________________________________ """
@@ -33,6 +34,10 @@ bildDaten = imP.importFunction(importPath)
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
 if True:
     BAD=detection.advancedMovingWindow(bildDaten[0],Faktor=2.5,Fensterbreite=5)[0] #F=4
+    #Speichern
+    Speichern.BPM_Save(r"C:\Users\u2887166\Documents\GitHub\Bad-Pixel\BPM_Speicher",BAD,"X-Ray1")
+else:
+    BAD=BPM_Read(0,"Peter") #Aus Speicher laden.
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:
