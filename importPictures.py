@@ -8,7 +8,15 @@
  * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren, To-Do: Datei in OpenCV Format importieren
  */
  """
+import pickle
+import json
 
+dogs_dict = { 'Ozzy': 3, 'Filou': 8, 'Luna': 5, 'Skippy': 10, 'Barco': 12, 'Balou': 9, 'Laika': 16 }
+filename = 'dogs'
+outfile = open(filename,'wb')
+
+pickle.dump(dogs_dict,outfile)
+outfile.close()
 
 import os                                                                   # Für die Path-Manipulation
 import numpy as np                                                          # Für Arrays
