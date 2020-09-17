@@ -36,7 +36,7 @@ if False:
     #Speichern
     Speichern.BPM_Save(BAD,"X-Ray1")
 else:
-    BAD=Speichern.BPM_Read("Paint") #Aus Speicher laden.
+    BAD=Speichern.BPM_Read("X-Ray1") #Aus Speicher laden.
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:

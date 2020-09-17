@@ -3,21 +3,29 @@
 
 
 import json 
+import Speichern #soll Später alles in Speichern
 
 # Data to be written 
 data ={ 
     "Firma" : "Römatek",
-	"Sensor" : "X-0815", 
-	"Datum" : 20200915, 
-	"Anz_Bilder" : 0, 
-	"last_Fensterbreite_advWindow" : "8",
+    "Autor": "Julian und Andy",
+    "Datum" : 20200915, 
+    "Sensor" : [
+        {
+            "Sensor_Name" : "X-0815",
+            "Anz_Bilder" : 0, 
+	        "last_Fensterbreite_advWindow" : "88",
+            "last_Faktor_advWindow" : "3",
+        }
+    ], 
+
     "Flat_Field_Bilder": [
         {
             "Hell_Bild": False,
             "Dunkel_Bild": False
         }
-    ],
-    "Autor": "Julian und Andy"
+    ]
+    
 
 } 
 
@@ -25,7 +33,7 @@ data ={
 json_object = json.dumps(data, indent = 4) 
 
 # Writing to sample.json 
-with open("config.json", "w") as outfile: 
+with open(Speichern.dir_path+"\\config.json", "w") as outfile: 
 	outfile.write(json_object) 
 
 
@@ -34,7 +42,7 @@ with open("config.json", "w") as outfile:
 # from a file 
 
 # Opening JSON file 
-with open('config.json', 'r') as openfile: 
+with open(Speichern.dir_path+"\\config.json", "r") as openfile: 
 
 	# Reading from json file 
 	json_object = json.load(openfile) 

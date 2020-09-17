@@ -183,9 +183,20 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
         return -1
     a= Bild-Dunkel_Mittel_Bild
     b= Hell_Mittel_Bild-Dunkel_Mittel_Bild
-    #b=np.array([1,2,3,4,5,6,7,0,0,8,9,0])
+    # a=np.array([1,3,4,5,5,6,7,0,1,4,4,1])
+    # b=np.array([1,2,3,4,5,6,7,0,0,8,9,0])
     Zero=np.where(b==0)
     print(Zero)
     for z in Zero:
         b[z]=1 #zu groß
-    return (a/b)*2**16
+    c=np.divide(a,b)
+    c=(c.reshape(-1))
+    for i in range(len(c)):
+        if c[i]>1.2:
+            print(i, c[i])
+            c[i]=1
+    m=np.amax(c)
+    c=np.divide(c,m)
+    x=c*2**16-1
+    x=np.uint(x.reshape(512,512))
+    return x

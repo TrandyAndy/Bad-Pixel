@@ -45,7 +45,7 @@ def BPM_Read(Sensor_Name):
                 Nr=Zahl
                 y=x[i]
     if Nr==0:
-        Print("Kein Korrekturdatensatz vorhanden, muss Erstellt werden") #Error Meldungen in GUI?
+        print("Kein Korrekturdatensatz vorhanden, muss Erstellt werden") #Error Meldungen in GUI?
         return -1
     else:
         BPM = imP.importFunction(dir_path+"//"+Sensor_Name+"_V"+str(Nr)+".png") #???
