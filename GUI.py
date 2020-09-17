@@ -24,7 +24,6 @@ import importPictures as imP
 #from Mainwindow import MainWindow
 
 
-
 #### globale Variablen ####
 aktuellerTab = 0    # Zustand des Tabs der GUI
 anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
@@ -40,7 +39,14 @@ msgBox = widgets.QMessageBox()  # Die Message Box
 def msgButtonClick():
     print("message")
 
-
+sensorList = ["Bitte Ihren Sensor auswählen"]
+sensorList.append("CT1")
+sensorList.append("CT2")
+bpmList = ["Bitte die gewünschte BPM auswählen"]
+bpmList.append("BPM vom 27.02.20")
+bpmList.append("BPM vom 28.02.20")
+mW.comboBoxBPMSensor.addItems(sensorList)
+mW.comboBoxBPMChoose.addItems(bpmList)
 
 
 #### UI Aktionen Funktionen #### 
@@ -152,6 +158,12 @@ def neueBPM():
     # mW.lineEditBPM.setText(filename)
     #print("Ordnerdialog geöffnet", filename)
     if nB.exec() == widgets.QDialog.Accepted:
+        global sensorList
+        sensorList.append(nB.lineEditNeueBPM.text())
+        #mW.comboBoxBPMSensor.clear()
+        #mW.comboBoxBPMSensor.addItems(sensorList)
+        mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
+        mW.comboBoxBPMSensor.setCurrentIndex(1)
         print("Läuft 3")
     print("NeueBPM geöffnet")   # debug
 
@@ -337,6 +349,9 @@ mW.pushButtonAlgorithmusSuchenEinstellungen.clicked.connect(buttonAlgorithmusSuc
 mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(korrigierenEnable)
 mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(buttonAlgorithmusKorrigierenEinstellungen)
 
+eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
 
 #### QT UI anzeigen####
 mW.show()

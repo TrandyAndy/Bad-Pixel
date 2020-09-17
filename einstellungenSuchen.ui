@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="groupBoxSchwellwert">
      <property name="title">
       <string>Schwellwertfilter</string>
      </property>
@@ -95,7 +95,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="groupBoxMoving">
      <property name="title">
       <string>Moving-Window</string>
      </property>
@@ -167,7 +167,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QGroupBox" name="groupBoxDynamic">
      <property name="title">
       <string>Dynamic-Check</string>
      </property>
