@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>595</width>
-    <height>558</height>
+    <width>618</width>
+    <height>598</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -50,21 +50,25 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QLabel" name="label_2">
+             <widget class="QLabel" name="labelBPMchoose">
               <property name="text">
                <string>Bad-Pixel-Map auswählen:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBoxBPMChoose"/>
+             <widget class="QComboBox" name="comboBoxBPMChoose">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
           <item>
            <widget class="QPushButton" name="pushButtonBPM">
             <property name="text">
-             <string>Neue Bad-Pixel-Map erstellen ...</string>
+             <string>Neuer Sensor erstellen ...</string>
             </property>
            </widget>
           </item>
@@ -262,47 +266,51 @@ p, li { white-space: pre-wrap; }
             <property name="title">
              <string/>
             </property>
-            <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
               <widget class="QCheckBox" name="checkBox_4">
                <property name="text">
                 <string>Schwellwertfilter</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
+             <item>
               <widget class="QCheckBox" name="checkBox_5">
                <property name="text">
                 <string>Dynamic-Check</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item>
               <widget class="QCheckBox" name="checkBox_6">
                <property name="text">
                 <string>Moving-Window</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="2">
-              <widget class="QPushButton" name="pushButtonAlgorithmusSuchenEinstellungen">
-               <property name="text">
-                <string>Weitere Einstellungen ...</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <spacer name="horizontalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <spacer name="horizontalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonAlgorithmusSuchenEinstellungen">
+                 <property name="text">
+                  <string>Weitere Einstellungen ...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
@@ -326,8 +334,8 @@ p, li { white-space: pre-wrap; }
             <property name="title">
              <string/>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
               <widget class="QRadioButton" name="radioButton_9">
                <property name="text">
                 <string>Nachbar-Verfahren</string>
@@ -337,46 +345,57 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
+             <item>
               <widget class="QRadioButton" name="radioButton_10">
                <property name="text">
                 <string>Gradient-Verfahren</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item>
               <widget class="QRadioButton" name="radioButton_11">
                <property name="text">
                 <string>Nagao</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QRadioButton" name="radioButton_12">
-               <property name="text">
-                <string>Flat-Field-Korrektur</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <spacer name="horizontalSpacer_2">
+             <item>
+              <widget class="Line" name="line_2">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>299</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
+              </widget>
              </item>
-             <item row="4" column="1">
-              <widget class="QPushButton" name="pushButtonAlgorithmusKorrigierenEinstellungen">
+             <item>
+              <widget class="QCheckBox" name="checkBox">
                <property name="text">
-                <string>Weitere Einstellungen ...</string>
+                <string>zusätzlich Flat-Field-Korrektur</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>299</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonAlgorithmusKorrigierenEinstellungen">
+                 <property name="text">
+                  <string>Weitere Einstellungen ...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
@@ -441,7 +460,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>595</width>
+     <width>618</width>
      <height>22</height>
     </rect>
    </property>

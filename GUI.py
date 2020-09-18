@@ -39,6 +39,8 @@ msgBox = widgets.QMessageBox()  # Die Message Box
 def msgButtonClick():
     print("message")
 
+
+
 sensorList = ["Bitte Ihren Sensor auswählen"]
 sensorList.append("CT1")
 sensorList.append("CT2")
@@ -166,9 +168,11 @@ def neueBPM():
         mW.comboBoxBPMSensor.setCurrentIndex(1)
         print("Läuft 3")
     print("NeueBPM geöffnet")   # debug
+def setEnabledBPM(flag):
+    mW.labelBPMchoose.setEnabled(False)
+    mW.comboBoxBPMChoose.setEnabled(flag)
 
-
-    
+setEnabledBPM(False)   
 
 ### Tab Bilddaten
 def buttonBilddatenDurchsuchen():   # Ordner importieren
