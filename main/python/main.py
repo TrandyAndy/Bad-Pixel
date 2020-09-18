@@ -10,6 +10,7 @@ import types
 import os
 import numpy as np
 
+
 import importPictures as imP
 import exportPictures as exP
 
@@ -205,12 +206,17 @@ if __name__ == '__main__':
                 anzahlBilder = anzahlBilder + len(imageFiles)
                 mW.tableWidgetBilddaten.setRowCount(anzahlBilder) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
                 for index in range(len(imageFiles)):  # Alle importieren Bilder durchgehen
-                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,0, widgets.QTableWidgetItem(imageFiles[index])) # Den Dateinamen aller markierten Bilder in die erste Spalte schreiben
+                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,0, widgets.QTableWidgetItem(imageFiles[index]) ) # Den Dateinamen aller markierten Bilder in die erste Spalte schreiben
                     print(dirname + "/" + imageFiles[index])
-                    rows, cols, anzahlHisBilder = imP.getAufloesungUndAnzahl(dirname + "/" + imageFiles[index])
+                    rows, cols, anzahlHisBilder, farbtiefe = imP.getAufloesungUndAnzahlUndFarbtiefe(os.path.join(dirname,imageFiles[index]))
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,3, widgets.QTableWidgetItem( str(dirname + "/" + imageFiles[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
+                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,3, widgets.QTableWidgetItem(  farbtiefe ) )
+                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,4, widgets.QTableWidgetItem( str(os.path.join(dirname,imageFiles[index])) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
+                    # zentrieren
+                    mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(imageFiles))), 1).setTextAlignment(core.Qt.AlignCenter)
+                    mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(imageFiles))), 2).setTextAlignment(core.Qt.AlignCenter)
+                    mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(imageFiles))), 3).setTextAlignment(core.Qt.AlignCenter)
                 #else:
                 #print("Abgebbrochen")
                 print("Keine Unterordner importieren")
@@ -230,15 +236,22 @@ if __name__ == '__main__':
         # print(anzahlBilder) # debug
         for index in range(len(filename)):  # Alle importieren Bilder durchgehen
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,0, widgets.QTableWidgetItem( os.path.basename(filename[index]))) # Den Dateinamen aller markierten Bilder in die erste Spalte schreiben
-            rows, cols, anzahlHisBilder = imP.getAufloesungUndAnzahl(filename[index])
+            rows, cols, anzahlHisBilder, farbtiefe = imP.getAufloesungUndAnzahlUndFarbtiefe(filename[index])
             # data = imP.importUIFunction(filename[index])
             # print(data, imP.np.shape(data))
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-            mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
+            mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe ) )
+            mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
+            mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
+            mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 2).setTextAlignment(core.Qt.AlignCenter)
+            mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 3).setTextAlignment(core.Qt.AlignCenter)
         #print(os.path.basename(filename[0]))
-        
-        #imP.importUIFunction(filename)
+        imP.importUIFunction(filename[0])
+        if imP.checkGreyimage(filename[0]):
+            print("Graubild")
+        else:
+            print("Farbbild")
 
         # print("buttonBilddatenAddDurchsuchen")    # debug
     

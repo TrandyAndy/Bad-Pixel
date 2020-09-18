@@ -112,7 +112,10 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):       
 def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
     bild = cv2.imread(pImportPath, flags= -1)
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
-    bildDaten[0] = bild
+    if np.shape(bildDaten[0]) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
+        bildDaten[0] = bild
+    else:
+        print("Farbbild")
     #cv2.imshow('image', bildDaten[0])
     #cv2.waitKey()
     #cv2.destroyAllWindows()
@@ -131,7 +134,7 @@ def importUIFunction(pImportPath, pExport = False): # Rückgabe Bild-Array und A
         bildDaten = importFunction(pImportPath)
     return bildDaten
 
-def getAufloesungUndAnzahl(pImportPath):
+def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
     dateiEndung = os.path.splitext(os.path.basename(pImportPath)) [1]
     if dateiEndung == ".his": # Eine his-Datei
         fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
@@ -139,11 +142,20 @@ def getAufloesungUndAnzahl(pImportPath):
         rows = int(np.take(data, 8))                                            # Reihen bestimmen, in int konvertieren, ansonsten overflow Error bei der Funktion fromfile()
         cols = int(np.take(data, 9))                                            # Spalten bestimmen
         fd.close()        
-        anzahl = getNumberImages(pImportPath, rows, cols)                                                      # File schließen
+        anzahl = getNumberImages(pImportPath, rows, cols)                                                     # File schließen
+        farbtiefe = data.dtype.name
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
         bild = cv2.imread(pImportPath, flags= -1)
         rows = np.shape(bild)[0]
         cols = np.shape(bild)[1]
         anzahl = 1
-    return rows, cols, anzahl
- 
+        farbtiefe = bild.dtype.name
+    return rows, cols, anzahl, farbtiefe
+
+def checkGreyimage(pImportPath):
+    bild = cv2.imread(pImportPath, flags= -1)
+    bildDaten = np.zeros( (np.shape(bild)[0], np.shape(bild)[1]), dtype=bild.dtype)
+    if np.shape(bildDaten) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
+        return True
+    else:
+        return False

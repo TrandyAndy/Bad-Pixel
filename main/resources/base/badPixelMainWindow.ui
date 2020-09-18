@@ -185,6 +185,11 @@ p, li { white-space: pre-wrap; }
             </column>
             <column>
              <property name="text">
+              <string>Farbtiefe</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
               <string>Pfad</string>
              </property>
             </column>
