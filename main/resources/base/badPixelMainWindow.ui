@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>618</width>
-    <height>598</height>
+    <width>590</width>
+    <height>571</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -460,7 +460,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>618</width>
+     <width>590</width>
      <height>22</height>
     </rect>
    </property>
