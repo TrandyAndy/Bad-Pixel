@@ -11,7 +11,7 @@ import os
 import numpy as np
 
 import importPictures as imP
-
+import exportPictures as exP
 
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext    # für das fbs
@@ -82,6 +82,11 @@ if __name__ == '__main__':
             mW.tabWidget.setCurrentIndex(aktuellerTab)
             return False
         # Check Algorithmus
+
+        # Export Aufruf
+        # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
+        # exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(), image[0])
+
 
         print("startClicked")   # debug
         

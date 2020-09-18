@@ -4,14 +4,13 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-09-14 12:56:47
+ * @Last Modified time: 2020-09-18 14:42:32
  * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren, To-Do: Datei in OpenCV Format importieren
  */
  """
 import os                                                                   # Für die Path-Manipulation
 import numpy as np                                                          # Für Arrays
 import cv2                                                                  # Import OpenCV
-
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
     file = open(pImportPath,'rb')                                           # File erneut öffnen, da ansonsten der "Cursor" falsch liegt
