@@ -1,6 +1,8 @@
 import os
 import cv2
 import importPictures as imP
+from pathlib import Path
+import PyQt5.QtCore as core
 
 def BPM_Save(BPM, Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
@@ -25,7 +27,8 @@ def BPM_Save(BPM, Sensor_Name):
     else:     
         #Schreiben
         Nr=Nr+1
-        cv2.imwrite(dir_path + "/" + Sensor_Name + "_V" + str(Nr) + ".png", BPM, [cv2.IMWRITE_PNG_COMPRESSION,0])
+        Datei_path=os.sep.join([dir_path,Sensor_Name+"_V"+str(Nr)+".png"])
+        cv2.imwrite(Datei_path, BPM, [cv2.IMWRITE_PNG_COMPRESSION,0])
         return 0
 
 def BPM_Read(Sensor_Name):
@@ -48,10 +51,15 @@ def BPM_Read(Sensor_Name):
         print("Kein Korrekturdatensatz vorhanden, muss Erstellt werden") #Error Meldungen in GUI?
         return -1
     else:
-        BPM = imP.importFunction(dir_path+"//"+Sensor_Name+"_V"+str(Nr)+".png") #???
+        Datei_path=os.sep.join([dir_path,Sensor_Name+"_V"+str(Nr)+".png"])
+        BPM = imP.importFunction(Datei_path) #???
         return BPM[0]
 
 global dir_path
-dir_path = '%s\\Bad_Pixel Map\\' %  os.environ['APPDATA'] 
+#dir_path = '%s\\Bad_Pixel Map\\' %  os.environ['APPDATA'] 
+#os.path.join(os.environ['HOME'], 'MYPROJECT')
+dir_path = core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation)
+dir_path=os.sep.join([dir_path,"Bad_Pixel Maps"])
+print(dir_path)
 if not os.path.exists(dir_path):
     os.makedirs(dir_path)
