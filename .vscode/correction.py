@@ -181,22 +181,20 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     if(np.shape(Bild) != np.shape(Hell_Mittel_Bild) or np.shape(Bild) != np.shape(Dunkel_Mittel_Bild)):
         print("Digga schau das die Dimensionen passen!")
         return -1
+    hoehe, breite = np.shape(Bild)
     a= Bild-Dunkel_Mittel_Bild
     b= Hell_Mittel_Bild-Dunkel_Mittel_Bild
     # a=np.array([1,3,4,5,5,6,7,0,1,4,4,1])
     # b=np.array([1,2,3,4,5,6,7,0,0,8,9,0])
-    Zero=np.where(b==0)
-    print(Zero)
-    for z in Zero:
-        b[z]=1 #zu groß
+    b=np.where(b!=0,b,1)
     c=np.divide(a,b)
     c=(c.reshape(-1))
     for i in range(len(c)):
-        if c[i]>1.2:
+        if c[i]>1.2: # passiet nur im Fehlerfall 2 falsche bilder
             print(i, c[i])
-            c[i]=1
+            c[i]=0.2
     m=np.amax(c)
     c=np.divide(c,m)
-    x=c*2**16-1
-    x=np.uint(x.reshape(512,512))
-    return x
+    beautiful=c*2**16-1
+    beautiful=np.uint(x.reshape(hoehe,breite))
+    return beautiful
