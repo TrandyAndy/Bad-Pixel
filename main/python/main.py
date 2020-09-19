@@ -199,7 +199,7 @@ if __name__ == '__main__':
                 anzahlBilderLocal = 0
                 imageFiles = []
                 for aktuellesFile in files:
-                    dateiEndung = os.path.splitext(aktuellesFile) [1]
+                    dateiEndung = (os.path.splitext(aktuellesFile) [1]).lower() # lower für Windos
                     if dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff" or dateiEndung == ".his":
                         #anzahlBilderLocal = anzahlBilderLocal + 1
                         imageFiles.append(aktuellesFile)
