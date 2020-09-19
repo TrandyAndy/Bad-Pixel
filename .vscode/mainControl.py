@@ -24,17 +24,17 @@ import Speichern
 
 """ Pfad der Bilddateien:______________________________________________________________________________________ """
 importPath = ".vscode\Serie 4 original.png"
-importPath = "MethodentestBearbeitet.png"
+#importPath = "MethodentestBearbeitet.png"
 
 
 """ Import der Bilddateien:______________________________________________________________________________________ """
 bildDaten = imP.importFunction(importPath)
 bildDaten[0,0,0]=12 #Unfug
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
-if False:
+if True:
     BAD=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
     #Speichern
-    Speichern.BPM_Save(BAD,"X-Ray1")
+    Speichern.BPM_Save(BAD,"Quelle1")
 else:
     BAD=Speichern.BPM_Read("X-Ray1") #Aus Speicher laden.
 
