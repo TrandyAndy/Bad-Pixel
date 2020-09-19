@@ -125,17 +125,19 @@ def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung We
         cv2.waitKey()
         cv2.destroyAllWindows()      
     return bildDaten
-
+   
+   
 def importUIFunction(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
-    dateiEndung = os.path.splitext(os.path.basename(pImportPath)) [1]
+    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower()
     if dateiEndung == ".his": # Eine his-Datei
         bildDaten = importFunction(pImportPath)
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
         bildDaten = importFunction(pImportPath)
     return bildDaten
 
+   
 def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
-    dateiEndung = os.path.splitext(os.path.basename(pImportPath)) [1]
+    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen großschreiben
     if dateiEndung == ".his": # Eine his-Datei
         fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
         data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
@@ -158,4 +160,4 @@ def checkGreyimage(pImportPath):
     if np.shape(bildDaten) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
         return True
     else:
-        return False
+        return False   
