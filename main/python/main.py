@@ -1,6 +1,16 @@
-from fbs_runtime.application_context.PyQt5 import ApplicationContext    # für das fbs
-from PyQt5.QtWidgets import QMainWindow                                 # für das fbs
+"""
+/*
+ * @Author: Julian Schweizerhof und Andreas Bank
+ * @Email: diegruppetg@gmail.com
+ * @Date: 2020-09-20 16:41:38
+ * @Last Modified by: JLS666
+ * @Last Modified time: 2020-09-20 17:33:15
+ * @Description: Main des Projektes, primär ermöglicht diese Datei die GUI
+ */
+"""
 
+""" Import der Bibliotheken:__________________________________________________________________________________"""
+from fbs_runtime.application_context.PyQt5 import ApplicationContext    # für das fbs
 import sys
 import PyQt5.QtCore as core
 import PyQt5.QtWidgets as widgets
@@ -9,8 +19,7 @@ import PyQt5.uic as uic
 import types
 import os
 import numpy as np
-
-
+# lokale Biblioteken
 import importPictures as imP
 import exportPictures as exP
 
@@ -20,7 +29,6 @@ if __name__ == '__main__':
     #### globale Variablen ####
     aktuellerTab = 0    # Zustand des Tabs der GUI
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
-    print("Julian mach Teams an! ;D")
 
     #### UI Vorraussetzungen ####
     app = widgets.QApplication(sys.argv)
@@ -157,6 +165,8 @@ if __name__ == '__main__':
             mW.groupBoxKorrigieren.setEnabled(False)
             # print("not Checked") # debug
         mW.checkBoxBilddaten.setVisible(False) # noch nicht implementiert
+        # Einstellungen Korrigieren
+        eKSliderNachbarFensterbreite()
     ### Tab Sensor / BPM
     def neueBPM():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
@@ -354,6 +364,20 @@ if __name__ == '__main__':
     def radioButtonFlatFieldKorrekturNeue():
         fF.groupBox.setEnabled(True)
         print("Radio Button FFK Hell")
+
+    ### Einstellungen Suchen
+    
+    ### Einstellungen Korrektur 
+    eK.horizontalSliderNachbarFensterbreite.setMinimum(1)
+    eK.horizontalSliderNachbarFensterbreite.setMaximum(4)
+    eK.horizontalSliderNachbarFensterbreite.setTickInterval(1)
+    def eKSliderNachbarFensterbreite():
+        value = eK.horizontalSliderNachbarFensterbreite.value()
+        #eK.labelNachbarFensterbreite.setStyleSheet('color: red')
+        eK.labelNachbarFensterbreite.setText(str((value*2)+1))  # 3, 5, 7, 9
+        print("eKSliderNachbarFensterbreite", value)   # debug
+
+     
     #### UI Aktionen #### 
     ### Allgemein
     uiSetup()
@@ -387,6 +411,12 @@ if __name__ == '__main__':
     ### Flat-Field-Korrektur
     fF.radioButtonGespeicherteBilder.clicked.connect(radioButtonFlatFieldKorrekturGespeicherte)
     fF.radioButtonNeueBilder.clicked.connect(radioButtonFlatFieldKorrekturNeue)
+    
+    ### Einstellungen Suchen
+    
+    ### Einstellungen Korrektur
+    eK.horizontalSliderNachbarFensterbreite.valueChanged.connect(eKSliderNachbarFensterbreite)
+    
     #### QT UI anzeigen####
     mW.show()
 
