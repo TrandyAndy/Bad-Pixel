@@ -76,8 +76,8 @@ if __name__ == '__main__':
 
 
         # Import Pictures
-        
-
+        bildDaten = imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text())
+        #print(bildDaten)
 
         # Suchen
 
