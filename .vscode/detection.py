@@ -15,7 +15,7 @@ import numpy as np
 import math
 
 global Lichtschutz
-Lichtschutz = 0.03 #10%
+Lichtschutz = 0.02 #10%
 
 # Hot Pixel finder:
 def HotPixelFinder(D2_Bild, Schwelle=0.99):
@@ -77,7 +77,7 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     Fehler=np.nonzero(BPM)
     Fehler=len(Fehler[0])
     print("Multi Picture findet ",Fehler)
-    return BPM*100, Fehler #Nicht Digital ;D
+    return BPM, Fehler 
     
 
 def top(x,Max):
@@ -112,7 +112,7 @@ def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
                 Zaehler +=1
                 #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
-    return BPM*100 ,Zaehler #nicht Digital
+    return BPM ,Zaehler 
 
 def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle und Dunkle!) , Faktor ist Schwellwert für Erkennung. 1.03-1.2
     Anz, hoehe, breite = np.shape(D3_Bilder)
@@ -142,9 +142,9 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
                 BPM[s,z]=1 #Digital 
                 Zaehler+=1
     print(Zaehler," Fehler gefunden (DynamikCheck).")
-    return BPM*100, Zaehler #nicht Digital
+    return BPM, Zaehler 
 
 def Mapping(BPM_A,BPM_B,BPM_C=0):
     BPM=np.logical_or(BPM_A,BPM_B)
     BPM=np.logical_or(BPM,BPM_C)
-    return BPM*100 #Not Digital
+    return BPM

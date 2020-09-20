@@ -189,15 +189,17 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     b=np.where(b!=0,b,1)
     c=np.divide(a,b)
     c=(c.reshape(-1))
+    Fehler=0
     for i in range(len(c)):
         if c[i]>1.2: # passiet nur im Fehlerfall 2 falsche bilder
-            print(i, c[i])
+            print(i, c[i]," Falsches Bild gewählt")
+            Fehler=Fehler+1
             c[i]=0.2
     m=np.amax(c)
     c=np.divide(c,m)
     beautiful=c*2**16-1
-    beautiful=np.uint(x.reshape(hoehe,breite))
-    return beautiful
+    beautiful=np.uint(beautiful.reshape(hoehe,breite))
+    return beautiful Fehler
 
 def Hybrid(Bild, BPM,Methode=1): #zusätzlich Einstellungen?
     beautiful=Gradient(Bild, BPM, Methode)

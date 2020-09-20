@@ -24,22 +24,29 @@ import Speichern
 
 """ Pfad der Bilddateien:______________________________________________________________________________________ """
 importPath = ".vscode\Serie 4 original.png"
+importPath_Flat = "FFC_Bilder\Bildserie2_160kV_70uA_mittelwert.png"
+importPath_Hell = "FFC_Bilder\Bildserie1_160kV_70uA_mittelwert.png" #MW Bild
+importPath_Dunkel = "FFC_Bilder\Bildserie1_160kV_0uA_mittelwert.png"
 #importPath = "MethodentestBearbeitet.png"
 
 
 """ Import der Bilddateien:______________________________________________________________________________________ """
 bildDaten = imP.importFunction(importPath)
+bildDaten_Flat = imP.importFunction(importPath_Flat)
+bildDaten_Hell = imP.importFunction(importPath_Hell)
+bildDaten_Dunkel = imP.importFunction(importPath_Dunkel)
+bildDaten=np.concatenate((bildDaten,bildDaten_Hell,bildDaten_Dunkel,bildDaten_Flat))
 bildDaten[0,0,0]=12 #Unfug
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
-if True:
+if False:
     BAD1=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
-    BAD2=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=1,GrenzeDead=0.2)[0] 
-    #BAD3=detection.dynamicCheck(bildDaten, Faktor=1.5)[0]
-    BAD=detection.Mapping(BAD1,BAD2)
+    BAD2=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0] 
+    BAD3=detection.dynamicCheck(bildDaten, Faktor=1.05)[0]
+    BAD=detection.Mapping(BAD1,BAD2,BAD3)*100
     #Speichern
     Speichern.BPM_Save(BAD,"Quelle1")
 else:
-    BAD=Speichern.BPM_Read("X-Ray1") #Aus Speicher laden.
+    BAD=Speichern.BPM_Read("Quelle1") #Aus Speicher laden.
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:
@@ -51,10 +58,17 @@ if True:
     GOOD_Grad_NARC=np.uint16(correction.Gradient(bildDaten[0],BAD,2))
     GOOD_Grad_NMFC=np.uint16(correction.Gradient(bildDaten[0],BAD,1))
     GOOD_Grad_NSRC=np.uint16(correction.Gradient(bildDaten[0],BAD,3))
-    GOOD_Zyklus=np.uint16(correction.Zyklisch(bildDaten[0], BAD,1))
+    GOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten[0], BAD,1))
+    FGOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten_Flat[0], BAD,1))
+    HGOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten_Hell[0], BAD,1))
+    DGOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten_Dunkel[0], BAD,1))
+    GOOD_Flatfield=np.uint16(correction.Flatfield(FGOOD_Hybrid,HGOOD_Hybrid,DGOOD_Hybrid))
 
 """ Audgabe der Bilder Plots und Ergebnisse:______________________________________________________________________________________ """
-telemetry.markPixels(BAD,bildDaten[0])
+#telemetry.markPixels(BAD1,bildDaten[0],bgr=0,Algorithmus="advWindow",schwelle=1)
+#telemetry.markPixels(BAD2,bildDaten[0],bgr=1,Algorithmus="Schwelle",schwelle=1)
+#telemetry.markPixels(BAD3,bildDaten[0],bgr=2,Algorithmus="Dynamik",schwelle=1)
+telemetry.markPixels(BAD,bildDaten[0],bgr=0,Algorithmus="Hybrid",schwelle=1)
 cv2.imwrite("_korriegiert GOOD_NB2_NARC.png", GOOD_NB2_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_NB2_NMFC.png", GOOD_NB2_NMFC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_NB2_NSRC.png", GOOD_NB2_NSRC, [cv2.IMWRITE_PNG_COMPRESSION,0])
@@ -62,4 +76,5 @@ cv2.imwrite("_korriegiert GOOD_NB.png", GOOD_NB, [cv2.IMWRITE_PNG_COMPRESSION,0]
 cv2.imwrite("_korriegiert GOOD_Grad_NARC.png", GOOD_Grad_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NMFC.png", GOOD_Grad_NMFC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NSRC.png", GOOD_Grad_NSRC, [cv2.IMWRITE_PNG_COMPRESSION,0])
-cv2.imwrite("_korriegiert GOOD_Zyklus.png", GOOD_Zyklus, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_Hybrid.png", GOOD_Hybrid, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert Flatfield.png", GOOD_Flatfield, [cv2.IMWRITE_PNG_COMPRESSION,0])
