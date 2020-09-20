@@ -4,12 +4,13 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-09-20 16:41:38
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-09-20 17:33:15
+ * @Last Modified time: 2020-09-20 18:41:14
  * @Description: Main des Projektes, primär ermöglicht diese Datei die GUI
  */
 """
 
 """ Import der Bibliotheken:__________________________________________________________________________________"""
+# globale Bibliotheken
 from fbs_runtime.application_context.PyQt5 import ApplicationContext    # für das fbs
 import sys
 import PyQt5.QtCore as core
@@ -19,10 +20,11 @@ import PyQt5.uic as uic
 import types
 import os
 import numpy as np
-# lokale Biblioteken
+# lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
 
+""" Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext    # für das fbs
 
@@ -167,6 +169,7 @@ if __name__ == '__main__':
         mW.checkBoxBilddaten.setVisible(False) # noch nicht implementiert
         # Einstellungen Korrigieren
         eKSliderNachbarFensterbreite()
+        eKSliderGradientFensterbreite()
     ### Tab Sensor / BPM
     def neueBPM():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
@@ -371,11 +374,19 @@ if __name__ == '__main__':
     eK.horizontalSliderNachbarFensterbreite.setMinimum(1)
     eK.horizontalSliderNachbarFensterbreite.setMaximum(4)
     eK.horizontalSliderNachbarFensterbreite.setTickInterval(1)
+    eK.horizontalSliderGradientFensterbreite.setMinimum(1)
+    eK.horizontalSliderGradientFensterbreite.setMaximum(4)
+    eK.horizontalSliderGradientFensterbreite.setTickInterval(1)
     def eKSliderNachbarFensterbreite():
         value = eK.horizontalSliderNachbarFensterbreite.value()
         #eK.labelNachbarFensterbreite.setStyleSheet('color: red')
         eK.labelNachbarFensterbreite.setText(str((value*2)+1))  # 3, 5, 7, 9
         print("eKSliderNachbarFensterbreite", value)   # debug
+    def eKSliderGradientFensterbreite():
+        value = eK.horizontalSliderGradientFensterbreite.value()
+        #eK.labelNachbarFensterbreite.setStyleSheet('color: red')
+        eK.labelGradientFensterbreite.setText(str((value*2)+1))  # 3, 5, 7, 9
+        print("eKSliderGradientFensterbreite", value)   # debug
 
      
     #### UI Aktionen #### 
@@ -416,6 +427,7 @@ if __name__ == '__main__':
     
     ### Einstellungen Korrektur
     eK.horizontalSliderNachbarFensterbreite.valueChanged.connect(eKSliderNachbarFensterbreite)
+    eK.horizontalSliderGradientFensterbreite.valueChanged.connect(eKSliderGradientFensterbreite)
     
     #### QT UI anzeigen####
     mW.show()
