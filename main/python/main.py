@@ -207,7 +207,7 @@ if __name__ == '__main__':
     setEnabledBPM(False)   
 
     ### Tab Bilddaten
-    def buttonBilddatenDurchsuchen():   # Ordner importieren
+    def mWBilddatenButtonOrdnerDurchsuchen():   # Ordner importieren
         dirname = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))    
         if dirname != "":  # wenn nicht auf abbrechen gedrückt wird
             mW.lineEditBilddatenDurchsuchen.setText(dirname)
@@ -215,7 +215,7 @@ if __name__ == '__main__':
         else:
             print("Abgebbrochen")
         print("Ordnerdialog Bilddaten geöffnet", dirname)
-    def buttonBilddatenImportieren():
+    def mWBilddatenButtonImportieren():
         global anzahlBilder
         dirname = mW.lineEditBilddatenDurchsuchen.text()
         if os.path.exists(dirname): # wenn der Pfad überhaupt existiert
@@ -420,8 +420,8 @@ if __name__ == '__main__':
     mW.pushButtonBPMBPMLoeschen.clicked.connect(mWBPMButtonBPMLoeschen)
 
     ### Tab Bilddaten
-    mW.pushButtonBilddatenDurchsuchen.clicked.connect(buttonBilddatenDurchsuchen)
-    mW.pushButtonBilddatenImportieren.clicked.connect(buttonBilddatenImportieren)
+    mW.pushButtonBilddatenOrdnerDurchsuchen.clicked.connect(mWBilddatenButtonOrdnerDurchsuchen)
+    mW.pushButtonBilddatenImportieren.clicked.connect(mWBilddatenButtonImportieren)
     mW.pushButtonBilddatenAdd.clicked.connect(buttonBilddatenAddDurchsuchen)
     mW.pushButtonBilddatenDelete.clicked.connect(buttonBilddatenDelete)
     mW.pushButtonBilddatenDeleteAll.clicked.connect(buttonBilddatenDeleteAll)
