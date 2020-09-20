@@ -88,23 +88,23 @@ if __name__ == '__main__':
         BPM_Dynamik=BPM_Schwellwert
         BPM_Window=BPM_Schwellwert
         if mW.checkBoxAlgorithmusSuchen.isChecked():
-            if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked):
+            if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
-                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten[0])
-            if(mW.checkBoxAlgorithmusDynamic.isChecked):
+                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten)[0]
+            if(mW.checkBoxAlgorithmusDynamic.isChecked()):
                 BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
-                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten[0])
-            if(mW.checkBoxAlgorithmusWindow.isChecked):
-                for i in range(np.shape(bildDaten[0])):
+                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten)[0]
+            if(mW.checkBoxAlgorithmusWindow.isChecked()):
+                for i in range(np.shape(bildDaten)[0]):
                     BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
                     Ladebalken_detect=Ladebalken_detect+1
         BAD_Ges=detection.Mapping(BPM_Schwellwert,BPM_Dynamik,BPM_Window)# Digital*100
         # Korrigieren
         if mW.checkBoxAlgorithmusKorrigieren.isChecked():
-            for i in range(np.shape(bildDaten[0])):
+            for i in range(np.shape(bildDaten)[0]):
                 if mW.radioButtonAlgorithmusNachbar.isChecked():
                     GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges))
-                elif mW.radioButtonAlgorithmusGradient():
+                elif mW.radioButtonAlgorithmusGradient().isChecked():
                     GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges))
                 #if mW.radioButtonAlgorithmusNagao():
                 # Export Aufruf
