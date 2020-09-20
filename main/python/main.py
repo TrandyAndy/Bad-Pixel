@@ -124,6 +124,7 @@ if __name__ == '__main__':
         if aktuellerTab > 0:
             mW.pushButtonMainBack.setVisible(True)
         # print(aktuellerTab)   # debug
+        Speichern.Write_json(DATA) #Schreiben am Ende
     def mWTabChanged():
         global aktuellerTab
         aktuellerTab = mW.tabWidget.currentIndex()
@@ -139,8 +140,9 @@ if __name__ == '__main__':
     def uiSetup():  # alles was beim Laden passieren soll
         # Aktuelle Tab speichern
         global aktuellerTab
-        DATA=Speichern.Read_json() #Lesen zu Beginn #-1 Abfangen?!
+        global DATA
         aktuellerTab = mW.tabWidget.currentIndex()
+        DATA=Speichern.Read_json() #Lesen zu Beginn #-1 Abfangen?!
         # Tab-Widget
         if aktuellerTab >= 3:
             mW.pushButtonMainForward.setText("Start")
@@ -151,7 +153,7 @@ if __name__ == '__main__':
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
         # Tab: Sensor/BPM
-        SensorList=Speichern.WelcheSensorenGibtEs(DATA)
+        sensorList=Speichern.WelcheSensorenGibtEs(DATA)[1]
         mW.comboBoxBPMSensor.addItems(sensorList)
         # Tab: Algorithmus - GroupBox Pixelfehler finden enablen
         if mW.checkBoxAlgorithmusSuchen.isChecked():
@@ -185,6 +187,7 @@ if __name__ == '__main__':
         if nB.exec() == widgets.QDialog.Accepted:
             global sensorList
             sensorList.append(nB.lineEditNeueBPM.text())
+            Speichern.SensorAnlegen(nB.lineEditNeueBPM.text(), DATA)
             #mW.comboBoxBPMSensor.clear()
             #mW.comboBoxBPMSensor.addItems(sensorList)
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
@@ -199,6 +202,7 @@ if __name__ == '__main__':
         else:
             del sensorList[aktuellerIndex]
             mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
+            Speichern.SensorLoschen(currentText,DATA)
         pass
     def mWBPMButtonBPMLoeschen():
         pass
