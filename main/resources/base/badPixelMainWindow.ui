@@ -294,21 +294,21 @@ p, li { white-space: pre-wrap; }
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_8">
              <item>
-              <widget class="QCheckBox" name="checkBox_4">
+              <widget class="QCheckBox" name="checkBoxAlgorithmusSchwellwertfilter">
                <property name="text">
                 <string>Schwellwertfilter</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkBox_5">
+              <widget class="QCheckBox" name="checkBoxAlgorithmusDynamic">
                <property name="text">
                 <string>Dynamic-Check</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkBox_6">
+              <widget class="QCheckBox" name="checkBoxAlgorithmusWindow">
                <property name="text">
                 <string>Moving-Window</string>
                </property>
@@ -362,7 +362,7 @@ p, li { white-space: pre-wrap; }
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
-              <widget class="QRadioButton" name="radioButton_9">
+              <widget class="QRadioButton" name="radioButtonAlgorithmusNachbar">
                <property name="text">
                 <string>Nachbar-Verfahren</string>
                </property>
@@ -372,14 +372,14 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButton_10">
+              <widget class="QRadioButton" name="radioButtonAlgorithmusVerfahren">
                <property name="text">
                 <string>Gradient-Verfahren</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButton_11">
+              <widget class="QRadioButton" name="radioButtonAlgorithmusNagao">
                <property name="text">
                 <string>Nagao</string>
                </property>
