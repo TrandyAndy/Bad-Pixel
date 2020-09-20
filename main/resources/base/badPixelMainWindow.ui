@@ -390,7 +390,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="checkBox">
+              <widget class="QCheckBox" name="checkBoxAlgorithmusFFK">
                <property name="text">
                 <string>zusätzlich Flat-Field-Korrektur</string>
                </property>

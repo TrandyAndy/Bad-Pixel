@@ -358,7 +358,10 @@ if __name__ == '__main__':
     def buttonAlgorithmusKorrigierenEinstellungen():
         if eK.exec() == widgets.QDialog.Accepted:
             print("Läuft 2")
-
+    def mWCheckBoxAlgorithmusFFK():
+        if mW.checkBoxAlgorithmusFFK.isChecked():
+            if fF.exec() == widgets.QDialog.Accepted:
+                print("Läuft")
     ### Flat-Field-Korrektur
 
     def radioButtonFlatFieldKorrekturGespeicherte():
@@ -414,7 +417,7 @@ if __name__ == '__main__':
     mW.pushButtonAlgorithmusSuchenEinstellungen.clicked.connect(buttonAlgorithmusSuchenEinstellungen)
     mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(korrigierenEnable)
     mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(buttonAlgorithmusKorrigierenEinstellungen)
-
+    mW.checkBoxAlgorithmusFFK.stateChanged.connect(mWCheckBoxAlgorithmusFFK)
     eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
