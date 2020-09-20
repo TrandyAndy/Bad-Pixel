@@ -196,6 +196,7 @@ if __name__ == '__main__':
         print("NeueBPM geöffnet")   # debug
     def mWBPMButtonSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
+        currentText = mW.comboBoxBPMSensor.currentText()
         print(aktuellerIndex)
         if aktuellerIndex == 0:
             pass
