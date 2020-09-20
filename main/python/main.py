@@ -96,12 +96,15 @@ if __name__ == '__main__':
         BAD_Ges=detection.Mapping(BPM_Schwellwert,BPM_Dynamik,BPM_Window)# Digital*100
         # Korrigieren
         if mW.checkBoxAlgorithmusKorrigieren.isChecked():
-            if mW.radioButtonAlgorithmusNachbar():
-            if mW.radioButtonAlgorithmusNachbar():
-            if mW.radioButtonAlgorithmusNachbar():
-        # Export Aufruf
+            for i in range(np.shape(bildDaten[0])):
+                if mW.radioButtonAlgorithmusNachbar.isChecked():
+                    GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges))
+                elif mW.radioButtonAlgorithmusGradient():
+                    GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges))
+                #if mW.radioButtonAlgorithmusNagao():
+                # Export Aufruf
+                exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
         # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
-        # exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(), image[0])
 
 
         print("startClicked")   # debug
