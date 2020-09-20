@@ -85,7 +85,7 @@ def Gradient(Bild, BPM, Methode=1, Laenge=10):
     Richtung=-1
     beautiful=copy.copy(Bild)
     l=int(Laenge/2)
-    großBild=np.zeros((hoehe+Laenge,breite+Laenge))
+    großBild=np.zeros((hoehe+Laenge,breite+Laenge)) #Radfehler müssen Weg!
     großBild[l:hoehe+l,l:breite+l]=Bild
     großBPM=np.zeros((hoehe+Laenge,breite+Laenge))
     großBPM[l:hoehe+l,l:breite+l]=BPM
@@ -197,4 +197,9 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     c=np.divide(c,m)
     beautiful=c*2**16-1
     beautiful=np.uint(x.reshape(hoehe,breite))
+    return beautiful
+
+def Hybrid(Bild, BPM,Methode=1): #zusätzlich Einstellungen?
+    beautiful=Gradient(Bild, BPM, Methode)
+    beautiful=nachbar2(beautiful, BPM, Methode)
     return beautiful

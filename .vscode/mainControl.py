@@ -32,7 +32,10 @@ bildDaten = imP.importFunction(importPath)
 bildDaten[0,0,0]=12 #Unfug
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
 if True:
-    BAD=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
+    BAD1=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
+    BAD2=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=1,GrenzeDead=0.2)[0] 
+    #BAD3=detection.dynamicCheck(bildDaten, Faktor=1.5)[0]
+    BAD=detection.Mapping(BAD1,BAD2)
     #Speichern
     Speichern.BPM_Save(BAD,"Quelle1")
 else:
@@ -48,6 +51,7 @@ if True:
     GOOD_Grad_NARC=np.uint16(correction.Gradient(bildDaten[0],BAD,2))
     GOOD_Grad_NMFC=np.uint16(correction.Gradient(bildDaten[0],BAD,1))
     GOOD_Grad_NSRC=np.uint16(correction.Gradient(bildDaten[0],BAD,3))
+    GOOD_Zyklus=np.uint16(correction.Zyklisch(bildDaten[0], BAD,1))
 
 """ Audgabe der Bilder Plots und Ergebnisse:______________________________________________________________________________________ """
 telemetry.markPixels(BAD,bildDaten[0])
@@ -58,3 +62,4 @@ cv2.imwrite("_korriegiert GOOD_NB.png", GOOD_NB, [cv2.IMWRITE_PNG_COMPRESSION,0]
 cv2.imwrite("_korriegiert GOOD_Grad_NARC.png", GOOD_Grad_NARC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NMFC.png", GOOD_Grad_NMFC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NSRC.png", GOOD_Grad_NSRC, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert GOOD_Zyklus.png", GOOD_Zyklus, [cv2.IMWRITE_PNG_COMPRESSION,0])
