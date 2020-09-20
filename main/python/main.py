@@ -469,7 +469,4 @@ if __name__ == '__main__':
     bpmList.append("BPM vom 28.02.20")
     mW.comboBoxBPMSensor.addItems(sensorList)
     mW.comboBoxBPMChoose.addItems(bpmList)
-
-
-
 Experimente Ende """
