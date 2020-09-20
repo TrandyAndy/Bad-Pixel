@@ -79,7 +79,6 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     print("Multi Picture findet ",Fehler)
     return BPM, Fehler 
     
-
 def top(x,Max):
     if x>=Max:
         return Max
@@ -144,7 +143,9 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     print(Zaehler," Fehler gefunden (DynamikCheck).")
     return BPM, Zaehler 
 
-def Mapping(BPM_A,BPM_B,BPM_C=0):
+def Mapping(BPM_A,BPM_B,BPM_C=0,BPM_D=0,BPM_E=0):
     BPM=np.logical_or(BPM_A,BPM_B)
     BPM=np.logical_or(BPM,BPM_C)
+    BPM=np.logical_or(BPM,BPM_D)
+    BPM=np.logical_or(BPM,BPM_E)
     return BPM

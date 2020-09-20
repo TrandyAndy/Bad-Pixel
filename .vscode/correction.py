@@ -128,7 +128,7 @@ def Methoden(Pixels, Methode):
     elif Methode==3: #NSRC
         flatPixels=(np.reshape(Pixels,-1))
         l=len(flatPixels)
-        m=int(l/2-1)
+        m=int(l/2-1) # ist das der linke?
         return flatPixels[m]
     else:
         return -1
@@ -199,7 +199,7 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     c=np.divide(c,m)
     beautiful=c*2**16-1
     beautiful=np.uint(beautiful.reshape(hoehe,breite))
-    return beautiful Fehler
+    return beautiful, Fehler
 
 def Hybrid(Bild, BPM,Methode=1): #zusätzlich Einstellungen?
     beautiful=Gradient(Bild, BPM, Methode)
