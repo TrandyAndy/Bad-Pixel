@@ -22,7 +22,7 @@ InitConfigData ={
     "Datum" : str(date.today()), 
     "Sensors" : [
         {
-            "Sensor_Name" : "X-0815",
+            "Sensor_Name" : "Bitte Sensor anlegen",
             "Erstell_Datum" : 19950101,
             "Anz_Bilder" : 0, 
 	        "last_Fensterbreite_advWindow" : "88",
