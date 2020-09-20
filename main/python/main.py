@@ -20,7 +20,7 @@ if __name__ == '__main__':
     #### globale Variablen ####
     aktuellerTab = 0    # Zustand des Tabs der GUI
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
-
+    print("Julian mach Teams an! ;D")
 
     #### UI Vorraussetzungen ####
     app = widgets.QApplication(sys.argv)
