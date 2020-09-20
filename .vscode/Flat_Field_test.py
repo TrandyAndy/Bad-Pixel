@@ -39,7 +39,7 @@ if False:
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:
-    GOOD=np.uint16(correction.Flatfield(bildDaten[0],bildDaten_Hell[0],bildDaten_Dunkel[0]))
+    GOOD=np.uint16(correction.Flatfield(bildDaten[0],bildDaten_Hell[0],bildDaten_Dunkel[0])[0])
 
 """ Audgabe der Bilder Plots und Ergebnisse:______________________________________________________________________________________ """
 

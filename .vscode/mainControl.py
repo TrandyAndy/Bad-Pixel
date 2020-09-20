@@ -38,12 +38,12 @@ bildDaten_Dunkel = imP.importFunction(importPath_Dunkel)
 bildDaten=np.concatenate((bildDaten,bildDaten_Hell,bildDaten_Dunkel,bildDaten_Flat))
 bildDaten[0,0,0]=12 #Unfug
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
-if False:
+if True:
     BAD1=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
-    BAD1_2=detection.advancedMovingWindow(bildDaten[0],Faktor=3,Fensterbreite=5)[0] 
-    BAD1_3=detection.advancedMovingWindow(bildDaten_Hell[0],Faktor=3,Fensterbreite=10)[0] 
+    BAD1_2=detection.advancedMovingWindow(bildDaten[0],Faktor=2.5,Fensterbreite=5)[0] 
+    BAD1_3=detection.advancedMovingWindow(bildDaten_Hell[0],Faktor=4,Fensterbreite=10)[0] 
     BAD2=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0] 
-    BAD3=detection.dynamicCheck(bildDaten, Faktor=1.05)[0]
+    BAD3=detection.dynamicCheck(bildDaten, Faktor=1.03)[0]
     BAD=detection.Mapping(BAD1,BAD2,BAD3,BAD1_2,BAD1_3)*100
     #Anzeigen
     telemetry.markPixels(BAD1,bildDaten[0],bgr=0,Algorithmus="advWindow",schwelle=1)
@@ -70,7 +70,7 @@ if True:
     FGOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten_Flat[0], BAD,1))
     HGOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten_Hell[0], BAD,1))
     DGOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten_Dunkel[0], BAD,1))
-    #GOOD_Flatfield=np.uint16(correction.Flatfield(FGOOD_Hybrid,HGOOD_Hybrid,DGOOD_Hybrid))[0] #reparieren?!
+    GOOD_Flatfield=np.uint16(correction.Flatfield(FGOOD_Hybrid,HGOOD_Hybrid,DGOOD_Hybrid)[0])
 
 """ Audgabe der Bilder Plots und Ergebnisse:______________________________________________________________________________________ """
 telemetry.markPixels(BAD,bildDaten[0],bgr=0,Algorithmus="Hybrid",schwelle=1)
@@ -82,4 +82,4 @@ cv2.imwrite("_korriegiert GOOD_Grad_NARC.png", GOOD_Grad_NARC, [cv2.IMWRITE_PNG_
 cv2.imwrite("_korriegiert GOOD_Grad_NMFC.png", GOOD_Grad_NMFC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Grad_NSRC.png", GOOD_Grad_NSRC, [cv2.IMWRITE_PNG_COMPRESSION,0])
 cv2.imwrite("_korriegiert GOOD_Hybrid.png", GOOD_Hybrid, [cv2.IMWRITE_PNG_COMPRESSION,0])
-#cv2.imwrite("_korriegiert Flatfield.png", GOOD_Flatfield, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert Flatfield.png", GOOD_Flatfield, [cv2.IMWRITE_PNG_COMPRESSION,0])
