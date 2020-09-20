@@ -12,6 +12,7 @@ import os                                                                   # F�
 import numpy as np                                                          # Für Arrays
 import cv2                                                                  # Import OpenCV
 
+
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
     file = open(pImportPath,'rb')                                           # File erneut öffnen, da ansonsten der "Cursor" falsch liegt
     data = np.fromfile(file,dtype=np.uint16)                                # komplettes File einlesen

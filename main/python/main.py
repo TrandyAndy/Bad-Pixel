@@ -28,11 +28,12 @@ import exportPictures as exP
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext    # für das fbs
 
-    #### globale Variablen ####
+    """ Globale Variablen:___________________________________________________________________________________ """
     aktuellerTab = 0    # Zustand des Tabs der GUI
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
+    sensorList = ["Bitte Ihren Sensor auswählen"]
 
-    #### UI Vorraussetzungen ####
+    """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
     dateiMainWindow = appctxt.get_resource("badPixelMainWindow.ui")
     mW = uic.loadUi(dateiMainWindow)        # UI-Fenster MainWindow laden
@@ -45,38 +46,13 @@ if __name__ == '__main__':
     dateiFlatFieldKorrektur = appctxt.get_resource("flatFieldKorrektur.ui")
     fF = uic.loadUi(dateiFlatFieldKorrektur)
     msgBox = widgets.QMessageBox()  # Die Message Box
-    def msgButtonClick():
-        print("message")
-   
 
-
-    sensorList = ["Bitte Ihren Sensor auswählen"]
-    sensorList.append("CT1")
-    sensorList.append("CT2")
-    bpmList = ["Bitte die BPM auswählen"]
-    bpmList.append("BPM vom 27.02.20")
-    bpmList.append("BPM vom 28.02.20")
-    mW.comboBoxBPMSensor.addItems(sensorList)
-    mW.comboBoxBPMChoose.addItems(bpmList)
-
-
-    #### UI Aktionen Funktionen #### 
-    ### Allgemein
-    def openMessageBox(icon, text, informativeText, windowTitle, standardButtons, pFunction):
-        msgBox.setIcon(icon) # msgBox.setIcon(widgets.QMessageBox.Information)
-        msgBox.setText(text) # msgBox.setText("Der eingegebene Pfad für den Speicherort ist nicht gültig")
-        msgBox.setInformativeText(informativeText) # msgBox.setInformativeText("Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.")
-        msgBox.setWindowTitle(windowTitle) #msgBox.setWindowTitle("Kein gültiger Pfad")
-        msgBox.setStandardButtons(standardButtons) #msgBox.setStandardButtons(widgets.QMessageBox.Ok) # | widgets.QMessageBox.Cancel)
-        msgBox.buttonClicked.connect(pFunction) # msgBox.buttonClicked.connect(msgButtonClick)
-        returnValue = msgBox.exec()
-        if returnValue == widgets.QMessageBox.Ok:
-            print('OK clicked')
-        return returnValue
+    """ Funktionen für die GUI:___________________________________________________________________________________ """
+    ############ Allgemeine Funktionen ########################################################################################
     def startClicked():
         global aktuellerTab
-        # Check BPM 
-        # Check Bilddaten
+        # Check BPM is valid
+        # Check Bilddaten is valid
         if mW.tableWidgetBilddaten.rowCount() == 0:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Keine Bilder importiert",informativeText="Bitte importieren Sie Bilder.",windowTitle="Keine Bilder importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             aktuellerTab = 1
@@ -88,13 +64,21 @@ if __name__ == '__main__':
                 aktuellerTab = 1
                 mW.tabWidget.setCurrentIndex(aktuellerTab)
                 return False
-        # Check Speicherort
+        # Check Speicherort is valid
         if os.path.exists(mW.lineEditSpeicherort.text()) == False:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             aktuellerTab = 2
             mW.tabWidget.setCurrentIndex(aktuellerTab)
             return False
-        # Check Algorithmus
+        # Check Algorithmus is valid
+
+
+
+        # Import Pictures
+
+        # Suchen
+
+        # Korrigieren
 
         # Export Aufruf
         # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
@@ -102,8 +86,21 @@ if __name__ == '__main__':
 
 
         print("startClicked")   # debug
-        
-    def mainBackClicked():
+    def msgButtonClick():
+        print("message")
+        pass
+    def openMessageBox(icon, text, informativeText, windowTitle, standardButtons, pFunction):
+        msgBox.setIcon(icon) # msgBox.setIcon(widgets.QMessageBox.Information)
+        msgBox.setText(text) # msgBox.setText("Der eingegebene Pfad für den Speicherort ist nicht gültig")
+        msgBox.setInformativeText(informativeText) # msgBox.setInformativeText("Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.")
+        msgBox.setWindowTitle(windowTitle) #msgBox.setWindowTitle("Kein gültiger Pfad")
+        msgBox.setStandardButtons(standardButtons) #msgBox.setStandardButtons(widgets.QMessageBox.Ok) # | widgets.QMessageBox.Cancel)
+        msgBox.buttonClicked.connect(pFunction) # msgBox.buttonClicked.connect(msgButtonClick)
+        returnValue = msgBox.exec()
+        if returnValue == widgets.QMessageBox.Ok:
+            print("OK clicked") # debug
+        return returnValue        
+    def mWButtonBackClicked():
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab > 0:
             aktuellerTab = aktuellerTab - 1
@@ -112,9 +109,8 @@ if __name__ == '__main__':
             mW.pushButtonMainForward.setText("Weiter")
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
-        # print(aktuellerTab)   # debug
-        
-    def mainForwardClicked():
+        # print(aktuellerTab)   # debug      
+    def mWButtonForwardClicked():
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab >= 3:
             startClicked()
@@ -127,7 +123,7 @@ if __name__ == '__main__':
         if aktuellerTab > 0:
             mW.pushButtonMainBack.setVisible(True)
         # print(aktuellerTab)   # debug
-    def tabChanged():
+    def mWTabChanged():
         global aktuellerTab
         aktuellerTab = mW.tabWidget.currentIndex()
         # print(aktuellerTab)   # debug
@@ -139,7 +135,7 @@ if __name__ == '__main__':
             mW.pushButtonMainForward.setText("Weiter")
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
-    def uiSetup():
+    def uiSetup():  # alles was beim Laden passieren soll
         # Aktuelle Tab speichern
         global aktuellerTab
         aktuellerTab = mW.tabWidget.currentIndex()
@@ -152,6 +148,8 @@ if __name__ == '__main__':
             mW.pushButtonMainForward.setText("Weiter")
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
+        # Tab: Sensor/BPM
+        mW.comboBoxBPMSensor.addItems(sensorList)
         # Tab: Algorithmus - GroupBox Pixelfehler finden enablen
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             mW.groupBoxSuchen.setEnabled(True)
@@ -170,11 +168,15 @@ if __name__ == '__main__':
         # Einstellungen Korrigieren
         eKSliderNachbarFensterbreite()
         eKSliderGradientFensterbreite()
-    ### Tab Sensor / BPM
-    def neueBPM():
+    ############ Funktionen von dem ab Sensor / BPM ########################################################################################
+    def mWBPMComboBoxSensor():
+        print("mWBPMComboBoxSensor")
+    def mWBPMComboBoxBPM():
+        print("mWBPMComboBoxBPM")
+    def mWBPMButtonNeuerSensor():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
         # filename = widgets.QFileDialog.getOpenFileNames() [0]      
-        #filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "UI-Dateien (*.ui)")
+        # filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "UI-Dateien (*.ui)")
         # mW.lineEditBPM.setText(filename)
         #print("Ordnerdialog geöffnet", filename)
         if nB.exec() == widgets.QDialog.Accepted:
@@ -183,18 +185,29 @@ if __name__ == '__main__':
             #mW.comboBoxBPMSensor.clear()
             #mW.comboBoxBPMSensor.addItems(sensorList)
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
-            mW.comboBoxBPMSensor.setCurrentIndex(1)
+            mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
             print("Läuft 3")
         print("NeueBPM geöffnet")   # debug
+    def mWBPMButtonSensorLoeschen():
+        aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
+        print(aktuellerIndex)
+        if aktuellerIndex == 0:
+            pass
+        else:
+            del sensorList[aktuellerIndex]
+            mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
+        pass
+    def mWBPMButtonBPMLoeschen():
+        pass
     def setEnabledBPM(flag):
         mW.labelBPMchoose.setEnabled(flag)
         #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
-        mW.comboBoxBPMChoose.setEnabled(flag)
+        mW.comboBoxBPMBPM.setEnabled(flag)
 
     setEnabledBPM(False)   
 
     ### Tab Bilddaten
-    def buttonBilddatenDurchsuchen():   # Ordner importieren
+    def mWBilddatenButtonOrdnerDurchsuchen():   # Ordner importieren
         dirname = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))    
         if dirname != "":  # wenn nicht auf abbrechen gedrückt wird
             mW.lineEditBilddatenDurchsuchen.setText(dirname)
@@ -202,7 +215,7 @@ if __name__ == '__main__':
         else:
             print("Abgebbrochen")
         print("Ordnerdialog Bilddaten geöffnet", dirname)
-    def buttonBilddatenImportieren():
+    def mWBilddatenButtonImportieren():
         global anzahlBilder
         dirname = mW.lineEditBilddatenDurchsuchen.text()
         if os.path.exists(dirname): # wenn der Pfad überhaupt existiert
@@ -358,7 +371,10 @@ if __name__ == '__main__':
     def buttonAlgorithmusKorrigierenEinstellungen():
         if eK.exec() == widgets.QDialog.Accepted:
             print("Läuft 2")
-
+    def mWCheckBoxAlgorithmusFFK():
+        if mW.checkBoxAlgorithmusFFK.isChecked():
+            if fF.exec() == widgets.QDialog.Accepted:
+                print("Läuft")
     ### Flat-Field-Korrektur
 
     def radioButtonFlatFieldKorrekturGespeicherte():
@@ -392,16 +408,20 @@ if __name__ == '__main__':
     #### UI Aktionen #### 
     ### Allgemein
     uiSetup()
-    mW.pushButtonMainBack.clicked.connect(mainBackClicked)
-    mW.pushButtonMainForward.clicked.connect(mainForwardClicked)
-    mW.tabWidget.currentChanged.connect(tabChanged)
+    mW.pushButtonMainBack.clicked.connect(mWButtonBackClicked)
+    mW.pushButtonMainForward.clicked.connect(mWButtonForwardClicked)
+    mW.tabWidget.currentChanged.connect(mWTabChanged)
 
     ### Tab Sensor / BPM
-    mW.pushButtonBPM.clicked.connect(neueBPM)
+    mW.comboBoxBPMSensor.activated.connect(mWBPMComboBoxSensor)
+    mW.comboBoxBPMBPM.activated.connect(mWBPMComboBoxBPM)
+    mW.pushButtonBPMNeuerSensor.clicked.connect(mWBPMButtonNeuerSensor)
+    mW.pushButtonBPMSensorLoeschen.clicked.connect(mWBPMButtonSensorLoeschen)
+    mW.pushButtonBPMBPMLoeschen.clicked.connect(mWBPMButtonBPMLoeschen)
 
     ### Tab Bilddaten
-    mW.pushButtonBilddatenDurchsuchen.clicked.connect(buttonBilddatenDurchsuchen)
-    mW.pushButtonBilddatenImportieren.clicked.connect(buttonBilddatenImportieren)
+    mW.pushButtonBilddatenOrdnerDurchsuchen.clicked.connect(mWBilddatenButtonOrdnerDurchsuchen)
+    mW.pushButtonBilddatenImportieren.clicked.connect(mWBilddatenButtonImportieren)
     mW.pushButtonBilddatenAdd.clicked.connect(buttonBilddatenAddDurchsuchen)
     mW.pushButtonBilddatenDelete.clicked.connect(buttonBilddatenDelete)
     mW.pushButtonBilddatenDeleteAll.clicked.connect(buttonBilddatenDeleteAll)
@@ -409,12 +429,13 @@ if __name__ == '__main__':
 
     ### Tab Speicherort
     mW.pushButtonSpeicherortDurchsuchen.clicked.connect(buttonSpeicherortDurchsuchen)
+
     ### Tab Algorithmus
     mW.checkBoxAlgorithmusSuchen.stateChanged.connect(suchenEnable)
     mW.pushButtonAlgorithmusSuchenEinstellungen.clicked.connect(buttonAlgorithmusSuchenEinstellungen)
     mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(korrigierenEnable)
     mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(buttonAlgorithmusKorrigierenEinstellungen)
-
+    mW.checkBoxAlgorithmusFFK.stateChanged.connect(mWCheckBoxAlgorithmusFFK)
     eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
@@ -437,3 +458,18 @@ if __name__ == '__main__':
 
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)
+
+
+""" Experimente: ___________________________________________________________________________________________
+    sensorList = ["Bitte Ihren Sensor auswählen"]
+    sensorList.append("CT1")
+    sensorList.append("CT2")
+    bpmList = ["Bitte die BPM auswählen"]
+    bpmList.append("BPM vom 27.02.20")
+    bpmList.append("BPM vom 28.02.20")
+    mW.comboBoxBPMSensor.addItems(sensorList)
+    mW.comboBoxBPMChoose.addItems(bpmList)
+
+
+
+Experimente Ende """
