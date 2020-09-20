@@ -10,12 +10,8 @@
  """
 import os                                                                   # Für die Path-Manipulation
 import numpy as np                                                          # Für Arrays
-#import cv2                                                                  # Import OpenCV
+import cv2                                                                  # Import OpenCV
 
-from cv2 import imshow as cv2
-from cv2 import imwrite as cv2
-from cv2 import destroyAllWindows as cv2
-from cv2 import waitKey as cv2
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
     file = open(pImportPath,'rb')                                           # File erneut öffnen, da ansonsten der "Cursor" falsch liegt
