@@ -38,7 +38,7 @@
             <item>
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>Sensor/Gerät auswählen:</string>
+               <string>Sensor auswählen:</string>
               </property>
              </widget>
             </item>
@@ -71,6 +71,24 @@
              <string>Neuer Sensor erstellen ...</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="text">
+               <string>Ausgewählter Sensor löschen</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_2">
+              <property name="text">
+               <string>Ausgewälte BPM löschen</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <widget class="QTextEdit" name="textEditBPM">

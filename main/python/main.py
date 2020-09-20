@@ -31,17 +31,19 @@ if __name__ == '__main__':
     dateiEinstellungSuchen = appctxt.get_resource("einstellungenSuchen.ui")
     eS = uic.loadUi(dateiEinstellungSuchen)  
     dateiEinstellungKorrigieren = appctxt.get_resource("einstellungenKorrigieren.ui")
-    eK = uic.loadUi(dateiEinstellungKorrigieren)  
+    eK = uic.loadUi(dateiEinstellungKorrigieren)
+    dateiFlatFieldKorrektur = appctxt.get_resource("flatFieldKorrektur.ui")
+    fF = uic.loadUi(dateiFlatFieldKorrektur)
     msgBox = widgets.QMessageBox()  # Die Message Box
     def msgButtonClick():
         print("message")
-
+   
 
 
     sensorList = ["Bitte Ihren Sensor auswählen"]
     sensorList.append("CT1")
     sensorList.append("CT2")
-    bpmList = ["Bitte die gewünschte BPM auswählen"]
+    bpmList = ["Bitte die BPM auswählen"]
     bpmList.append("BPM vom 27.02.20")
     bpmList.append("BPM vom 28.02.20")
     mW.comboBoxBPMSensor.addItems(sensorList)
@@ -101,6 +103,7 @@ if __name__ == '__main__':
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
         # print(aktuellerTab)   # debug
+        
     def mainForwardClicked():
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab >= 3:
@@ -342,6 +345,15 @@ if __name__ == '__main__':
     def buttonAlgorithmusKorrigierenEinstellungen():
         if eK.exec() == widgets.QDialog.Accepted:
             print("Läuft 2")
+
+    ### Flat-Field-Korrektur
+
+    def radioButtonFlatFieldKorrekturGespeicherte():
+        fF.groupBox.setEnabled(False)
+        print("Radio Button FFK Dunkel")
+    def radioButtonFlatFieldKorrekturNeue():
+        fF.groupBox.setEnabled(True)
+        print("Radio Button FFK Hell")
     #### UI Aktionen #### 
     ### Allgemein
     uiSetup()
@@ -372,6 +384,9 @@ if __name__ == '__main__':
     eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
 
+    ### Flat-Field-Korrektur
+    fF.radioButtonGespeicherteBilder.clicked.connect(radioButtonFlatFieldKorrekturGespeicherte)
+    fF.radioButtonNeueBilder.clicked.connect(radioButtonFlatFieldKorrekturNeue)
     #### QT UI anzeigen####
     mW.show()
 
