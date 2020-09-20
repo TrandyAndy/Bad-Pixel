@@ -24,6 +24,7 @@ import numpy as np
 import importPictures as imP
 import exportPictures as exP
 import Speichern
+import config as cfg
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
@@ -76,11 +77,28 @@ if __name__ == '__main__':
 
 
         # Import Pictures
-
+        Ladebalken_detect=0 #Max=Bilder * Verfahren 
         # Suchen
-
+        BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
+        BPM_Dynamik=BPM_Schwellwert
+        BPM_Window=BPM_Schwellwert
+        if mW.checkBoxAlgorithmusSuchen.isChecked():
+            if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked):
+                BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
+                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten[0])
+            if(mW.checkBoxAlgorithmusDynamic.isChecked):
+                BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
+                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten[0])
+            if(mW.checkBoxAlgorithmusWindow.isChecked):
+                for i in range(np.shape(bildDaten[0])):
+                    BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
+                    Ladebalken_detect=Ladebalken_detect+1
+        BAD_Ges=detection.Mapping(BPM_Schwellwert,BPM_Dynamik,BPM_Window)# Digital*100
         # Korrigieren
-
+        if mW.checkBoxAlgorithmusKorrigieren.isChecked():
+            if mW.radioButtonAlgorithmusNachbar():
+            if mW.radioButtonAlgorithmusNachbar():
+            if mW.radioButtonAlgorithmusNachbar():
         # Export Aufruf
         # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
         # exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(), image[0])
