@@ -77,6 +77,9 @@ if __name__ == '__main__':
 
 
         # Import Pictures
+        bildDaten = imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text())
+        #print(bildDaten)
+
         Ladebalken_detect=0 #Max=Bilder * Verfahren 
         # Suchen
         BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!

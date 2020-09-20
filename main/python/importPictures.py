@@ -131,7 +131,7 @@ def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung We
 def importUIFunction(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
     dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower()
     if dateiEndung == ".his": # Eine his-Datei
-        bildDaten = importFunction(pImportPath)
+        bildDaten = hisImportFunction(pImportPath)
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
         bildDaten = importFunction(pImportPath)
     return bildDaten
