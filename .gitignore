@@ -1,3 +1,7 @@
-
-.vscode/settings.json
-.vscode/settings.json
+#Gitignore settings.json, da hier der Pfad der Python Installation gespeichert ist
+settings.json
+launch.json
+.vscode/
+*.DS_Store
+__pycache__/
+*.pyc
