@@ -75,8 +75,8 @@ if __name__ == '__main__':
         return returnValue
     def startClicked():
         global aktuellerTab
-        # Check BPM 
-        # Check Bilddaten
+        # Check BPM is valid
+        # Check Bilddaten is valid
         if mW.tableWidgetBilddaten.rowCount() == 0:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Keine Bilder importiert",informativeText="Bitte importieren Sie Bilder.",windowTitle="Keine Bilder importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             aktuellerTab = 1
@@ -88,13 +88,21 @@ if __name__ == '__main__':
                 aktuellerTab = 1
                 mW.tabWidget.setCurrentIndex(aktuellerTab)
                 return False
-        # Check Speicherort
+        # Check Speicherort is valid
         if os.path.exists(mW.lineEditSpeicherort.text()) == False:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             aktuellerTab = 2
             mW.tabWidget.setCurrentIndex(aktuellerTab)
             return False
-        # Check Algorithmus
+        # Check Algorithmus is valid
+
+
+
+        # Import Pictures
+
+        # Suchen
+
+        # Korrigieren
 
         # Export Aufruf
         # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
