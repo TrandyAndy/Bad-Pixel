@@ -186,8 +186,9 @@ if __name__ == '__main__':
         #print("Ordnerdialog geöffnet", filename)
         if nB.exec() == widgets.QDialog.Accepted:
             global sensorList
-            sensorList.append(nB.lineEditNeueBPM.text())
+            #sensorList.append(nB.lineEditNeueBPM.text())
             Speichern.SensorAnlegen(nB.lineEditNeueBPM.text(), DATA)
+            sensorList=Speichern.WelcheSensorenGibtEs(DATA)[1]
             #mW.comboBoxBPMSensor.clear()
             #mW.comboBoxBPMSensor.addItems(sensorList)
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
