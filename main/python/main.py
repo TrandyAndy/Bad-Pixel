@@ -76,6 +76,8 @@ if __name__ == '__main__':
 
 
         # Import Pictures
+        
+
 
         # Suchen
 
@@ -228,7 +230,7 @@ if __name__ == '__main__':
         global anzahlBilder
         dirname = mW.lineEditBilddatenDurchsuchen.text()
         if os.path.exists(dirname): # wenn der Pfad überhaupt existiert
-            if mW.checkBoxBilddaten.isChecked():   # Unterordner auch importieren
+            if mW.checkBoxBilddaten.isChecked():   # Unterordner auch importieren    
                 print("Unterordner werden auch importiert")
             else:   # keine Unterordner importieren
                 #if dirname != "": 
