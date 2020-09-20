@@ -137,7 +137,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButtonBilddatenDurchsuchen">
+             <widget class="QPushButton" name="pushButtonBilddatenOrdnerDurchsuchen">
               <property name="text">
                <string>Durchsuchen ...</string>
               </property>
@@ -159,6 +159,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QPushButton" name="pushButtonBilddatenImportieren">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="text">
                <string>Bilder importieren</string>
               </property>
@@ -493,7 +496,7 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>lineEditBilddatenDurchsuchen</tabstop>
-  <tabstop>pushButtonBilddatenDurchsuchen</tabstop>
+  <tabstop>pushButtonBilddatenOrdnerDurchsuchen</tabstop>
   <tabstop>checkBoxBilddaten</tabstop>
   <tabstop>pushButtonBilddatenImportieren</tabstop>
   <tabstop>tableWidgetBilddaten</tabstop>
