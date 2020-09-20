@@ -2,15 +2,21 @@
 # to a file 
 
 
-import json 
-import Speichern #soll Später alles in Speichern
-import os
-from datetime import date
 
+import Speichern
+
+DATA=Speichern.Read_json() #Lesen zu Beginn #-1 Abfangen?!
+print("Hi ", DATA["Firma"], "was macht der ",DATA["Sensors"][0]["Sensor_Name"])
+print(Speichern.WelcheSensorenGibtEs(DATA))
+Speichern.SensorAnlegen("Julian", DATA)
+Speichern.SensorLoschen("Andy",DATA)
+Speichern.Write_json(DATA) #Schreiben am Ende
+
+""" 
 # Data to be written 
-global GlobalConfigData, ReadFlag
+global ReadFlag
 ReadFlag=False #Start vom Programm
-GlobalConfigData ={ 
+InitConfigData ={ 
     "Firma" : "Roematek",
     "Autor": "Julian und Andy",
     "Datum" : str(date.today()), 
@@ -22,7 +28,7 @@ GlobalConfigData ={
 	        "last_Fensterbreite_advWindow" : "88",
             "last_Faktor_advWindow" : "3",
             "last_Schwellwert_oben" : "99",
-            "last_Schwellwert_oben" : "0.1",
+            "last_Schwellwert_unten" : "0.1",
             "last_Faktor_Dynamik" : "8",
             "last_korrekturmethode" : "NSRA"
         }
@@ -43,15 +49,15 @@ def Read_json():
     json_path=os.sep.join([Speichern.dir_path,"config.json"])
     #Json Suchen bzw Anlegen.
     if not os.path.exists(json_path):
-        Write_json(0)#dump
+        Write_json(InitConfigData)#dump
         print("Json config nicht vorhanden. Erstellen...")
-        return -1
+        #return -1
     #Json Laden (Open ...)
     with open(json_path, "r") as openfile: 
 	# Reading from json file 
 	    json_object = json.load(openfile)
-    print(json_object) 
-    print(type(json_object))
+    # print(json_object) 
+    # print(type(json_object))
     ReadFlag=True
     return json_object
 
@@ -63,12 +69,41 @@ def Write_json(Data): #Oder immer zu Laufzeit
 	    outfile.write(json_object) 
     return 0
 
-def JRead_Sensor_Name(json_object,JustDoIt=False):
-    if ReadFlag==False or JustDoIt==True:
-        json_objekt=Read_json()
-    #Find String:
-    json_object.find("Sensor_Name") 
-    return Data
+def WelcheSensorenGibtEs(Data):
+    Anz=len(DATA["Sensors"])
+    Sensor=[]
+    for i in range(Anz):
+        Buf=(DATA["Sensors"][i]["Sensor_Name"])
+        Sensor.append(Buf)
+    return Anz, Sensor
 
-Write_json(GlobalConfigData)
-Read_json()
+def SensorAnlegen(Name,Data):
+    #Prüfen ob vorhanden:
+    for i in range(len(Data["Sensors"])):
+        if Name ==Data["Sensors"][i]["Sensor_Name"]:
+            print("Augen Auf beim Sensor Kauf")
+            return -1
+    Data["Sensors"].append({
+            "Sensor_Name" : str(Name),
+            "Erstell_Datum" : str(date.today()),
+            "Anz_Bilder" : 0, 
+	        "last_Fensterbreite_advWindow" : "88",
+            "last_Faktor_advWindow" : "3",
+            "last_Schwellwert_oben" : "99",
+            "last_Schwellwert_unten" : "0.1",
+            "last_Faktor_Dynamik" : "8",
+            "last_korrekturmethode" : "NSRA"
+        })
+    return 0
+
+def SensorLoschen(Name,Data):
+    #Prüfen ob vorhanden:
+    for i in range(len(Data["Sensors"])):
+        if Name ==Data["Sensors"][i]["Sensor_Name"]:
+            del Data["Sensors"][i]
+            print("gelöscht")
+            return 0
+    print("Nicht gefunden")
+    return -1 """
+
+
