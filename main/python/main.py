@@ -23,6 +23,7 @@ import numpy as np
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
+import Speichern
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
@@ -138,6 +139,7 @@ if __name__ == '__main__':
     def uiSetup():  # alles was beim Laden passieren soll
         # Aktuelle Tab speichern
         global aktuellerTab
+        DATA=Speichern.Read_json() #Lesen zu Beginn #-1 Abfangen?!
         aktuellerTab = mW.tabWidget.currentIndex()
         # Tab-Widget
         if aktuellerTab >= 3:
@@ -149,6 +151,7 @@ if __name__ == '__main__':
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
         # Tab: Sensor/BPM
+        SensorList=Speichern.WelcheSensorenGibtEs(DATA)
         mW.comboBoxBPMSensor.addItems(sensorList)
         # Tab: Algorithmus - GroupBox Pixelfehler finden enablen
         if mW.checkBoxAlgorithmusSuchen.isChecked():
