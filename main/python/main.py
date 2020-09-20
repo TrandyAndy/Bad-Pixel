@@ -25,6 +25,8 @@ import importPictures as imP
 import exportPictures as exP
 import Speichern
 import config as cfg
+import detection
+import correction
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
