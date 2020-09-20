@@ -4,8 +4,9 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 15.06.2020
  * @Last Modified by: Andy
- * @Last Modified time: 
+ * @Last Modified time: 19.09.20
  * @Description: Die Suchalgorithmen für bad Pixel
+ * @Version V2: Digital BPM, Schneller
  */
  """
 
@@ -13,186 +14,71 @@ import config as cfg
 import numpy as np
 import math
 
-global SCHWELLWERT_SUPER_HOT
-global SCHWELLWERT_DEAD
-SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*0.99)  #obere Genze
-SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*0.01) #untere Grenze
+global Lichtschutz
+Lichtschutz = 0.02 #10%
+
 # Hot Pixel finder:
-def HotPixelFinder(D2_Bild):
+def HotPixelFinder(D2_Bild, Schwelle=0.99):
     Zaehler=0
     hohe, breite=np.shape(D2_Bild)
     BPM=np.zeros((hohe,breite))
     for z in range(hohe):
         for s in range(breite):
-            if D2_Bild[z,s]>=SCHWELLWERT_SUPER_HOT:
-                BPM[z,s]=100
+            if D2_Bild[z,s]>=int(2**  cfg.Farbtiefe)*Schwelle:
+                BPM[z,s]=1 #Digital
                 Zaehler +=1
-            # elif D2_Bild[z,s]>=SCHWELLWERT_HOT:
-            #     BPM[z,s]=80
-            #     Zaehler +=1
     print("Hot Pixel: " , Zaehler)
-    if Zaehler>hohe*breite*0.1: #Break if >10% falsch
+    if Zaehler>hohe*breite*Lichtschutz: #Überbelichtungsschutz 
         Zaehler=-1
         print("Überbelichtet")
     return BPM, Zaehler
 
 # Dead Pixel finder:
-def DeadPixelFinder(D2_Bild):
+def DeadPixelFinder(D2_Bild, Schwelle=0.01):
     Zaehler=0
     hohe, breite=np.shape(D2_Bild) 
     BPM=np.zeros((hohe,breite))
     for z in range(hohe):
         for s in range(breite):
-            if D2_Bild[z,s]<=SCHWELLWERT_DEAD:
-                BPM[z,s]=100
+            if D2_Bild[z,s]<=int(2**  cfg.Farbtiefe)*Schwelle:
+                BPM[z,s]=1 #Digital
                 Zaehler +=1
-            # elif D2_Bild[z,s]<=SCHWELLWERT_ALMOST_DEAD:
-            #     BPM[z,s]=80
-            #     Zaehler +=1
     print("Tote Pixel: " , Zaehler)
-    if Zaehler>hohe*breite*0.05: #Break if >5% falsch
+    if Zaehler>hohe*breite*Lichtschutz: 
         Zaehler=-1
         print("zu viele Dead Pixel")
-    return BPM, Zaehler
+    return BPM, Zaehler 
 
 def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
-    global SCHWELLWERT_SUPER_HOT
-    global SCHWELLWERT_DEAD
-    SCHWELLWERT_SUPER_HOT=      int((2**  cfg.Farbtiefe)*GrenzeHot) #obere Genze
-    SCHWELLWERT_DEAD=           int((2**  cfg.Farbtiefe)*GrenzeDead) #untere Grenz
     Bilderanzahl, hohe, breite=np.shape(D3_Bilder) 
     print(Bilderanzahl," Bilder prüfen...")
-    Bilderanzahl_Dead=Bilderanzahl
-    Bilderanzahl_HOT =Bilderanzahl
-    BPM_Dead_Alive =np.ones((hohe,breite))
-    BPM_HOT_Alive =np.ones((hohe,breite))
-    BPM_Dead_Durchschnitt=np.zeros((hohe,breite))
-    BPM_HOT_Durchschnitt=np.zeros((hohe,breite))
+    BPM_D=np.zeros((hohe,breite))
+    BPM_H=np.zeros((hohe,breite))
+    Ungueltig=np.zeros((hohe,breite))
+    UberLicht=0
+    UnterLicht=0
     for i in range(Bilderanzahl):  
-        print("Bild Nr. ",i)
-
-        BPM, Anz_Dead =DeadPixelFinder(D3_Bilder[i]) #Check for Black
-        if(Anz_Dead>=0):
-            BPM_Dead_Durchschnitt +=BPM #Durchschnitt
-            BPM_Dead_Alive= BPM_Dead_Alive*BPM #Alive Check
-        else:
-            Bilderanzahl_Dead -=1
-        
-        BPM_HOT, Anz_HOT =HotPixelFinder(D3_Bilder[i]) #Check HOT
-        if(Anz_HOT>=0):
-            BPM_HOT_Durchschnitt +=BPM_HOT
-            BPM_HOT_Alive= BPM_HOT_Alive*BPM_HOT
-        else:
-            Bilderanzahl_HOT -=1
+        print("Bild Nr. ",i)        
+        BPM_Dead, Anz_Dead =DeadPixelFinder(D3_Bilder[i],GrenzeDead) #Check for Black
+        if(Anz_Dead<0):
+            BPM_Dead=Ungueltig
+            UnterLicht=UnterLicht+1
+        BPM_D=BPM_D+BPM_Dead
+        BPM_Hot, Anz_Hot =HotPixelFinder(D3_Bilder[i],GrenzeHot) #Check HOT
+        if(Anz_Hot<0):
+            BPM_Hot=Ungueltig
+            UberLicht=UberLicht+1
+        BPM_H=BPM_H+BPM_Hot
+   #Auswertung
+    print(UberLicht," Bilder Überbelichtet, ",UnterLicht," Bilder zu Dunkel")
+    BPM_D=(BPM_D-int(0.3*(Bilderanzahl-UnterLicht)))>0 #Digit + mehr als 30%
+    BPM_H=(BPM_H-int(0.3*(Bilderanzahl-UberLicht)))>0
+    BPM=np.logical_or(BPM_D,BPM_H)
+    Fehler=np.nonzero(BPM)
+    Fehler=len(Fehler[0])
+    print("Multi Picture findet ",Fehler)
+    return BPM, Fehler 
     
-    BPM_Dead_Alive =(BPM_Dead_Durchschnitt>0)*100
-    BPM_HOT_Alive =(BPM_HOT_Durchschnitt>0)*100
-    BPM_Dead_Durchschnitt =BPM_Dead_Durchschnitt/(Bilderanzahl_Dead)
-    BPM_HOT_Durchschnitt =BPM_HOT_Durchschnitt/(Bilderanzahl_HOT)
-    
-
-    #Auswertung
-    Zaehler=[0,0,0,0]
-    BPM_Alive=BPM_Dead_Alive
-    BPM_Durchschnitt =BPM_Dead_Durchschnitt
-    for z in range(hohe):
-        for s in range(breite):
-            if BPM_Dead_Alive[z,s]>=100:
-                Zaehler[0] +=1
-            if BPM_Dead_Durchschnitt[z,s]>=50:
-                Zaehler[1] +=1
-            if BPM_HOT_Alive[z,s]>=100:
-                Zaehler[2] +=1
-                BPM_Alive[z,s]=BPM_HOT_Alive[z,s]
-            if BPM_HOT_Durchschnitt[z,s]>=50:
-                Zaehler[3] +=1
-                BPM_Durchschnitt[z,s] =BPM_HOT_Durchschnitt[z,s]
-    print("Es sind noch ",Zaehler[0],"Dead Pixel übrig, und ",Zaehler[2]," HOT. (Nach Alive Check)" )
-    print("Es sind noch ",Zaehler[1],"Dead Pixel übrig, und ",Zaehler[3]," HOT. (im Durchschnitt)" )
-    return BPM_Durchschnitt, BPM_Alive #Auswahl
-
-def test(n):
-    print(n, SCHWELLWERT_DEAD)
-
-
-def movingWindow(pBild, schwellwertDead = 0.5, schwellwertHot = 1.5):
-    hoehe, breite = np.shape(pBild)
-    BPM=np.zeros((hoehe,breite))
-    for z in range(hoehe):
-        for s in range(breite):
-            #print("z : ", z, "s: ",s)
-            durchschnittswert = 0.0
-            if(z == 0 and s == 0):               # Wenn Ecke links oben
-                durchschnittswert += pBild[z, s+1]
-                durchschnittswert += pBild[z+1, s]
-                durchschnittswert += pBild[z+1, s+1]
-                durchschnittswert = durchschnittswert / 3
-            elif(z == 0 and s == breite-1):        # Wenn Ecke rechts oben
-                durchschnittswert += pBild[z, s-1]
-                durchschnittswert += pBild[z+1, s-1]
-                durchschnittswert += pBild[z+1, s]
-                durchschnittswert = durchschnittswert / 3
-            elif(z == hoehe-1 and s == 0):         # Wenn Ecke links unten
-                durchschnittswert += pBild[z-1, s]
-                durchschnittswert += pBild[z-1, s+1]
-                durchschnittswert += pBild[z, s+1]
-                durchschnittswert = durchschnittswert / 3
-            elif(z == hoehe-1 and s == breite-1):    # Wenn Ecke rechts unten
-                durchschnittswert += pBild[z-1, s-1]
-                durchschnittswert += pBild[z-1, s]
-                durchschnittswert += pBild[z, s-1]
-                durchschnittswert = durchschnittswert / 3
-            elif(z == 0):                       # Wenn am oberen Ende
-                durchschnittswert += pBild[z, s-1]
-                durchschnittswert += pBild[z, s+1]
-                durchschnittswert += pBild[z+1, s-1]
-                durchschnittswert += pBild[z+1, s]
-                durchschnittswert += pBild[z+1, s+1]
-                durchschnittswert = durchschnittswert / 5
-            elif(s == 0):                       # Wenn am linken Ende   
-                durchschnittswert += pBild[z-1, s]
-                durchschnittswert += pBild[z-1, s+1]
-                durchschnittswert += pBild[z, s+1]
-                durchschnittswert += pBild[z+1, s]
-                durchschnittswert += pBild[z+1, s+1]
-                durchschnittswert = durchschnittswert / 5
-            elif(s == breite-1):                  # Wenn am rechten Ende
-                durchschnittswert += pBild[z-1, s-1]
-                durchschnittswert += pBild[z-1, s]
-                durchschnittswert += pBild[z, s-1]
-                durchschnittswert += pBild[z+1, s-1]
-                durchschnittswert += pBild[z+1, s]
-                durchschnittswert = durchschnittswert / 5
-            elif(z == hoehe-1):                   # Wenn am unteren Ende 
-                durchschnittswert += pBild[z-1, s-1]
-                durchschnittswert += pBild[z-1, s]
-                durchschnittswert += pBild[z-1, s+1]
-                durchschnittswert += pBild[z, s-1]
-                durchschnittswert += pBild[z, s+1]
-                durchschnittswert = durchschnittswert / 5
-            else:                               # Ansonsten
-                durchschnittswert += pBild[z-1, s-1]
-                durchschnittswert += pBild[z-1, s]
-                durchschnittswert += pBild[z-1, s+1]
-                durchschnittswert += pBild[z, s-1]
-                durchschnittswert += pBild[z, s+1]
-                durchschnittswert += pBild[z+1, s-1]
-                durchschnittswert += pBild[z+1, s]
-                durchschnittswert += pBild[z+1, s+1]
-                durchschnittswert = durchschnittswert / 8
-            if (durchschnittswert == 0):
-                erg = pBild[z,s] / 0.00001
-            else:    
-                erg = pBild[z,s] / durchschnittswert
-            
-            if(erg <= schwellwertDead):
-                #print("Moving-Windows: Dead-Pixel: ", erg, "Z: ", z, "S: ", s)
-                BPM[z,s] = 100 
-            elif(erg >= schwellwertHot):
-                #print("Moving-Windows: Hot-Pixel: ", erg, "Z: ", z, "S: ", s)
-                BPM[z,s] = 100 
-    return BPM
-
 def top(x,Max):
     if x>=Max:
         return Max
@@ -207,30 +93,34 @@ def bottom(x):
 
 def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
     hoehe, breite = np.shape(D2_Bild)
+    #print(hoehe,breite)
     BPM=np.zeros((hoehe,breite))
     quadrat=int(Fensterbreite/2) #+1
     Zaehler=0
-    for y in range(hoehe):
-        for x in range(breite):
+    for y in range(breite):
+        for x in range(hoehe):
             supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
-            a= np.shape(supBPM)[0]+1
-            b= np.shape(supBPM)[1]+1
-            Elemente=a+b
+            #a= np.shape(supBPM)[0]+1
+            #b= np.shape(supBPM)[1]+1
+            #Elemente=a+b
             #print("Elemente",Elemente," a=",a," b=",b)
             Std=np.sqrt(np.var(supBPM))
-            debug= abs(np.mean(supBPM)-D2_Bild[x,y])
+            #debug= abs(np.mean(supBPM)-D2_Bild[x,y])
             if Std*Faktor< abs(np.mean(supBPM)-D2_Bild[x,y]):
-                BPM[x,y]=100
+                BPM[x,y]=1 #Digital
                 Zaehler +=1
                 #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
-    return BPM ,Zaehler
+    return BPM ,Zaehler 
 
 def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle und Dunkle!) , Faktor ist Schwellwert für Erkennung. 1.03-1.2
     Anz, hoehe, breite = np.shape(D3_Bilder)
+    if Anz<2:
+        print("zu wenig Bilder")
+        return -1
     BPM=np.zeros((hoehe,breite))
     Zaehler=0
-    #Hell Dunken erstellen
+    #Hell Dunkel erstellen
     Hellste=np.ones((hoehe,breite))
     Dunkelste=np.ones((hoehe,breite))*2**cfg.Farbtiefe
     for Nr in range(Anz):
@@ -248,8 +138,14 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
         for z in range(breite):
             if Dynamik[s,z]<DynamikNorm/Faktor:
                 BPM[s,z]=int((DynamikNorm-Dynamik[s,z])/DynamikNorm*100)
-                BPM[s,z]=100 #Digital 
+                BPM[s,z]=1 #Digital 
                 Zaehler+=1
     print(Zaehler," Fehler gefunden (DynamikCheck).")
-    return BPM, Zaehler
+    return BPM, Zaehler 
 
+def Mapping(BPM_A,BPM_B,BPM_C=0,BPM_D=0,BPM_E=0):
+    BPM=np.logical_or(BPM_A,BPM_B)
+    BPM=np.logical_or(BPM,BPM_C)
+    BPM=np.logical_or(BPM,BPM_D)
+    BPM=np.logical_or(BPM,BPM_E)
+    return BPM
