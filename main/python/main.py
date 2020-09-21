@@ -104,7 +104,7 @@ if __name__ == '__main__':
             for i in range(np.shape(bildDaten)[0]):
                 if mW.radioButtonAlgorithmusNachbar.isChecked():
                     GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges))
-                elif mW.radioButtonAlgorithmusGradient().isChecked():
+                elif mW.radioButtonAlgorithmusGradient.isChecked():
                     GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges))
                 #if mW.radioButtonAlgorithmusNagao():
                 # Export Aufruf
