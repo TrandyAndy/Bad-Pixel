@@ -63,7 +63,7 @@ if True:
     # GOOD_NB2_NMFC=np.uint16(correction.nachbar2(bildDaten[0],BAD,1))
     # GOOD_NB2_NSRC=np.uint16(correction.nachbar2(bildDaten[0],BAD,3))
     GOOD_NB=np.uint16(correction.nachbar(bildDaten[0],BAD))
-    GOOD_Grad_NARC=np.uint16(correction.Gradient(bildDaten[0],BAD,2,6))
+    GOOD_Grad_NARC=np.uint16(correction.Gradient(bildDaten[0],BAD,2,12))
     GOOD_Grad_NMFC=np.uint16(correction.Gradient(bildDaten[0],BAD,1))
     GOOD_Grad_NSRC=np.uint16(correction.Gradient(bildDaten[0],BAD,3))
     GOOD_Hybrid=np.uint16(correction.Hybrid(bildDaten[0], BAD,1))

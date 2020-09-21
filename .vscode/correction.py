@@ -89,9 +89,9 @@ def Gradient(Bild, BPM, Methode=1, Laenge=10):
         for s in range(breite):
             if BPM[z,s] !=0:
                 #Gradienten legen
-                vertikal=Bild[bottom(z-l):top(z+l,hoehe),s]
-                horizontal=Bild[z,bottom(s-l):top(s+l,breite)]
-                sub=Bild[bottom(z-l):top(z+l+1,hoehe),bottom(s-l):top(s+l+1,breite)]
+                vertikal=beautiful[bottom(z-l):top(z+l,hoehe),s]
+                horizontal=beautiful[z,bottom(s-l):top(s+l,breite)]
+                sub=beautiful[bottom(z-l):top(z+l+1,hoehe),bottom(s-l):top(s+l+1,breite)]
                 if sub.size <(l*2+1)**2:
                     nordost=[-2**16,+2**16]
                     nordwest=nordost
