@@ -36,7 +36,7 @@ def nachbar(Bild, BPM):  #Mittelwert der beiden Nachbarn
     return beautiful
 
 # Nachbar
-def nachbar2(Bild, BPM, Methode=1, Fester=4):  # Fenster um BadPixel
+def nachbar2(Bild, BPM, Methode=cfg.Methoden.NMFC, Fester=4):  # Fenster um BadPixel
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -77,7 +77,7 @@ def neigborhood(Bild, BPM, Methode=0):
 
 # Gradient
 
-def Gradient(Bild, BPM, Methode=1, Laenge=10):
+def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -121,11 +121,11 @@ def Gradient(Bild, BPM, Methode=1, Laenge=10):
                 
 
 def Methoden(Pixels, Methode):
-    if Methode==1: #Methoden.NMFC:
+    if Methode==cfg.Methoden.NMFC:
         return np.median(Pixels)
-    elif Methode==2: #NARC
+    elif Methode==cfg.Methoden.NARC: #NARC
         return np.mean(Pixels) #ohne den Bad ist schwer
-    elif Methode==3: #NSRC
+    elif Methode==cfg.Methoden.NSRC: #NSRC
         flatPixels=(np.reshape(Pixels,-1))
         l=len(flatPixels)
         m=int(l/2-1) # Rand Probleme

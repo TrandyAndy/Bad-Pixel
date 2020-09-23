@@ -99,6 +99,10 @@ if __name__ == '__main__':
                     BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
                     Ladebalken_detect=Ladebalken_detect+1
         BAD_Ges=detection.Mapping(BPM_Schwellwert,BPM_Dynamik,BPM_Window)# Digital*100
+        # Methoden Checken
+        #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median
+        #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert
+        #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement
         # Korrigieren
         if mW.checkBoxAlgorithmusKorrigieren.isChecked():
             for i in range(np.shape(bildDaten)[0]):
@@ -260,7 +264,7 @@ if __name__ == '__main__':
                 #if dirname != "": 
                 files = os.listdir(dirname) # bug, wenn dirname kein bekannter Pfad ist
                 print(files,type(files))
-                anzahlBilderLocal = 0
+                #anzahlBilderLocal = 0
                 imageFiles = []
                 for aktuellesFile in files:
                     dateiEndung = (os.path.splitext(aktuellesFile) [1]).lower() # lower für Windos
