@@ -1,7 +1,7 @@
 import numpy as np                                                          # Für Arrays
 import cv2  
 from enum import Enum                                                                # Import OpenCV
-
+from _thread import start_new_thread, allocate_lock #oder mit therading lib.
 
 
 #Global         Muss man das in Python überhaupt machen?
@@ -12,6 +12,9 @@ Farbtiefe=16 #in Bit
 #BPM= array([Bildbreite][Bildhoehe]) #Bad Pixel Map
 #ImageArr= np.array([[Bildbreite][Bildhoehe][Bilderzahl]])
 BildCounter=0
+global Global_Bild #Tread
+Global_Bild=0
+lock=allocate_lock()
 
 """
 

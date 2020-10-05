@@ -111,6 +111,10 @@ def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
                 Zaehler +=1
                 #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
+    #global cfg.Global_Bild #Tread
+    cfg.lock.acquire()
+    cfg.Global_Bild =BPM #Tread
+    cfg.lock.release()
     return BPM ,Zaehler 
 
 def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle und Dunkle!) , Faktor ist Schwellwert für Erkennung. 1.03-1.2
