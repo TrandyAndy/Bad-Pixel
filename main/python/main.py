@@ -288,8 +288,8 @@ if __name__ == '__main__':
                 print("Keine Unterordner importieren")
                 #imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text(),True)
                 #exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
-
-
+            #Pfad Speichern
+            DATA["Import_Pfad"]=dirname
         else:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad ist nicht gültig",informativeText="Der Pfad: \"" + dirname + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         
@@ -387,6 +387,7 @@ if __name__ == '__main__':
     def buttonSpeicherortDurchsuchen():
         filename = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))    
         mW.lineEditSpeicherort.setText(filename)
+        DATA["Export_Pfad"]=filename
         print("buttonSpeicherortDurchsuchen")
     ### Tab Algorithmus
     def suchenEnable():
