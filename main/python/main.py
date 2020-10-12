@@ -14,6 +14,7 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext    # für das fbs
 import sys
 import PyQt5.QtCore as core
+from PyQt5.QtCore import QTimer,QDateTime
 import PyQt5.QtWidgets as widgets
 import PyQt5.QtGui as gui
 import PyQt5.uic as uic
@@ -27,6 +28,7 @@ import Speichern
 import config as cfg
 import detection
 import correction
+from _thread import start_new_thread, allocate_lock #oder mit therading lib.
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
@@ -79,41 +81,36 @@ if __name__ == '__main__':
 
 
         # Import Pictures
+        global bildDaten
         bildDaten = imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text())
-        #print(bildDaten)
 
-        Ladebalken_detect=0 #Max=Bilder * Verfahren 
+        #Ladebalken init
+        cfg.Ladebalken=0
+        Anz=int(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked())+int(mW.checkBoxAlgorithmusWindow.isChecked())+int(mW.checkBoxAlgorithmusDynamic.isChecked())
+        cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]
+        print("Rechenschritte=",cfg.LadebalkenMax)
+        
         # Suchen
         BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
         BPM_Dynamik=BPM_Schwellwert
         BPM_Window=BPM_Schwellwert
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
-                BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
-                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten)[0]
+                #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
+                start_new_thread(detection.MultiPicturePixelCompare,(bildDaten,))
             if(mW.checkBoxAlgorithmusDynamic.isChecked()):
-                BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
-                Ladebalken_detect=Ladebalken_detect+np.shape(bildDaten)[0]
+                #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
+                start_new_thread(detection.dynamicCheck,(bildDaten,))
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 for i in range(np.shape(bildDaten)[0]):
-                    BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
-                    Ladebalken_detect=Ladebalken_detect+1
-        BAD_Ges=detection.Mapping(BPM_Schwellwert,BPM_Dynamik,BPM_Window)# Digital*100
+                    #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
+                    start_new_thread(detection.advancedMovingWindow,(bildDaten[0],10,4))
+        timer.start(500) # heruntersetzen für Performance
         # Methoden Checken
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median
         #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert
         #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement
-        # Korrigieren
-        if mW.checkBoxAlgorithmusKorrigieren.isChecked():
-            for i in range(np.shape(bildDaten)[0]):
-                if mW.radioButtonAlgorithmusNachbar.isChecked():
-                    GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges))
-                elif mW.radioButtonAlgorithmusGradient.isChecked():
-                    GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges))
-                #if mW.radioButtonAlgorithmusNagao():
-                # Export Aufruf
-                exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
-        # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
+        
 
 
         print("startClicked")   # debug
@@ -492,8 +489,43 @@ if __name__ == '__main__':
     #### QT UI anzeigen####
     mW.show()
 
+    def Prozess(): #Hauptprozess nach Start
+        print("ladebalken = ",cfg.Ladebalken)
+        # if i_Zeit>3000:
+        #     print("Timeout Detection 404")  
+        #     break
 
+        #Abfrage Fertig_________
+        FertigFlag=False
+        cfg.lock.acquire()
+        if cfg.Ladebalken==cfg.LadebalkenMax:
+            print("Done")
+            FertigFlag=True
+        cfg.lock.release()
 
+        if FertigFlag:
+            timer.stop() #Funktioniert das??
+            #Zusammenfassen
+            BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
+            # Korrigieren
+            global bildDaten
+            if mW.checkBoxAlgorithmusKorrigieren.isChecked():
+                for i in range(np.shape(bildDaten)[0]):
+                    if mW.radioButtonAlgorithmusNachbar.isChecked():
+                        GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges))
+                    elif mW.radioButtonAlgorithmusGradient.isChecked():
+                        GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges))
+                    #if mW.radioButtonAlgorithmusNagao():
+                    # Export Aufruf
+                    exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
+            # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
+
+    timer=QTimer()
+    timer.timeout.connect(Prozess)
+    
+    
+
+    
 
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)
