@@ -131,9 +131,9 @@ def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung We
 def importUIFunction(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
     dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower()
     if dateiEndung == ".his": # Eine his-Datei
-        bildDaten = hisImportFunction(pImportPath)
+        bildDaten = hisImportFunction(pImportPath, pExport)
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
-        bildDaten = importFunction(pImportPath)
+        bildDaten = importFunction(pImportPath, pExport)
     return bildDaten
 
    
@@ -157,7 +157,7 @@ def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
 
 def checkGreyimage(pImportPath):
     bild = cv2.imread(pImportPath, flags= -1)
-    bildDaten = np.zeros( (np.shape(bild)[0], np.shape(bild)[1]), dtype=bild.dtype)
+    bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=bild.dtype)
     if np.shape(bildDaten) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
         return True
     else:

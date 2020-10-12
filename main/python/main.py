@@ -284,6 +284,9 @@ if __name__ == '__main__':
                 #else:
                 #print("Abgebbrochen")
                 print("Keine Unterordner importieren")
+                #imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text(),True)
+                #exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
+
 
         else:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad ist nicht gültig",informativeText="Der Pfad: \"" + dirname + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
@@ -312,11 +315,11 @@ if __name__ == '__main__':
             mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 3).setTextAlignment(core.Qt.AlignCenter)
         #print(os.path.basename(filename[0]))
         imP.importUIFunction(filename[0])
-        if imP.checkGreyimage(filename[0]):
-            print("Graubild")
-        else:
-            print("Farbbild")
-
+        #if imP.checkGreyimage(filename[0]):        ##### bug geht nicht bei HIS-Dateien
+        #    print("Graubild")
+        #else:
+        #    print("Farbbild")
+        #imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text(),True)
         # print("buttonBilddatenAddDurchsuchen")    # debug
     
     def buttonBilddatenDelete():

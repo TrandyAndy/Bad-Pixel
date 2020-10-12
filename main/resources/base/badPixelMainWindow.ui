@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>590</width>
-    <height>571</height>
+    <height>594</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -26,7 +26,7 @@
          <bool>true</bool>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tabBPM">
          <attribute name="title">
@@ -424,6 +424,20 @@ p, li { white-space: pre-wrap; }
               </layout>
              </item>
             </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxRohbilderSpeichern">
+            <property name="text">
+             <string>Rohbilder speichern</string>
+            </property>
            </widget>
           </item>
           <item>
