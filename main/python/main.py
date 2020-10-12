@@ -82,7 +82,8 @@ if __name__ == '__main__':
 
         # Import Pictures
         global bildDaten
-        bildDaten = imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text())
+        bildDaten = imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text()) #Mehre Bilder gehen nicht...
+        print(np.shape(bildDaten)) 
 
         #Ladebalken init
         cfg.Ladebalken=0
@@ -504,7 +505,7 @@ if __name__ == '__main__':
         cfg.lock.release()
 
         if FertigFlag:
-            timer.stop() #Funktioniert das??
+            timer.stop()
             #Zusammenfassen
             BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
             # Korrigieren
@@ -522,10 +523,7 @@ if __name__ == '__main__':
 
     timer=QTimer()
     timer.timeout.connect(Prozess)
-    
-    
-
-    
+        
 
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)

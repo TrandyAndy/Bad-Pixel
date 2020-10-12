@@ -58,7 +58,10 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     UberLicht=0
     UnterLicht=0
     for i in range(Bilderanzahl):  
-        print("Bild Nr. ",i)        
+        print("Bild Nr. ",i)
+        cfg.lock.acquire()
+        cfg.Ladebalken=cfg.Ladebalken+1 
+        cfg.lock.release()        
         BPM_Dead, Anz_Dead =DeadPixelFinder(D3_Bilder[i],GrenzeDead) #Check for Black
         if(Anz_Dead<0):
             BPM_Dead=Ungueltig
@@ -80,7 +83,6 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     #Tread Zeugs
     cfg.lock.acquire()
     cfg.Global_BPM_Multi =BPM #Tread
-    cfg.Ladebalken=cfg.Ladebalken+1 
     cfg.lock.release()
     return BPM, Fehler 
     
@@ -134,6 +136,9 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     Hellste=np.ones((hoehe,breite))
     Dunkelste=np.ones((hoehe,breite))*2**cfg.Farbtiefe
     for Nr in range(Anz):
+        cfg.lock.acquire()
+        cfg.Ladebalken=cfg.Ladebalken+1 
+        cfg.lock.release()
         for s in range(hoehe):
             for z in range(breite):
                 if Hellste[s,z]<D3_Bilder[Nr,s,z]:
@@ -153,8 +158,7 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     print(Zaehler," Fehler gefunden (DynamikCheck).")
     #Tread Zeugs
     cfg.lock.acquire()
-    cfg.Global_BPM_Dynamik =BPM #Tread
-    cfg.Ladebalken=cfg.Ladebalken+1 
+    cfg.Global_BPM_Dynamik =BPM #Tread 
     cfg.lock.release()
     return BPM, Zaehler 
 
