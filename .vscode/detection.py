@@ -114,6 +114,7 @@ def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
     #global cfg.Global_Bild #Tread
     cfg.lock.acquire()
     cfg.Global_Bild =BPM #Tread
+    cfg.Ladebalken=cfg.Ladebalken+1 
     cfg.lock.release()
     return BPM ,Zaehler 
 

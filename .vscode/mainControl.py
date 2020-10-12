@@ -46,12 +46,15 @@ if True:
     #Tread erstellen:
     start_new_thread(detection.advancedMovingWindow,(cfg.Global_Bild,))
     i_Zeit=0
+    cfg.lock.acquire()
     while cfg.Global_Bild[0,0]==12:
         i_Zeit=i_Zeit+1
         print("Wir warten schon: ",i_Zeit)
-        if i_Zeit>5000:
+        print("ladebalken = ",cfg.Ladebalken)
+        if i_Zeit==500:
+            cfg.lock.release()    
+        if i_Zeit>3000:  
             break
-        
     #BAD1=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
     #BAD1_2=detection.advancedMovingWindow(bildDaten[0],Faktor=2.5,Fensterbreite=5)[0] 
     #BAD1_3=detection.advancedMovingWindow(bildDaten_Hell[0],Faktor=4,Fensterbreite=10)[0] 

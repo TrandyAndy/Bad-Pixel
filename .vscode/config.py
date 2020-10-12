@@ -12,8 +12,10 @@ Farbtiefe=16 #in Bit
 #BPM= array([Bildbreite][Bildhoehe]) #Bad Pixel Map
 #ImageArr= np.array([[Bildbreite][Bildhoehe][Bilderzahl]])
 BildCounter=0
-global Global_Bild #Tread
+#global Global_Bild #Tread
 Global_Bild=0
+Ladebalken=0 #Globaler Tread Ladebalken
+LadebalkenMax=100 #auf Anz der Bilder * Detections setzen
 lock=allocate_lock()
 
 """
