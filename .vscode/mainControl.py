@@ -38,29 +38,35 @@ bildDaten_Hell = imP.importFunction(importPath_Hell)
 bildDaten_Dunkel = imP.importFunction(importPath_Dunkel)
 #bildDaten=np.concatenate((bildDaten,bildDaten_Hell,bildDaten_Dunkel,bildDaten_Flat))
 bildDaten[0,0,0]=12 #Unfug
-#global Global_Bild
-cfg.Global_Bild=bildDaten[0]
+
 """ Aufruf der Detection Funktion:______________________________________________________________________________________ """
 if True:
 
-    #Tread erstellen:
-    start_new_thread(detection.advancedMovingWindow,(cfg.Global_Bild,))
+    #Treads erstellen:
+    cfg.LadebalkenMax=1*3 #Wichtig um Ende zu erkennen.
+    start_new_thread(detection.MultiPicturePixelCompare,(bildDaten,))
+    start_new_thread(detection.advancedMovingWindow,(bildDaten[0],10,4))
+    start_new_thread(detection.advancedMovingWindow,(bildDaten[0],))
     i_Zeit=0
-    cfg.lock.acquire()
-    while cfg.Global_Bild[0,0]==12:
+    while True:
         i_Zeit=i_Zeit+1
         print("Wir warten schon: ",i_Zeit)
-        print("ladebalken = ",cfg.Ladebalken)
-        if i_Zeit==500:
-            cfg.lock.release()    
-        if i_Zeit>3000:  
+        print("ladebalken = ",cfg.Ladebalken)   
+        if i_Zeit>3000:
+            print("Timeout Detection 404")  
             break
+        cfg.lock.acquire()
+        if cfg.Ladebalken==cfg.LadebalkenMax:
+            print("Done")
+            break
+        cfg.lock.release()
+
     #BAD1=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
     #BAD1_2=detection.advancedMovingWindow(bildDaten[0],Faktor=2.5,Fensterbreite=5)[0] 
     #BAD1_3=detection.advancedMovingWindow(bildDaten_Hell[0],Faktor=4,Fensterbreite=10)[0] 
     #BAD2=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0] 
     #BAD3=detection.dynamicCheck(bildDaten, Faktor=1.03)[0]
-    BAD=cfg.Global_Bild#detection.Mapping(BAD1,BAD2,BAD3,BAD1_2,BAD1_3)*100
+    BAD=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100
     #Anzeigen
     telemetry.markPixels(BAD,bildDaten[0],bgr=0,Algorithmus="advWindow",schwelle=1)
     #telemetry.markPixels(BAD1_2,bildDaten[0],bgr=0,Algorithmus="advWindow_2",schwelle=1)
@@ -74,7 +80,6 @@ else:
 
 """ Aufruf der Correction Funktion:______________________________________________________________________________________ """
 if True:
-    Datasvae=bildDaten[0]+1
     # GOOD_NB2_NARC=np.uint16(correction.nachbar2(bildDaten[0],BAD,2))
     # GOOD_NB2_NMFC=np.uint16(correction.nachbar2(bildDaten[0],BAD,1))
     # GOOD_NB2_NSRC=np.uint16(correction.nachbar2(bildDaten[0],BAD,3))
