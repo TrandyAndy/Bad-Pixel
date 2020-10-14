@@ -94,6 +94,8 @@ InitConfigData ={
         }
     ],
     "last_GenutzterSensor" : "choose a Sensor",
+    "Import_Pfad" : " ",
+    "Export_Pfad" : " ",
     "Flat_Field_Bilder": [
         {
             "Hell_Bild": False,

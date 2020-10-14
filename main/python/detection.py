@@ -129,7 +129,10 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     Anz, hoehe, breite = np.shape(D3_Bilder)
     if Anz<2:
         print("zu wenig Bilder")
-        return -1
+        cfg.lock.acquire()
+        cfg.Ladebalken=cfg.Ladebalken+Anz #Damit ist es abgearbeitet.
+        cfg.lock.release()
+        return -1 #Hoffeltlich wird das Ausgewertet.
     BPM=np.zeros((hoehe,breite))
     Zaehler=0
     #Hell Dunkel erstellen
