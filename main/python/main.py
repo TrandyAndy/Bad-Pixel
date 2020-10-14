@@ -426,13 +426,15 @@ if __name__ == '__main__':
         print("Radio Button FFK Hell")
 
     ### Einstellungen Suchen
-    
+                                                        #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,01 Dunkel: min 0 max 0,05 ival 0,01
+                                                        #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 1,5 max 3 ival 0,1
+                                                        #Andy Vorgabe Dynamic Empfindlichkeit: min 1.03 max 2 ival 0.01
     ### Einstellungen Korrektur 
-    eK.horizontalSliderNachbarFensterbreite.setMinimum(1)
+    eK.horizontalSliderNachbarFensterbreite.setMinimum(1) #Andy Vorgabe: min 3 max 21 ival 2 
     eK.horizontalSliderNachbarFensterbreite.setMaximum(4)
     eK.horizontalSliderNachbarFensterbreite.setTickInterval(1)
-    eK.horizontalSliderGradientFensterbreite.setMinimum(1)
-    eK.horizontalSliderGradientFensterbreite.setMaximum(4)
+    eK.horizontalSliderGradientFensterbreite.setMinimum(1) #Andy Vorgabe: min 4 max 24 ival 2 
+    eK.horizontalSliderGradientFensterbreite.setMaximum(4) #länge des Gradienten
     eK.horizontalSliderGradientFensterbreite.setTickInterval(1)
     def eKSliderNachbarFensterbreite():
         value = eK.horizontalSliderNachbarFensterbreite.value()
