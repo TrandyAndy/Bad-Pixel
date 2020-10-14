@@ -30,6 +30,8 @@ import detection
 import correction
 from _thread import start_new_thread, allocate_lock #oder mit therading lib.
 
+bildDaten = []
+
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext    # für das fbs
@@ -51,6 +53,8 @@ if __name__ == '__main__':
     eK = uic.loadUi(dateiEinstellungKorrigieren)
     dateiFlatFieldKorrektur = appctxt.get_resource("flatFieldKorrektur.ui")
     fF = uic.loadUi(dateiFlatFieldKorrektur)
+    dateiFortschritt = appctxt.get_resource("fortschritt.ui")
+    fortschritt = uic.loadUi(dateiFortschritt)
     msgBox = widgets.QMessageBox()  # Die Message Box
 
     """ Funktionen für die GUI:___________________________________________________________________________________ """
@@ -79,10 +83,13 @@ if __name__ == '__main__':
         # Check Algorithmus is valid
 
 
-
         # Import Pictures
+        
         global bildDaten
-        bildDaten = imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text()) #Mehre Bilder gehen nicht...
+        for index in range(anzahlBilder):
+            if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
+                print(np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0])
+            bildDaten.append( imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text()) [0] ) #Mehre Bilder gehen nicht...
         print(np.shape(bildDaten)) 
 
         #Ladebalken init
@@ -111,8 +118,8 @@ if __name__ == '__main__':
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median
         #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert
         #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement
-        
-
+        if fortschritt.exec() == widgets.QDialog.Rejected:
+            print("Gecancelt gedrückt")
 
         print("startClicked")   # debug
     def msgButtonClick():
@@ -494,6 +501,7 @@ if __name__ == '__main__':
     mW.show()
 
     def Prozess(): #Hauptprozess nach Start
+        fortschritt.progressBar.setValue(cfg.Ladebalken)
         print("ladebalken = ",cfg.Ladebalken)
         # if i_Zeit>3000:
         #     print("Timeout Detection 404")  
