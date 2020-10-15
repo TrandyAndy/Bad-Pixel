@@ -108,7 +108,7 @@ if __name__ == '__main__':
         cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]
         print("Rechenschritte=",cfg.LadebalkenMax)
         # Suchen
-        BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
+        #BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
         #BPM_Dynamik=BPM_Schwellwert
         #BPM_Window=BPM_Schwellwert
         if mW.checkBoxAlgorithmusSuchen.isChecked():
@@ -120,7 +120,7 @@ if __name__ == '__main__':
                 start_new_thread(detection.dynamicCheck,(bildDaten,))
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
-                start_new_thread(detection.advancedMovingWindow,(bildDaten,10,4))
+                start_new_thread(detection.advancedMovingWindow,(bildDaten,10,eS.labelMovingSchwellwert.text()))
         timer.start(500) # heruntersetzen für Performance
         # Methoden Checken
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median
@@ -267,7 +267,10 @@ if __name__ == '__main__':
 
     ### Tab Bilddaten
     def mWBilddatenButtonOrdnerDurchsuchen():   # Ordner importieren
-        dirname = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))    
+        if DATA["Import_Pfad"]==" ":
+            dirname = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))
+        else:
+            dirname = widgets.QFileDialog.getExistingDirectory(directory = DATA["Import_Pfad"])
         if dirname != "":  # wenn nicht auf abbrechen gedrückt wird
             mW.lineEditBilddatenDurchsuchen.setText(dirname)
             print(os.listdir(dirname))
@@ -407,7 +410,10 @@ if __name__ == '__main__':
         print("buttonBilddatenDeleteAll")
     ### Tab Speicherort
     def buttonSpeicherortDurchsuchen():
-        filename = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))    
+        if DATA["Export_Pfad"]==" ":
+            filename = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))    
+        else:
+            filename = widgets.QFileDialog.getExistingDirectory(directory = DATA["Export_Pfad"])    
         mW.lineEditSpeicherort.setText(filename)
         DATA["Export_Pfad"]=filename
         print("buttonSpeicherortDurchsuchen")
