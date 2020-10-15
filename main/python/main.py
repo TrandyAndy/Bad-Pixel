@@ -21,6 +21,7 @@ import PyQt5.uic as uic
 import types
 import os
 import numpy as np
+from _thread import start_new_thread, allocate_lock #oder mit therading lib.
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
@@ -28,9 +29,9 @@ import Speichern
 import config as cfg
 import detection
 import correction
-from _thread import start_new_thread, allocate_lock #oder mit therading lib.
 
-bildDaten = []
+
+bildDaten = [] #was soll das hier?
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
@@ -100,8 +101,8 @@ if __name__ == '__main__':
         
         # Suchen
         BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
-        BPM_Dynamik=BPM_Schwellwert
-        BPM_Window=BPM_Schwellwert
+        #BPM_Dynamik=BPM_Schwellwert
+        #BPM_Window=BPM_Schwellwert
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
