@@ -123,13 +123,13 @@ if __name__ == '__main__':
                 start_new_thread(detection.advancedMovingWindow,(bildDaten,10,eS.labelMovingSchwellwert.text()))
         timer.start(500) # heruntersetzen für Performance
         # Methoden Checken
-        #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median
-        #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert
-        #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement
+        #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median       #radioButtonMedian
+        #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert   #radioButtonMittelwert
+        #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement  #radioButtonSimple
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected:
             print("Gecancelt gedrückt")
-
+            # hier muss dann der Prozess gestoppt werden
         print("startClicked")   # debug
     def msgButtonClick():
         print("message")
@@ -146,6 +146,7 @@ if __name__ == '__main__':
             print("OK clicked") # debug
         return returnValue        
     def mWButtonBackClicked():
+        print(eS.labelMovingSchwellwert.text())
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab > 0:
             aktuellerTab = aktuellerTab - 1
@@ -434,12 +435,33 @@ if __name__ == '__main__':
             mW.groupBoxKorrigieren.setEnabled(False)
             #print("not Checked")
     def buttonAlgorithmusSuchenEinstellungen():
+        wertSchwellwertHot = eS.horizontalSliderSchwellwertHot.value()
+        wertSchwellwertDead = eS.horizontalSliderSchwellwertDead.value()
+        wertMovingFensterbreite = eS.horizontalSliderMovingFensterbreite.value()
+        wertMovingSchwellwert = eS.horizontalSliderMovingSchwellwert.value()
+        wertDynamicSchwellwert = eS.horizontalSliderDynamicSchwellwert.value()
         if eS.exec() == widgets.QDialog.Accepted:
-            print("Läuft")
-        #eS.exec()
+            pass    # Geänderte Werte annehmen, d.h. nichts machen
+        else:   # Die alten Werte wiederherstellen, da auf Abbrechnen geklickt wurde
+            eS.horizontalSliderSchwellwertHot.setValue(wertSchwellwertHot)
+            eS.horizontalSliderSchwellwertDead.setValue(wertSchwellwertDead)
+            eS.horizontalSliderMovingFensterbreite.setValue(wertMovingFensterbreite)
+            eS.horizontalSliderMovingSchwellwert.setValue(wertMovingSchwellwert)
+            eS.horizontalSliderDynamicSchwellwert.setValue(wertDynamicSchwellwert)
     def buttonAlgorithmusKorrigierenEinstellungen():
+        wertNachbarFensterbreite = eK.horizontalSliderNachbarFensterbreite.value()
+        wertGradientFensterbreite = eK.horizontalSliderGradientFensterbreite.value()
+        wertRadioButtonMedian = eK.radioButtonMedian.isChecked()
+        wertRadioButtonMittelwert = eK.radioButtonMittelwert.isChecked()
+        wertRadioButtonReplacement = eK.radioButtonReplacement.isChecked()
         if eK.exec() == widgets.QDialog.Accepted:
-            print("Läuft 2")
+            pass    # Geänderte Werte annehmen, d.h. nichts machen
+        else:   # Die alten Werte wiederherstellen, da auf Abbrechnen geklickt wurde
+            eK.horizontalSliderNachbarFensterbreite.setValue(wertNachbarFensterbreite)
+            eK.horizontalSliderGradientFensterbreite.setValue(wertGradientFensterbreite)
+            eK.radioButtonMedian.setChecked(wertRadioButtonMedian)
+            eK.radioButtonMittelwert.setChecked(wertRadioButtonMittelwert)
+            eK.radioButtonReplacement.setChecked(wertRadioButtonReplacement)
     def mWCheckBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
             if fF.exec() == widgets.QDialog.Accepted:
@@ -493,21 +515,21 @@ if __name__ == '__main__':
         eS.labelDynamicSchwellwert.setText( str( round(value*0.01 + 1.03,2)  ) )     
 
     ### Einstellungen Korrektur 
-    eK.horizontalSliderNachbarFensterbreite.setMinimum(1) #Andy Vorgabe: min 3 max 21 ival 2 
-    eK.horizontalSliderNachbarFensterbreite.setMaximum(10)
+    eK.horizontalSliderNachbarFensterbreite.setMinimum(0) #Andy Vorgabe: min 3 max 21 ival 2 
+    eK.horizontalSliderNachbarFensterbreite.setMaximum(9)
     eK.horizontalSliderNachbarFensterbreite.setTickInterval(2)
     def eK_horizontalSliderNachbarFensterbreite():
         value = eK.horizontalSliderNachbarFensterbreite.value()
-        eK.labelNachbarFensterbreite.setText(str((value*2)+1))  # 3, 5, 7, 9 ... 21
+        eK.labelNachbarFensterbreite.setText(str((value*2)+3))  # 3, 5, 7, 9 ... 21
         #if value > 9:
         #    eK.labelNachbarFensterbreite.setStyleSheet('color: red')
         #print("eK_horizontalSliderNachbarFensterbreite", value)   # debug
-    eK.horizontalSliderGradientFensterbreite.setMinimum(1) #Andy Vorgabe: min 4 max 24 ival 2 
-    eK.horizontalSliderGradientFensterbreite.setMaximum(11) #länge des Gradienten
+    eK.horizontalSliderGradientFensterbreite.setMinimum(0) #Andy Vorgabe: min 4 max 24 ival 2 
+    eK.horizontalSliderGradientFensterbreite.setMaximum(10) #länge des Gradienten
     eK.horizontalSliderGradientFensterbreite.setTickInterval(2)
     def eK_horizontalSliderGradientFensterbreite():
         value = eK.horizontalSliderGradientFensterbreite.value()
-        eK.labelGradientFensterbreite.setText(str((value*2)+2))  # 4, 6, 8 ... 22
+        eK.labelGradientFensterbreite.setText(str((value*2)+4))  # 4, 6, 8 ... 22
         #if value > 10:
         #    eK.labelGradientFensterbreite.setStyleSheet('color: red')
         #else:
