@@ -65,7 +65,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButtonSimple">
+       <widget class="QRadioButton" name="radioButtonReplacement">
         <property name="text">
          <string>Simple Replacement</string>
         </property>
