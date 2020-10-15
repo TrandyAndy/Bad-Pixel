@@ -6,14 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>503</width>
-    <height>524</height>
+    <width>524</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Weitere Einstellungen für Suchalgorithmus</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <spacer name="verticalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>17</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item>
     <widget class="QGroupBox" name="groupBoxSchwellwert">
      <property name="title">
@@ -30,7 +43,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_11">
+         <widget class="QLabel" name="labelSchwellwertHot">
           <property name="font">
            <font>
             <italic>false</italic>
@@ -40,7 +53,7 @@
            <enum>Qt::LeftToRight</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -50,7 +63,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider">
+       <widget class="QSlider" name="horizontalSliderSchwellwertHot">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -73,9 +86,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_10">
+         <widget class="QLabel" name="labelSchwellwertDead">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -85,7 +98,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_2">
+       <widget class="QSlider" name="horizontalSliderSchwellwertDead">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -93,6 +106,19 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBoxMoving">
@@ -110,9 +136,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_9">
+         <widget class="QLabel" name="labelMovingFensterbreite">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -122,7 +148,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_3">
+       <widget class="QSlider" name="horizontalSliderMovingFensterbreite">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -145,9 +171,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_8">
+         <widget class="QLabel" name="labelMovingSchwellwert">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -157,7 +183,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_6">
+       <widget class="QSlider" name="horizontalSliderMovingSchwellwert">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -165,6 +191,19 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBoxDynamic">
@@ -182,9 +221,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_7">
+         <widget class="QLabel" name="labelDynamicSchwellwert">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -194,7 +233,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_5">
+       <widget class="QSlider" name="horizontalSliderDynamicSchwellwert">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

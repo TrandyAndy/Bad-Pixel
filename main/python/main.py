@@ -1,12 +1,15 @@
 """
+
 /*
  * @Author: Julian Schweizerhof und Andreas Bank
- * @Email: diegruppetg@gmail.com
- * @Date: 2020-09-20 16:41:38
+ * @Email: diegruppetg
+ * @Date: 2020-10-14 21:27:40
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-09-20 18:41:14
+ * @Last Modified time: 2020-10-15 00:54:14
  * @Description: Main des Projektes, primär ermöglicht diese Datei die GUI
  */
+
+
 """
 
 """ Import der Bibliotheken:__________________________________________________________________________________"""
@@ -14,13 +17,14 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext    # für das fbs
 import sys
 import PyQt5.QtCore as core
-from PyQt5.QtCore import QTimer,QDateTime
+# from PyQt5.QtCore import QTimer,QDateTime # Julian: nicht notwendig oder? 
 import PyQt5.QtWidgets as widgets
 import PyQt5.QtGui as gui
 import PyQt5.uic as uic
 import types
 import os
 import numpy as np
+from _thread import start_new_thread, allocate_lock #oder mit therading lib.
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
@@ -28,9 +32,10 @@ import Speichern
 import config as cfg
 import detection
 import correction
-from _thread import start_new_thread, allocate_lock #oder mit therading lib.
+from PyQt5.QtGui import QPalette
 
-bildDaten = []
+
+
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
@@ -40,6 +45,7 @@ if __name__ == '__main__':
     aktuellerTab = 0    # Zustand des Tabs der GUI
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
     sensorList = ["Bitte Ihren Sensor auswählen"]
+    bildDaten = 0
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
@@ -86,18 +92,22 @@ if __name__ == '__main__':
         # Import Pictures
         
         global bildDaten
-        for index in range(anzahlBilder):
-            if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
-                print(np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0])
-            bildDaten.append( imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text()) [0] ) #Mehre Bilder gehen nicht...
-        print(np.shape(bildDaten)) 
+        pathlist = []
+        for index in range(anzahlBilder):   # alle Pfade aus der Tabelle in eine Liste schreiben
+            pathlist.append(mW.tableWidgetBilddaten.item(index,4).text())
+        bildDaten = imP.importUIFunction(pathlist,pMittelwert=True)
+
+
+            #if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
+            #print(np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0])
+            #bildDaten.append( imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text()) [0] ) #Mehre Bilder gehen nicht...
+        #print(np.shape(bildDaten)) 
 
         #Ladebalken init
         cfg.Ladebalken=0
         Anz=int(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked())+int(mW.checkBoxAlgorithmusWindow.isChecked())+int(mW.checkBoxAlgorithmusDynamic.isChecked())
         cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]
         print("Rechenschritte=",cfg.LadebalkenMax)
-        
         # Suchen
         BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
         BPM_Dynamik=BPM_Schwellwert
@@ -118,6 +128,7 @@ if __name__ == '__main__':
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median
         #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert
         #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement
+        fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected:
             print("Gecancelt gedrückt")
 
@@ -205,9 +216,15 @@ if __name__ == '__main__':
             mW.groupBoxKorrigieren.setEnabled(False)
             # print("not Checked") # debug
         mW.checkBoxBilddaten.setVisible(False) # noch nicht implementiert
+        # Einstellungen Suchen
+        eS_horizontalSliderSchwellwertHot()
+        eS_horizontalSliderSchwellwertDead()
+        eS_horizontalSliderMovingFensterbreite()
+        eS_horizontalSliderMovingSchwellwert()
+        eS_horizontalSliderDynamicSchwellwert()
         # Einstellungen Korrigieren
-        eKSliderNachbarFensterbreite()
-        eKSliderGradientFensterbreite()
+        eK_horizontalSliderNachbarFensterbreite()
+        eK_horizontalSliderGradientFensterbreite()
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
     def mWBPMComboBoxSensor():
         print("mWBPMComboBoxSensor")
@@ -284,7 +301,7 @@ if __name__ == '__main__':
                     rows, cols, anzahlHisBilder, farbtiefe = imP.getAufloesungUndAnzahlUndFarbtiefe(os.path.join(dirname,imageFiles[index]))
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,3, widgets.QTableWidgetItem(  farbtiefe ) )
+                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,4, widgets.QTableWidgetItem( str(os.path.join(dirname,imageFiles[index])) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
                     # zentrieren
                     mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(imageFiles))), 1).setTextAlignment(core.Qt.AlignCenter)
@@ -317,13 +334,13 @@ if __name__ == '__main__':
             # print(data, imP.np.shape(data))
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-            mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe ) )
+            mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
             mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
             mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 2).setTextAlignment(core.Qt.AlignCenter)
             mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 3).setTextAlignment(core.Qt.AlignCenter)
         #print(os.path.basename(filename[0]))
-        imP.importUIFunction(filename[0])
+        #imP.importUIFunction(filename[0])
         #if imP.checkGreyimage(filename[0]):        ##### bug geht nicht bei HIS-Dateien
         #    print("Graubild")
         #else:
@@ -436,23 +453,62 @@ if __name__ == '__main__':
                                                         #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,01 Dunkel: min 0 max 0,05 ival 0,01
                                                         #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 1,5 max 3 ival 0,1
                                                         #Andy Vorgabe Dynamic Empfindlichkeit: min 1.03 max 2 ival 0.01
+    eS.horizontalSliderSchwellwertHot.setMinimum(0) 
+    eS.horizontalSliderSchwellwertHot.setMaximum(5)
+    eS.horizontalSliderSchwellwertHot.setTickInterval(1)
+    def eS_horizontalSliderSchwellwertHot():
+        value = eS.horizontalSliderSchwellwertHot.value()
+        eS.labelSchwellwertHot.setText( str(round( value*(-0.01)+1,2) ) )
+
+    eS.horizontalSliderSchwellwertDead.setMinimum(0) 
+    eS.horizontalSliderSchwellwertDead.setMaximum(5)
+    eS.horizontalSliderSchwellwertDead.setTickInterval(1)
+    def eS_horizontalSliderSchwellwertDead():
+        value = eS.horizontalSliderSchwellwertDead.value()
+        eS.labelSchwellwertDead.setText( str(round(value*0.01,2) ) ) 
+
+    eS.horizontalSliderMovingFensterbreite.setMinimum(0) 
+    eS.horizontalSliderMovingFensterbreite.setMaximum(6)
+    eS.horizontalSliderMovingFensterbreite.setTickInterval(1)
+    def eS_horizontalSliderMovingFensterbreite():
+        value = eS.horizontalSliderMovingFensterbreite.value()
+        eS.labelMovingFensterbreite.setText( str(value*2 + 5) )
+
+    eS.horizontalSliderMovingSchwellwert.setMinimum(0) 
+    eS.horizontalSliderMovingSchwellwert.setMaximum(15)
+    eS.horizontalSliderMovingSchwellwert.setTickInterval(1)
+    def eS_horizontalSliderMovingSchwellwert():
+        value = eS.horizontalSliderMovingSchwellwert.value()
+        eS.labelMovingSchwellwert.setText( str( round(value*0.1 + 1.5, 2 ) ) )
+
+    eS.horizontalSliderDynamicSchwellwert.setMinimum(0) 
+    eS.horizontalSliderDynamicSchwellwert.setMaximum(97)
+    eS.horizontalSliderDynamicSchwellwert.setTickInterval(1)
+    def eS_horizontalSliderDynamicSchwellwert():
+        value = eS.horizontalSliderDynamicSchwellwert.value()
+        eS.labelDynamicSchwellwert.setText( str( round(value*0.01 + 1.03,2)  ) )     
+
     ### Einstellungen Korrektur 
     eK.horizontalSliderNachbarFensterbreite.setMinimum(1) #Andy Vorgabe: min 3 max 21 ival 2 
-    eK.horizontalSliderNachbarFensterbreite.setMaximum(4)
-    eK.horizontalSliderNachbarFensterbreite.setTickInterval(1)
-    eK.horizontalSliderGradientFensterbreite.setMinimum(1) #Andy Vorgabe: min 4 max 24 ival 2 
-    eK.horizontalSliderGradientFensterbreite.setMaximum(4) #länge des Gradienten
-    eK.horizontalSliderGradientFensterbreite.setTickInterval(1)
-    def eKSliderNachbarFensterbreite():
+    eK.horizontalSliderNachbarFensterbreite.setMaximum(10)
+    eK.horizontalSliderNachbarFensterbreite.setTickInterval(2)
+    def eK_horizontalSliderNachbarFensterbreite():
         value = eK.horizontalSliderNachbarFensterbreite.value()
-        #eK.labelNachbarFensterbreite.setStyleSheet('color: red')
-        eK.labelNachbarFensterbreite.setText(str((value*2)+1))  # 3, 5, 7, 9
-        print("eKSliderNachbarFensterbreite", value)   # debug
-    def eKSliderGradientFensterbreite():
+        eK.labelNachbarFensterbreite.setText(str((value*2)+1))  # 3, 5, 7, 9 ... 21
+        #if value > 9:
+        #    eK.labelNachbarFensterbreite.setStyleSheet('color: red')
+        #print("eK_horizontalSliderNachbarFensterbreite", value)   # debug
+    eK.horizontalSliderGradientFensterbreite.setMinimum(1) #Andy Vorgabe: min 4 max 24 ival 2 
+    eK.horizontalSliderGradientFensterbreite.setMaximum(11) #länge des Gradienten
+    eK.horizontalSliderGradientFensterbreite.setTickInterval(2)
+    def eK_horizontalSliderGradientFensterbreite():
         value = eK.horizontalSliderGradientFensterbreite.value()
-        #eK.labelNachbarFensterbreite.setStyleSheet('color: red')
-        eK.labelGradientFensterbreite.setText(str((value*2)+1))  # 3, 5, 7, 9
-        print("eKSliderGradientFensterbreite", value)   # debug
+        eK.labelGradientFensterbreite.setText(str((value*2)+2))  # 4, 6, 8 ... 22
+        #if value > 10:
+        #    eK.labelGradientFensterbreite.setStyleSheet('color: red')
+        #else:
+        #    eK.labelGradientFensterbreite.setStyleSheet('color: black')
+        #print("eK_horizontalSliderGradientFensterbreite", value)   # debug
 
      
     #### UI Aktionen #### 
@@ -495,16 +551,24 @@ if __name__ == '__main__':
     fF.radioButtonNeueBilder.clicked.connect(radioButtonFlatFieldKorrekturNeue)
     
     ### Einstellungen Suchen
+    eS.horizontalSliderSchwellwertHot.valueChanged.connect(eS_horizontalSliderSchwellwertHot)
+    eS.horizontalSliderSchwellwertDead.valueChanged.connect(eS_horizontalSliderSchwellwertDead)
+    eS.horizontalSliderMovingFensterbreite.valueChanged.connect(eS_horizontalSliderMovingFensterbreite)
+    eS.horizontalSliderMovingSchwellwert.valueChanged.connect(eS_horizontalSliderMovingSchwellwert)
+    eS.horizontalSliderDynamicSchwellwert.valueChanged.connect(eS_horizontalSliderDynamicSchwellwert)
     
     ### Einstellungen Korrektur
-    eK.horizontalSliderNachbarFensterbreite.valueChanged.connect(eKSliderNachbarFensterbreite)
-    eK.horizontalSliderGradientFensterbreite.valueChanged.connect(eKSliderGradientFensterbreite)
+    eK.horizontalSliderNachbarFensterbreite.valueChanged.connect(eK_horizontalSliderNachbarFensterbreite)
+    eK.horizontalSliderGradientFensterbreite.valueChanged.connect(eK_horizontalSliderGradientFensterbreite)
     
     #### QT UI anzeigen####
     mW.show()
 
     def Prozess(): #Hauptprozess nach Start
-        fortschritt.progressBar.setValue(cfg.Ladebalken)
+        if cfg.LadebalkenMax != 0:
+            fortschritt.progressBar.setValue(cfg.Ladebalken/cfg.LadebalkenMax*100)
+        else:
+            fortschritt.progressBar.setValue(100)
         print("ladebalken = ",cfg.Ladebalken)
         # if i_Zeit>3000:
         #     print("Timeout Detection 404")  
@@ -534,10 +598,10 @@ if __name__ == '__main__':
                     # Export Aufruf
                     exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
-
-    timer=QTimer()
+    timer = core.QTimer()
+    #timer=QTimer()     # damit man das nicht nochmal extra importieren muss
     timer.timeout.connect(Prozess)
-        
+    
 
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)

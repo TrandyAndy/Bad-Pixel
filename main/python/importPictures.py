@@ -4,10 +4,11 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-09-18 14:42:32
+ * @Last Modified time: 2020-10-14 23:25:37
  * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren, To-Do: Datei in OpenCV Format importieren
  */
  """
+
 import os                                                                   # Für die Path-Manipulation
 import numpy as np                                                          # Für Arrays
 import cv2                                                                  # Import OpenCV
@@ -58,9 +59,9 @@ def hisImportFunction2(pImportPath, pExport = False):                        # F
 
 def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
     pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
-    print("\n\n*************************************************************")
-    print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
-    print("*************************************************************\n")
+    #print("\n\n*************************************************************")
+    #print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
+    #print("*************************************************************\n")
     fileName, fileExtension = os.path.splitext(os.path.basename(pImportPath))# Dateinamen und Dateiendung extrahieren    
     print("Die Datei", fileName, "wird jetzt eingelesen.")
     fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
@@ -92,23 +93,25 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):       
     
     if pMittelwert == True:
         meanImage = np.zeros([rows,cols],dtype=np.uint32)
-        #print(meanImage)
-        #print(np.size(bildDaten))
-        #print(np.shape(meanImage))
-        #print(np.shape(bildDaten)[0])
         for index in range(np.shape(bildDaten)[0]):     # Anzahl der Bilddateien
             meanImage = meanImage + bildDaten[index]
-        meanImage = meanImage / np.shape(bildDaten)[0]
-        ergMeanImage = np.array(meanImage, dtype=np.uint16)
+        #meanImage = meanImage / np.shape(bildDaten)[0]
+        meanImage = meanImage / numberImages
+        meanImage = np.rint(meanImage) # Werte auf Ganzzahlen runden
+        ergMeanImage = np.zeros((1, rows, cols), dtype=np.uint16)   # 3D-Array erzeugen, ansonsten nicht kompatibel
+        ergMeanImage[0] = np.array(meanImage, dtype=np.uint16)
         #print(ergMeanImage)
 
-        
-        cv2.imshow("Mittelwert",ergMeanImage)
-        cv2.imwrite(pathWithoutExtension+ "_mittelwert.png",ergMeanImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
-        print("Ihre Datei wurden unter", pathWithoutExtension + "_mittelwert.png gespeichert")
-        cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird              
+        if pExport == True:
+            cv2.imshow("Mittelwert",ergMeanImage)
+            cv2.imwrite(pathWithoutExtension+ "_mittelwert.png",ergMeanImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+            print("Ihre Datei wurden unter", pathWithoutExtension + "_mittelwert.png gespeichert")
+            cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird              
     fd.close()                                                              # File schließen
-    return bildDaten
+    if pMittelwert == True:
+        return ergMeanImage
+    else:
+        return bildDaten
 
 def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
     bild = cv2.imread(pImportPath, flags= -1)
@@ -127,18 +130,33 @@ def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung We
         cv2.destroyAllWindows()      
     return bildDaten
    
-   
-def importUIFunction(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
+def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
     dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower()
     if dateiEndung == ".his": # Eine his-Datei
         bildDaten = hisImportFunction(pImportPath, pExport)
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
         bildDaten = importFunction(pImportPath, pExport)
     return bildDaten
+   
+def importUIFunction(pImportPath, pMittelwert = True, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
+    #bildDaten = []
+    rows, cols, anzahl, farbtiefe = getAufloesungUndAnzahlUndFarbtiefe(pImportPath[0])
+    bildDaten = np.empty((0,rows,cols), dtype=farbtiefe)
+    for aktuellerPfad in pImportPath:
+        dateiEndung = (os.path.splitext(os.path.basename(aktuellerPfad)) [1]).lower() # Dateiendung aus dem Pfad seperarieren, kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
+        if dateiEndung == ".his": # Eine his-Datei
+            
+            aktuellesArray = hisImportFunction(aktuellerPfad, pExport, pMittelwert)
+            bildDaten = np.append(bildDaten, aktuellesArray, axis= 0 )
+            #bildDaten.append( hisImportFunction(aktuellerPfad, pExport, pMittelwert) )
+        elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
+            #bildDaten.append( importFunction(aktuellerPfad, pExport) )
+            bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport), axis= 0 )
+    return bildDaten
 
    
 def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
-    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen großschreiben
+    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
     if dateiEndung == ".his": # Eine his-Datei
         fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
         data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
@@ -146,13 +164,15 @@ def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
         cols = int(np.take(data, 9))                                            # Spalten bestimmen
         fd.close()        
         anzahl = getNumberImages(pImportPath, rows, cols)                                                     # File schließen
-        farbtiefe = data.dtype.name
+        #farbtiefe = data.dtype.name
+        farbtiefe = data.dtype
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
         bild = cv2.imread(pImportPath, flags= -1)
         rows = np.shape(bild)[0]
         cols = np.shape(bild)[1]
         anzahl = 1
-        farbtiefe = bild.dtype.name
+        #farbtiefe = bild.dtype.name
+        farbtiefe = bild.dtype
     return rows, cols, anzahl, farbtiefe
 
 def checkGreyimage(pImportPath):
@@ -162,3 +182,27 @@ def checkGreyimage(pImportPath):
         return True
     else:
         return False   
+
+
+
+"""
+meineListe = 0
+
+meineListe = np.zeros((2,3,3),dtype=np.uint16)
+#print("\n-----------------\n", meineListe)
+#meineListe[0,0,0]  = 1
+#print("\n-----------------\n", meineListe)
+
+meineListe = np.append(meineListe,[[[3, 3, 3 ],[3, 3, 3],[3, 3, 3]]], axis= 0 )
+
+
+meineListe = np.empty((0,3,3), dtype=np.uint16)
+print("\n-----------------\n", meineListe)
+meineListe = np.append(meineListe,[[[3, 3, 3 ],[3, 3, 3],[3, 3, 3]]], axis= 0 )
+print("\n-----------------\n", meineListe)
+meineListe = np.append(meineListe,[[[43,43, 43 ],[43, 43, 43],[43, 43, 43]]], axis= 0 )
+print("\n-----------------\n", meineListe)
+
+pass
+
+"""
