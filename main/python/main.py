@@ -45,6 +45,7 @@ if __name__ == '__main__':
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
     sensorList = ["Bitte Ihren Sensor auswählen"]
     bildDaten = 0
+    DATA = 0
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
