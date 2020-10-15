@@ -228,7 +228,7 @@ p, li { white-space: pre-wrap; }
             <item>
              <widget class="QPushButton" name="pushButtonBilddatenDelete">
               <property name="text">
-               <string>Elemente löschen</string>
+               <string>Element löschen</string>
               </property>
              </widget>
             </item>

@@ -119,9 +119,8 @@ if __name__ == '__main__':
                 #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
                 start_new_thread(detection.dynamicCheck,(bildDaten,))
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
-                for i in range(np.shape(bildDaten)[0]):
-                    #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
-                    start_new_thread(detection.advancedMovingWindow,(bildDaten[0],10,4))
+                #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
+                start_new_thread(detection.advancedMovingWindow,(bildDaten,10,4))
         timer.start(500) # heruntersetzen für Performance
         # Methoden Checken
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median
