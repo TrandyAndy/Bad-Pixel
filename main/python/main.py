@@ -111,6 +111,7 @@ if __name__ == '__main__':
         #BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
         #BPM_Dynamik=BPM_Schwellwert
         #BPM_Window=BPM_Schwellwert
+        
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
@@ -120,7 +121,7 @@ if __name__ == '__main__':
                 start_new_thread(detection.dynamicCheck,(bildDaten,))
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
-                start_new_thread(detection.advancedMovingWindow,(bildDaten,10,eS.labelMovingSchwellwert.text()))
+                T_ID=start_new_thread(detection.advancedMovingWindow,(bildDaten,10,eS.labelMovingSchwellwert.text()))
         timer.start(500) # heruntersetzen für Performance
         # Methoden Checken
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median       #radioButtonMedian
@@ -129,7 +130,11 @@ if __name__ == '__main__':
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected:
             print("Gecancelt gedrückt")
-            # hier muss dann der Prozess gestoppt werden
+            # hier muss dann der Prozess gestoppt werden.
+            cfg.Ladebalken=0
+            timer.stop()
+            #for i in T_ID:
+            T_ID.kill #Alles töten
         print("startClicked")   # debug
     def msgButtonClick():
         print("message")
@@ -592,7 +597,7 @@ if __name__ == '__main__':
 
     def Prozess(): #Hauptprozess nach Start
         if cfg.LadebalkenMax != 0:
-            fortschritt.progressBar.setValue(cfg.Ladebalken/cfg.LadebalkenMax*100)
+            fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
         else:
             fortschritt.progressBar.setValue(100)
         print("ladebalken = ",cfg.Ladebalken)

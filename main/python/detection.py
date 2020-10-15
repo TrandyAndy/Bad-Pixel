@@ -114,7 +114,7 @@ def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
                 #print("Elemente",Elemente," a=",a," b=",b)
                 Std=np.sqrt(np.var(supBPM))
                 #debug= abs(np.mean(supBPM)-D2_Bild[x,y])
-                if Std*Faktor< abs(np.mean(supBPM)-D2_Bild[x,y]):
+                if float(Std)*Faktor< abs(np.mean(supBPM)-D2_Bild[x,y]): #TypeError: can't multiply sequence by non-int of type 'numpy.float64'
                     BPM[x,y]=1 #Digital
                     #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
         cfg.lock.acquire()
