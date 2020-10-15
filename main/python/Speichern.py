@@ -22,7 +22,7 @@ def BPM_Save(BPM, Sensor_Name):
             Zahl=int(sZahl)
             if(Zahl>Nr):
                 Nr=Zahl
-                y=x[i]
+                #y=x[i]
     if len(x)>200:
         print("Speicher voll")
         return -1
@@ -48,7 +48,7 @@ def BPM_Read(Sensor_Name):
             Zahl=int(sZahl)
             if(Zahl>Nr):
                 Nr=Zahl
-                y=x[i]
+                #y=x[i]
     if Nr==0:
         print("Kein Korrekturdatensatz vorhanden, muss Erstellt werden") #Error Meldungen in GUI?
         return -1

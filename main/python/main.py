@@ -32,7 +32,6 @@ import Speichern
 import config as cfg
 import detection
 import correction
-from PyQt5.QtGui import QPalette
 
 
 
@@ -110,8 +109,8 @@ if __name__ == '__main__':
         print("Rechenschritte=",cfg.LadebalkenMax)
         # Suchen
         BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
-        BPM_Dynamik=BPM_Schwellwert
-        BPM_Window=BPM_Schwellwert
+        #BPM_Dynamik=BPM_Schwellwert
+        #BPM_Window=BPM_Schwellwert
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
