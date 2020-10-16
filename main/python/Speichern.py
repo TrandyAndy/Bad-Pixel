@@ -5,6 +5,7 @@ from pathlib import Path
 import PyQt5.QtCore as core
 import json 
 from datetime import date
+import config as cfg
 
 def BPM_Save(BPM, Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
@@ -85,12 +86,14 @@ InitConfigData ={
             "Erstell_Datum" : 19950101,
             "Anz_Bilder" : 0, 
             "Anz_PixelFehler" : 0, 
-	        "last_Fensterbreite_advWindow" : "88",
-            "last_Faktor_advWindow" : "3",
-            "last_Schwellwert_oben" : "99",
-            "last_Schwellwert_unten" : "0.1",
-            "last_Faktor_Dynamik" : "8",
-            "last_korrekturmethode" : "NSRA"
+	        "last_Fensterbreite_advWindow" : 88,
+            "last_Faktor_advWindow" : 3,
+            "last_Schwellwert_oben" : 99,
+            "last_Schwellwert_unten" : 1,
+            "last_Faktor_Dynamik" : 8,
+            "last_korrekturmethode" : 3,#int(cfg.Methoden.NSRC),
+            "last_Fenster_Nachbar" : 5,
+            "last_Fenster_Gradient" : 5
         }
     ],
     "last_GenutzterSensor" : "choose a Sensor",
@@ -155,7 +158,9 @@ def SensorAnlegen(Name,Data):
             "last_Schwellwert_oben" : "99",
             "last_Schwellwert_unten" : "0.1",
             "last_Faktor_Dynamik" : "8",
-            "last_korrekturmethode" : "NSRA"
+            "last_korrekturmethode" : "NSRA",
+            "last_Fenster_Nachbar" : "5",
+            "last_Fenster_Gradient" : "5"
         })
     return 0
 

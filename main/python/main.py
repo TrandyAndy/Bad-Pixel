@@ -434,7 +434,7 @@ if __name__ == '__main__':
         else:
             mW.groupBoxKorrigieren.setEnabled(False)
             #print("not Checked")
-    def buttonAlgorithmusSuchenEinstellungen():
+    def mW_pushButtonAlgorithmusSuchenEinstellungen():
         #Laden
         eS.horizontalSliderSchwellwertHot.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"])
         eS.horizontalSliderSchwellwertDead.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"])
@@ -454,20 +454,29 @@ if __name__ == '__main__':
             eS.horizontalSliderMovingFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"])
             eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
             eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
-    def buttonAlgorithmusKorrigierenEinstellungen():
-        wertNachbarFensterbreite = eK.horizontalSliderNachbarFensterbreite.value()
-        wertGradientFensterbreite = eK.horizontalSliderGradientFensterbreite.value()
-        wertRadioButtonMedian = eK.radioButtonMedian.isChecked()
-        wertRadioButtonMittelwert = eK.radioButtonMittelwert.isChecked()
-        wertRadioButtonReplacement = eK.radioButtonReplacement.isChecked()
+    def mW_pushButtonAlgorithmusKorrigierenEinstellungen():
+        eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
+        eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
+        Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
+        eK.radioButtonMedian.setChecked(Methode==cfg.Methoden.NMFC.value)
+        eK.radioButtonMittelwert.setChecked(Methode==cfg.Methoden.NARC.value)
+        eK.radioButtonReplacement.setChecked(Methode==cfg.Methoden.NSRC.value)
         if eK.exec() == widgets.QDialog.Accepted:
-            pass    # Geänderte Werte annehmen, d.h. nichts machen
+            if eK.radioButtonMedian.isChecked():
+                Methode=cfg.Methoden.NMFC
+            elif eK.radioButtonMittelwert.isChecked():
+                Methode=cfg.Methoden.NARC
+            else:
+                Methode=cfg.Methoden.NSRC
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"]=eK.horizontalSliderNachbarFensterbreite.value()
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"]=eK.horizontalSliderGradientFensterbreite.value()
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]=int(Methode.value)
         else:   # Die alten Werte wiederherstellen, da auf Abbrechnen geklickt wurde
-            eK.horizontalSliderNachbarFensterbreite.setValue(wertNachbarFensterbreite)
-            eK.horizontalSliderGradientFensterbreite.setValue(wertGradientFensterbreite)
-            eK.radioButtonMedian.setChecked(wertRadioButtonMedian)
-            eK.radioButtonMittelwert.setChecked(wertRadioButtonMittelwert)
-            eK.radioButtonReplacement.setChecked(wertRadioButtonReplacement)
+            eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
+            eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
+            eK.radioButtonMedian.setChecked(Methode==cfg.Methoden.NMFC)
+            eK.radioButtonMittelwert.setChecked(Methode==cfg.Methoden.NARC)
+            eK.radioButtonReplacement.setChecked(Methode==cfg.Methoden.NSRC)
     def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
             if fF.exec() == widgets.QDialog.Accepted:
@@ -620,12 +629,7 @@ if __name__ == '__main__':
             # Korrigieren
             global bildDaten
             if mW.checkBoxAlgorithmusKorrigieren.isChecked():
-                if eK.radioButtonMedian.isChecked:
-                    Methode=cfg.Methoden.NMFC
-                elif eK.radioButtonMittelwert.isChecked:
-                    Methode=cfg.Methoden.NARC
-                else:
-                    Methode=cfg.Methoden.NSRC
+                Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
                 for i in range(np.shape(bildDaten)[0]):
                     if mW.radioButtonAlgorithmusNachbar.isChecked():
                         GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges,Methode,int(eK.labelNachbarFensterbreite.text())))
