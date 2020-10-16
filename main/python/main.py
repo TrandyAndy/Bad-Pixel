@@ -230,6 +230,7 @@ if __name__ == '__main__':
     def mW_comboBoxBPMSensor():
         print("mW_comboBoxBPMSensor")
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
+        mW.textEditBPM.setText("Hallo Julian")
     def mW_comboBoxBPMBPM():
         print("mW_comboBoxBPMBPM")
     def mW_pushButtonBPMNeuerSensor():
