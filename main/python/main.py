@@ -1,15 +1,12 @@
 """
-
 /*
  * @Author: Julian Schweizerhof und Andreas Bank
- * @Email: diegruppetg
- * @Date: 2020-10-14 21:27:40
+ * @Email: diegruppetg@gmail.com
+ * @Date: 2020-10-16 12:09:24
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-10-15 00:54:14
+ * @Last Modified time: 2020-10-16 13:05:43
  * @Description: Main des Projektes, primär ermöglicht diese Datei die GUI
  */
-
-
 """
 
 """ Import der Bibliotheken:__________________________________________________________________________________"""
@@ -17,7 +14,6 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext    # für das fbs
 import sys
 import PyQt5.QtCore as core
-# from PyQt5.QtCore import QTimer,QDateTime # Julian: nicht notwendig oder? 
 import PyQt5.QtWidgets as widgets
 import PyQt5.QtGui as gui
 import PyQt5.uic as uic
@@ -33,9 +29,6 @@ import config as cfg
 import detection
 import correction
 
-
-
-
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext    # für das fbs
@@ -44,7 +37,8 @@ if __name__ == '__main__':
     aktuellerTab = 0    # Zustand des Tabs der GUI
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
     sensorList = ["Bitte Ihren Sensor auswählen"]
-    bildDaten = 0
+    bildDaten = 0       # hier werden die importierten Bilder gespeichert, 3D-Array: [anzahlBilder][Zeilen][Spalten]
+    DATA = 0            # Die Daten für die Speicherung der Config Datei
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
@@ -150,7 +144,7 @@ if __name__ == '__main__':
         if returnValue == widgets.QMessageBox.Ok:
             print("OK clicked") # debug
         return returnValue        
-    def mWButtonBackClicked():
+    def mW_pushButtonMainBack():
         print(eS.labelMovingSchwellwert.text())
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab > 0:
@@ -161,7 +155,7 @@ if __name__ == '__main__':
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
         # print(aktuellerTab)   # debug      
-    def mWButtonForwardClicked():
+    def mW_pushButtonMainForward():
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab >= 3:
             startClicked()
@@ -175,7 +169,7 @@ if __name__ == '__main__':
             mW.pushButtonMainBack.setVisible(True)
         # print(aktuellerTab)   # debug
         Speichern.Write_json(DATA) #Schreiben am Ende
-    def mWTabChanged():
+    def mW_tabWidget():
         global aktuellerTab
         aktuellerTab = mW.tabWidget.currentIndex()
         # print(aktuellerTab)   # debug
@@ -229,12 +223,13 @@ if __name__ == '__main__':
         # Einstellungen Korrigieren
         eK_horizontalSliderNachbarFensterbreite()
         eK_horizontalSliderGradientFensterbreite()
+    ############ Ende Allgemeine Funktionen ########################################################################################
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
-    def mWBPMComboBoxSensor():
-        print("mWBPMComboBoxSensor")
-    def mWBPMComboBoxBPM():
-        print("mWBPMComboBoxBPM")
-    def mWBPMButtonNeuerSensor():
+    def mW_comboBoxBPMSensor():
+        print("mW_comboBoxBPMSensor")
+    def mW_comboBoxBPMBPM():
+        print("mW_comboBoxBPMBPM")
+    def mW_pushButtonBPMNeuerSensor():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
         # filename = widgets.QFileDialog.getOpenFileNames() [0]      
         # filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "UI-Dateien (*.ui)")
@@ -251,7 +246,7 @@ if __name__ == '__main__':
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
             print("Läuft 3")
         print("NeueBPM geöffnet")   # debug
-    def mWBPMButtonSensorLoeschen():
+    def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
         currentText = mW.comboBoxBPMSensor.currentText()
         print(aktuellerIndex)
@@ -262,7 +257,7 @@ if __name__ == '__main__':
             mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
             Speichern.SensorLoschen(currentText,DATA)
         pass
-    def mWBPMButtonBPMLoeschen():
+    def mW_pushButtonBPMBPMLoeschen():
         pass
     def setEnabledBPM(flag):
         mW.labelBPMchoose.setEnabled(flag)
@@ -272,7 +267,7 @@ if __name__ == '__main__':
     setEnabledBPM(False)   
 
     ### Tab Bilddaten
-    def mWBilddatenButtonOrdnerDurchsuchen():   # Ordner importieren
+    def mW_pushButtonBilddatenOrdnerDurchsuchen():   # Ordner importieren
         if DATA["Import_Pfad"]==" ":
             dirname = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))
         else:
@@ -283,7 +278,7 @@ if __name__ == '__main__':
         else:
             print("Abgebbrochen")
         print("Ordnerdialog Bilddaten geöffnet", dirname)
-    def mWBilddatenButtonImportieren():
+    def mW_pushButtonBilddatenImportieren():
         global anzahlBilder
         dirname = mW.lineEditBilddatenDurchsuchen.text()
         if os.path.exists(dirname): # wenn der Pfad überhaupt existiert
@@ -325,7 +320,7 @@ if __name__ == '__main__':
             openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad ist nicht gültig",informativeText="Der Pfad: \"" + dirname + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         
             
-    def buttonBilddatenAddDurchsuchen():    # Bilddateien importieren
+    def mW_pushButtonBilddatenAdd():    # Bilddateien importieren
         global anzahlBilder # globale Variable Anzahl der Bilder bekannt machen
         # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
         # Alle Pfäde der Dateien werden in filename gespeichert
@@ -353,9 +348,9 @@ if __name__ == '__main__':
         #else:
         #    print("Farbbild")
         #imP.importUIFunction(mW.tableWidgetBilddaten.item(0,4).text(),True)
-        # print("buttonBilddatenAddDurchsuchen")    # debug
+        # print("mW_pushButtonBilddatenAdd")    # debug
     
-    def buttonBilddatenDelete():
+    def mW_pushButtonBilddatenDelete():
         global anzahlBilder
         #print(mW.tableWidgetBilddaten.item(0,0).text())
         zeilen =  mW.tableWidgetBilddaten.selectedItems()
@@ -404,27 +399,27 @@ if __name__ == '__main__':
         mW.tableWidgetBilddaten.setItem(1,1, abc[1])
         """
         #mW.tableWidgetBilddaten.setItem(1,1, widgets.QTableWidgetItem("Yeay4"))
-        print("buttonBilddatenDelete")
+        print("mW_pushButtonBilddatenDelete")
         
-    def buttonBilddatenDeleteAll():
+    def mW_pushButtonBilddatenDeleteAll():
         #mW.tableWidgetBilddaten.clearContents()
         #mW.tableWidgetBilddaten.removeRow()
         mW.tableWidgetBilddaten.setRowCount(0)
         #mW.tableWidgetBilddaten.setRowCount(1)
         global anzahlBilder
         anzahlBilder = 0
-        print("buttonBilddatenDeleteAll")
+        print("mW_pushButtonBilddatenDeleteAll")
     ### Tab Speicherort
-    def buttonSpeicherortDurchsuchen():
+    def mW_pushButtonSpeicherortDurchsuchen():
         if DATA["Export_Pfad"]==" ":
             filename = widgets.QFileDialog.getExistingDirectory(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation))    
         else:
             filename = widgets.QFileDialog.getExistingDirectory(directory = DATA["Export_Pfad"])    
         mW.lineEditSpeicherort.setText(filename)
         DATA["Export_Pfad"]=filename
-        print("buttonSpeicherortDurchsuchen")
+        print("mW_pushButtonSpeicherortDurchsuchen")
     ### Tab Algorithmus
-    def suchenEnable():
+    def mW_checkBoxAlgorithmusSuchen():
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             mW.groupBoxSuchen.setEnabled(True)
             #print("Checked")
@@ -432,7 +427,7 @@ if __name__ == '__main__':
             mW.groupBoxSuchen.setEnabled(False)
             #print("not Checked")
         #print("Suchen")
-    def korrigierenEnable():
+    def mW_checkBoxAlgorithmusKorrigieren():
         if mW.checkBoxAlgorithmusKorrigieren.isChecked():
             mW.groupBoxKorrigieren.setEnabled(True)
             #print("Checked")
@@ -473,16 +468,16 @@ if __name__ == '__main__':
             eK.radioButtonMedian.setChecked(wertRadioButtonMedian)
             eK.radioButtonMittelwert.setChecked(wertRadioButtonMittelwert)
             eK.radioButtonReplacement.setChecked(wertRadioButtonReplacement)
-    def mWCheckBoxAlgorithmusFFK():
+    def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
             if fF.exec() == widgets.QDialog.Accepted:
                 print("Läuft")
     ### Flat-Field-Korrektur
 
-    def radioButtonFlatFieldKorrekturGespeicherte():
+    def fF_radioButtonGespeicherteBilder():
         fF.groupBox.setEnabled(False)
         print("Radio Button FFK Dunkel")
-    def radioButtonFlatFieldKorrekturNeue():
+    def fF_radioButtonNeueBilder():
         fF.groupBox.setEnabled(True)
         print("Radio Button FFK Hell")
 
@@ -547,45 +542,44 @@ if __name__ == '__main__':
         #    eK.labelGradientFensterbreite.setStyleSheet('color: black')
         #print("eK_horizontalSliderGradientFensterbreite", value)   # debug
 
-     
+    """ GUI-Elemente mit Funktionen verbinden:___________________________________________________________________________________ """   
     #### UI Aktionen #### 
     ### Allgemein
     uiSetup()
-    mW.pushButtonMainBack.clicked.connect(mWButtonBackClicked)
-    mW.pushButtonMainForward.clicked.connect(mWButtonForwardClicked)
-    mW.tabWidget.currentChanged.connect(mWTabChanged)
+    mW.pushButtonMainBack.clicked.connect(mW_pushButtonMainBack)
+    mW.pushButtonMainForward.clicked.connect(mW_pushButtonMainForward)
+    mW.tabWidget.currentChanged.connect(mW_tabWidget)
 
     ### Tab Sensor / BPM
-    mW.comboBoxBPMSensor.activated.connect(mWBPMComboBoxSensor)
-    mW.comboBoxBPMBPM.activated.connect(mWBPMComboBoxBPM)
-    mW.pushButtonBPMNeuerSensor.clicked.connect(mWBPMButtonNeuerSensor)
-    mW.pushButtonBPMSensorLoeschen.clicked.connect(mWBPMButtonSensorLoeschen)
-    mW.pushButtonBPMBPMLoeschen.clicked.connect(mWBPMButtonBPMLoeschen)
+    mW.comboBoxBPMSensor.activated.connect(mW_comboBoxBPMSensor)
+    mW.comboBoxBPMBPM.activated.connect(mW_comboBoxBPMBPM)
+    mW.pushButtonBPMNeuerSensor.clicked.connect(mW_pushButtonBPMNeuerSensor)
+    mW.pushButtonBPMSensorLoeschen.clicked.connect(mW_pushButtonBPMSensorLoeschen)
+    mW.pushButtonBPMBPMLoeschen.clicked.connect(mW_pushButtonBPMBPMLoeschen)
 
     ### Tab Bilddaten
-    mW.pushButtonBilddatenOrdnerDurchsuchen.clicked.connect(mWBilddatenButtonOrdnerDurchsuchen)
-    mW.pushButtonBilddatenImportieren.clicked.connect(mWBilddatenButtonImportieren)
-    mW.pushButtonBilddatenAdd.clicked.connect(buttonBilddatenAddDurchsuchen)
-    mW.pushButtonBilddatenDelete.clicked.connect(buttonBilddatenDelete)
-    mW.pushButtonBilddatenDeleteAll.clicked.connect(buttonBilddatenDeleteAll)
-
+    mW.pushButtonBilddatenOrdnerDurchsuchen.clicked.connect(mW_pushButtonBilddatenOrdnerDurchsuchen)
+    mW.pushButtonBilddatenImportieren.clicked.connect(mW_pushButtonBilddatenImportieren)
+    mW.pushButtonBilddatenAdd.clicked.connect(mW_pushButtonBilddatenAdd)
+    mW.pushButtonBilddatenDelete.clicked.connect(mW_pushButtonBilddatenDelete)
+    mW.pushButtonBilddatenDeleteAll.clicked.connect(mW_pushButtonBilddatenDeleteAll)
 
     ### Tab Speicherort
-    mW.pushButtonSpeicherortDurchsuchen.clicked.connect(buttonSpeicherortDurchsuchen)
+    mW.pushButtonSpeicherortDurchsuchen.clicked.connect(mW_pushButtonSpeicherortDurchsuchen)
 
     ### Tab Algorithmus
-    mW.checkBoxAlgorithmusSuchen.stateChanged.connect(suchenEnable)
-    mW.pushButtonAlgorithmusSuchenEinstellungen.clicked.connect(buttonAlgorithmusSuchenEinstellungen)
-    mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(korrigierenEnable)
-    mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(buttonAlgorithmusKorrigierenEinstellungen)
-    mW.checkBoxAlgorithmusFFK.stateChanged.connect(mWCheckBoxAlgorithmusFFK)
+    mW.checkBoxAlgorithmusSuchen.stateChanged.connect(mW_checkBoxAlgorithmusSuchen)
+    mW.pushButtonAlgorithmusSuchenEinstellungen.clicked.connect(mW_pushButtonAlgorithmusSuchenEinstellungen)
+    mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(mW_checkBoxAlgorithmusKorrigieren)
+    mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(mW_pushButtonAlgorithmusKorrigierenEinstellungen)
+    mW.checkBoxAlgorithmusFFK.stateChanged.connect(mW_checkBoxAlgorithmusFFK)
     eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
 
     ### Flat-Field-Korrektur
-    fF.radioButtonGespeicherteBilder.clicked.connect(radioButtonFlatFieldKorrekturGespeicherte)
-    fF.radioButtonNeueBilder.clicked.connect(radioButtonFlatFieldKorrekturNeue)
+    fF.radioButtonGespeicherteBilder.clicked.connect(fF_radioButtonGespeicherteBilder)
+    fF.radioButtonNeueBilder.clicked.connect(fF_radioButtonNeueBilder)
     
     ### Einstellungen Suchen
     eS.horizontalSliderSchwellwertHot.valueChanged.connect(eS_horizontalSliderSchwellwertHot)
