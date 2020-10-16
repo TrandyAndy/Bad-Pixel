@@ -33,7 +33,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Hellbilder ohne Bauteil auswählen:</string>
+         <string>Hellbilder ohne Bauteil auswählen (es wird automatisch ein Mittelwert gebildet):</string>
         </property>
        </widget>
       </item>
@@ -101,7 +101,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Dunkelbilder ohne Bauteil auswählen</string>
+         <string>Dunkelbilder ohne Bauteil auswählen (es wird automatisch ein Mittelwert gebildet):</string>
         </property>
        </widget>
       </item>
