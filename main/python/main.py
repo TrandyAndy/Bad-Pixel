@@ -115,13 +115,13 @@ if __name__ == '__main__':
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
-                start_new_thread(detection.MultiPicturePixelCompare,(bildDaten,))
+                start_new_thread(detection.MultiPicturePixelCompare,(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
             if(mW.checkBoxAlgorithmusDynamic.isChecked()):
                 #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
-                start_new_thread(detection.dynamicCheck,(bildDaten,))
+                start_new_thread(detection.dynamicCheck,(bildDaten,float(eS.labelDynamicSchwellwer.text())))
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
-                #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] #F=4
-                T_ID=start_new_thread(detection.advancedMovingWindow,(bildDaten,10,eS.labelMovingSchwellwert.text()))
+                #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] 
+                T_ID=start_new_thread(detection.advancedMovingWindow,(bildDaten,float(eS.labelMovingSchwellwert.text()),float(eS.labelMovingSchwellwert.text())))
         timer.start(500) # heruntersetzen für Performance
         # Methoden Checken
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median       #radioButtonMedian
@@ -134,7 +134,7 @@ if __name__ == '__main__':
             cfg.Ladebalken=0
             timer.stop()
             #for i in T_ID:
-            T_ID.kill #Alles töten
+            #T_ID.kill #Alles töten
         print("startClicked")   # debug
     def msgButtonClick():
         print("message")
@@ -440,19 +440,25 @@ if __name__ == '__main__':
             mW.groupBoxKorrigieren.setEnabled(False)
             #print("not Checked")
     def buttonAlgorithmusSuchenEinstellungen():
-        wertSchwellwertHot = eS.horizontalSliderSchwellwertHot.value()
-        wertSchwellwertDead = eS.horizontalSliderSchwellwertDead.value()
-        wertMovingFensterbreite = eS.horizontalSliderMovingFensterbreite.value()
-        wertMovingSchwellwert = eS.horizontalSliderMovingSchwellwert.value()
-        wertDynamicSchwellwert = eS.horizontalSliderDynamicSchwellwert.value()
+        #Laden
+        eS.horizontalSliderSchwellwertHot.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"])
+        eS.horizontalSliderSchwellwertDead.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"])
+        eS.horizontalSliderMovingFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"])
+        eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
+        eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
         if eS.exec() == widgets.QDialog.Accepted:
-            pass    # Geänderte Werte annehmen, d.h. nichts machen
+            #Speichern
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"]=eS.horizontalSliderSchwellwertHot.value()
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"]=eS.horizontalSliderSchwellwertDead.value()            
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"]=eS.horizontalSliderMovingFensterbreite.value()
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"]=eS.horizontalSliderMovingSchwellwert.value()
+            DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"]= eS.horizontalSliderDynamicSchwellwert.value()
         else:   # Die alten Werte wiederherstellen, da auf Abbrechnen geklickt wurde
-            eS.horizontalSliderSchwellwertHot.setValue(wertSchwellwertHot)
-            eS.horizontalSliderSchwellwertDead.setValue(wertSchwellwertDead)
-            eS.horizontalSliderMovingFensterbreite.setValue(wertMovingFensterbreite)
-            eS.horizontalSliderMovingSchwellwert.setValue(wertMovingSchwellwert)
-            eS.horizontalSliderDynamicSchwellwert.setValue(wertDynamicSchwellwert)
+            eS.horizontalSliderSchwellwertHot.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"])
+            eS.horizontalSliderSchwellwertDead.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"])
+            eS.horizontalSliderMovingFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"])
+            eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
+            eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
     def buttonAlgorithmusKorrigierenEinstellungen():
         wertNachbarFensterbreite = eK.horizontalSliderNachbarFensterbreite.value()
         wertGradientFensterbreite = eK.horizontalSliderGradientFensterbreite.value()
@@ -620,11 +626,17 @@ if __name__ == '__main__':
             # Korrigieren
             global bildDaten
             if mW.checkBoxAlgorithmusKorrigieren.isChecked():
+                if eK.radioButtonMedian.isChecked:
+                    Methode=cfg.Methoden.NMFC
+                elif eK.radioButtonMittelwert.isChecked:
+                    Methode=cfg.Methoden.NARC
+                else:
+                    Methode=cfg.Methoden.NSRC
                 for i in range(np.shape(bildDaten)[0]):
                     if mW.radioButtonAlgorithmusNachbar.isChecked():
-                        GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges))
+                        GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges,Methode,int(eK.labelNachbarFensterbreite.text())))
                     elif mW.radioButtonAlgorithmusGradient.isChecked():
-                        GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges))
+                        GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges,Methode,int(eK.labelGradientFensterbreite.text())))
                     #if mW.radioButtonAlgorithmusNagao():
                     # Export Aufruf
                     exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)

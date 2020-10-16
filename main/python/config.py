@@ -28,6 +28,6 @@ lock=allocate_lock() #Mutex
 """
 #Methoden_Liste=['NARC', 'NMFC', 'NSRC'] #zur Korrektur
 class Methoden(Enum): #zur Korrektur
-    NARC = 2
-    NMFC = 1
-    NSRC = 3
+    NARC = 2 #Mittelwert
+    NMFC = 1 #Median
+    NSRC = 3 #Replacement
