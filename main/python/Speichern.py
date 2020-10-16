@@ -93,19 +93,14 @@ InitConfigData ={
             "last_Faktor_Dynamik" : 8,
             "last_korrekturmethode" : 3,#int(cfg.Methoden.NSRC),
             "last_Fenster_Nachbar" : 5,
-            "last_Fenster_Gradient" : 5
+            "last_Fenster_Gradient" : 5,
+            "Flat_Field_vorhanden" : False
         }
     ],
-    "last_GenutzterSensor" : "choose a Sensor",
+    "last_GenutzterSensor" : "erzeuge einen Sensor",
     "Import_Pfad" : " ",
     "Export_Pfad" : " ",
-    "Flat_Field_Bilder": [
-        {
-            "Hell_Bild": False,
-            "Dunkel_Bild": False
-        }
-    ]
-    
+       
 
 } 
 
@@ -160,7 +155,8 @@ def SensorAnlegen(Name,Data):
             "last_Faktor_Dynamik" : 8,
             "last_korrekturmethode" : 3,#int(cfg.Methoden.NSRC),
             "last_Fenster_Nachbar" : 5,
-            "last_Fenster_Gradient" : 5
+            "last_Fenster_Gradient" : 5,
+            "Flat_Field_vorhanden" : False
         })
     return 0
 

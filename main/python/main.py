@@ -229,6 +229,7 @@ if __name__ == '__main__':
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
     def mW_comboBoxBPMSensor():
         print("mW_comboBoxBPMSensor")
+        DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
     def mW_comboBoxBPMBPM():
         print("mW_comboBoxBPMBPM")
     def mW_pushButtonBPMNeuerSensor():
