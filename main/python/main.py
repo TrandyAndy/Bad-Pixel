@@ -60,6 +60,8 @@ if __name__ == '__main__':
     ############ Allgemeine Funktionen ########################################################################################
     def startClicked():
         global aktuellerTab
+        #Speichern wie bei forward
+        Speichern.Write_json(DATA) #Schreiben am Ende
         # Check BPM is valid
         # Check Bilddaten is valid
         if mW.tableWidgetBilddaten.rowCount() == 0:
