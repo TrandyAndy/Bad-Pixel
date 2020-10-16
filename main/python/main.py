@@ -1,15 +1,12 @@
 """
-
 /*
  * @Author: Julian Schweizerhof und Andreas Bank
- * @Email: diegruppetg
- * @Date: 2020-10-14 21:27:40
+ * @Email: diegruppetg@gmail.com
+ * @Date: 2020-10-16 12:09:24
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-10-15 00:54:14
+ * @Last Modified time: 2020-10-16 12:15:10
  * @Description: Main des Projektes, primär ermöglicht diese Datei die GUI
  */
-
-
 """
 
 """ Import der Bibliotheken:__________________________________________________________________________________"""
@@ -17,7 +14,6 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext    # für das fbs
 import sys
 import PyQt5.QtCore as core
-# from PyQt5.QtCore import QTimer,QDateTime # Julian: nicht notwendig oder? 
 import PyQt5.QtWidgets as widgets
 import PyQt5.QtGui as gui
 import PyQt5.uic as uic
@@ -33,9 +29,6 @@ import config as cfg
 import detection
 import correction
 
-
-
-
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext    # für das fbs
@@ -44,8 +37,8 @@ if __name__ == '__main__':
     aktuellerTab = 0    # Zustand des Tabs der GUI
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
     sensorList = ["Bitte Ihren Sensor auswählen"]
-    bildDaten = 0
-    DATA = 0
+    bildDaten = 0       # hier werden die importierten Bilder gespeichert, 3D-Array: [anzahlBilder][Zeilen][Spalten]
+    DATA = 0            # Die Daten für die Speicherung der Config Datei
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
@@ -225,6 +218,7 @@ if __name__ == '__main__':
         # Einstellungen Korrigieren
         eK_horizontalSliderNachbarFensterbreite()
         eK_horizontalSliderGradientFensterbreite()
+    ############ Ende Allgemeine Funktionen ########################################################################################
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
     def mWBPMComboBoxSensor():
         print("mWBPMComboBoxSensor")
@@ -537,7 +531,7 @@ if __name__ == '__main__':
         #    eK.labelGradientFensterbreite.setStyleSheet('color: black')
         #print("eK_horizontalSliderGradientFensterbreite", value)   # debug
 
-     
+    """ GUI-Elemente mit Funktionen verbinden:___________________________________________________________________________________ """   
     #### UI Aktionen #### 
     ### Allgemein
     uiSetup()
@@ -558,7 +552,6 @@ if __name__ == '__main__':
     mW.pushButtonBilddatenAdd.clicked.connect(buttonBilddatenAddDurchsuchen)
     mW.pushButtonBilddatenDelete.clicked.connect(buttonBilddatenDelete)
     mW.pushButtonBilddatenDeleteAll.clicked.connect(buttonBilddatenDeleteAll)
-
 
     ### Tab Speicherort
     mW.pushButtonSpeicherortDurchsuchen.clicked.connect(buttonSpeicherortDurchsuchen)
