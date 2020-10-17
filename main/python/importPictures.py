@@ -113,7 +113,7 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):       
     else:
         return bildDaten
 
-def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
+def importFunction(pImportPath, pExport = False, pExportPath=""): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
     bild = cv2.imread(pImportPath, flags= -1)
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
     if np.shape(bildDaten[0]) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
@@ -124,10 +124,19 @@ def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung We
     #cv2.waitKey()
     #cv2.destroyAllWindows()
     if pExport == True:
-        cv2.imshow('image', bild)                                             # Array als Bild anzeigen
-        cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
-        cv2.waitKey()
-        cv2.destroyAllWindows()      
+        dirName = os.path.join(pExportPath, "Ausgangsbilder")
+        if os.path.exists(dirName):
+            pass
+        else:
+            os.mkdir(dirName)
+        fileName = os.path.splitext(os.path.basename(pImportPath))[0] +  "_original.png"
+        #cv2.imshow('image', bild)                                             # Array als Bild anzeigen
+        #cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+        #cv2.imwrite(os.path.join(pExportPath, "Ausgangsbilder", os.path.basename(pImportPath)) + "_Original.png", bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+        cv2.imwrite(os.path.join(dirName, fileName), bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+        
+        #cv2.waitKey()
+        #cv2.destroyAllWindows()      
     return bildDaten
    
 def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
@@ -138,7 +147,7 @@ def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array un
         bildDaten = importFunction(pImportPath, pExport)
     return bildDaten
    
-def importUIFunction(pImportPath, pMittelwert = True, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
+def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPath=""): # Rückgabe Bild-Array und Auflösung Breite und Höhe
     #bildDaten = []
     rows, cols, anzahl, farbtiefe = getAufloesungUndAnzahlUndFarbtiefe(pImportPath[0])
     bildDaten = np.empty((0,rows,cols), dtype=farbtiefe)
@@ -151,7 +160,7 @@ def importUIFunction(pImportPath, pMittelwert = True, pExport = False): # Rückg
             #bildDaten.append( hisImportFunction(aktuellerPfad, pExport, pMittelwert) )
         elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
             #bildDaten.append( importFunction(aktuellerPfad, pExport) )
-            bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport), axis= 0 )
+            bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport, pExportPath=pExportPath), axis= 0 )
     return bildDaten
 
    
@@ -183,6 +192,10 @@ def checkGreyimage(pImportPath):
     else:
         return False   
 
+
+pExportPath = "/Users/julian/Google Drive/Studium/Master/2. Semester/"
+s = os.path.join(pExportPath, "Ausgangsbilder", os.path.splitext(os.path.basename("/Users/julian/Google Drive/Studium/Master/2. Semester/Energiesysteme/MABM130B_Energiesysteme_rev02.pdf")) [0] +  "_Original.png")
+print(s)
 """
 import os
 import platform

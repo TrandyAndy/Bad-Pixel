@@ -94,7 +94,14 @@ if __name__ == '__main__':
         pathlist = []
         for index in range(anzahlBilder):   # alle Pfade aus der Tabelle in eine Liste schreiben
             pathlist.append(mW.tableWidgetBilddaten.item(index,4).text())
-        bildDaten = imP.importUIFunction(pathlist,pMittelwert=True)
+        if mW.checkBoxRohbilderSpeichern.isChecked():
+            bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=True, pExportPath= mW.lineEditSpeicherort.text())
+            fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert\n")
+        else:
+            bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=False)
+        
+
+        
 
 
             #if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
