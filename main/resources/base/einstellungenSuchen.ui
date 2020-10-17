@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>524</width>
-    <height>569</height>
+    <height>618</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -240,6 +240,20 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonVorschau">
+     <property name="text">
+      <string>Vorschau anzeigen</string>
+     </property>
     </widget>
    </item>
    <item>

@@ -21,6 +21,8 @@ import types
 import os
 import numpy as np
 from _thread import start_new_thread, allocate_lock #oder mit therading lib.
+import platform     # für das Öffnen des File Explores
+import subprocess   # für das Öffnen des File Explores
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
@@ -54,6 +56,8 @@ if __name__ == '__main__':
     fF = uic.loadUi(dateiFlatFieldKorrektur)
     dateiFortschritt = appctxt.get_resource("fortschritt.ui")
     fortschritt = uic.loadUi(dateiFortschritt)
+    dateiBildFenster = appctxt.get_resource("bildFenster.ui")
+    bildFenster = uic.loadUi(dateiBildFenster)
     msgBox = widgets.QMessageBox()  # Die Message Box
 
     """ Funktionen für die GUI:___________________________________________________________________________________ """
@@ -114,7 +118,7 @@ if __name__ == '__main__':
                 start_new_thread(detection.MultiPicturePixelCompare,(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
             if(mW.checkBoxAlgorithmusDynamic.isChecked()):
                 #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
-                start_new_thread(detection.dynamicCheck,(bildDaten,float(eS.labelDynamicSchwellwer.text())))
+                start_new_thread(detection.dynamicCheck,(bildDaten,float(eS.labelDynamicSchwellwert.text())))
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] 
                 T_ID=start_new_thread(detection.advancedMovingWindow,(bildDaten,float(eS.labelMovingSchwellwert.text()),float(eS.labelMovingSchwellwert.text())))
@@ -225,6 +229,8 @@ if __name__ == '__main__':
         # Einstellungen Korrigieren
         eK_horizontalSliderNachbarFensterbreite()
         eK_horizontalSliderGradientFensterbreite()
+        # Fortschritt Fenster
+        fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
     ############ Ende Allgemeine Funktionen ########################################################################################
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
     def mW_comboBoxBPMSensor():
@@ -531,6 +537,12 @@ if __name__ == '__main__':
         value = eS.horizontalSliderDynamicSchwellwert.value()
         eS.labelDynamicSchwellwert.setText( str( round(value*0.01 + 1.03,2)  ) )     
 
+    def eS_pushButtonVorschau():
+        pixmap = gui.QPixmap("Bild.png")
+        bildFenster.label.setPixmap(pixmap)
+        bildFenster.label.setScaledContents(True)
+        bildFenster.label.resize(pixmap.width(), pixmap.height())
+        bildFenster.exec()
     ### Einstellungen Korrektur 
     eK.horizontalSliderNachbarFensterbreite.setMinimum(0) #Andy Vorgabe: min 3 max 21 ival 2 
     eK.horizontalSliderNachbarFensterbreite.setMaximum(9)
@@ -552,6 +564,23 @@ if __name__ == '__main__':
         #else:
         #    eK.labelGradientFensterbreite.setStyleSheet('color: black')
         #print("eK_horizontalSliderGradientFensterbreite", value)   # debug
+
+    def eK_pushButtonVorschau():
+        pixmap = gui.QPixmap("Bild.png")
+        bildFenster.label.setPixmap(pixmap)
+        bildFenster.label.setScaledContents(True)
+        bildFenster.label.resize(pixmap.width(), pixmap.height())
+        bildFenster.exec()
+    ### Fortschritt Fenster
+    def fortschritt_pushButtonOeffnen():
+        path = mW.lineEditSpeicherort.text()
+        if platform.system() == "Windows":
+            os.startfile(path)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", path])
+        else:
+            subprocess.Popen(["xdg-open", path])
+        #print("Speicherort im File Explorer öffnen")   # debug
 
     """ GUI-Elemente mit Funktionen verbinden:___________________________________________________________________________________ """   
     #### UI Aktionen #### 
@@ -584,9 +613,6 @@ if __name__ == '__main__':
     mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(mW_checkBoxAlgorithmusKorrigieren)
     mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(mW_pushButtonAlgorithmusKorrigierenEinstellungen)
     mW.checkBoxAlgorithmusFFK.stateChanged.connect(mW_checkBoxAlgorithmusFFK)
-    eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
-    eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
-    eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
 
     ### Flat-Field-Korrektur
     fF.radioButtonGespeicherteBilder.clicked.connect(fF_radioButtonGespeicherteBilder)
@@ -598,11 +624,20 @@ if __name__ == '__main__':
     eS.horizontalSliderMovingFensterbreite.valueChanged.connect(eS_horizontalSliderMovingFensterbreite)
     eS.horizontalSliderMovingSchwellwert.valueChanged.connect(eS_horizontalSliderMovingSchwellwert)
     eS.horizontalSliderDynamicSchwellwert.valueChanged.connect(eS_horizontalSliderDynamicSchwellwert)
-    
+    eS.pushButtonVorschau.clicked.connect(eS_pushButtonVorschau)
+
+    eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+    eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+    eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+
     ### Einstellungen Korrektur
     eK.horizontalSliderNachbarFensterbreite.valueChanged.connect(eK_horizontalSliderNachbarFensterbreite)
     eK.horizontalSliderGradientFensterbreite.valueChanged.connect(eK_horizontalSliderGradientFensterbreite)
-    
+    eK.pushButtonVorschau.clicked.connect(eK_pushButtonVorschau)
+
+    ### Fortschritt Fenster
+    fortschritt.pushButtonOeffnen.clicked.connect(fortschritt_pushButtonOeffnen)
+
     #### QT UI anzeigen####
     mW.show()
 
