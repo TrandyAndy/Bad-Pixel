@@ -58,8 +58,8 @@ def hisImportFunction2(pImportPath, pExport = False):                        # F
     return im
 
 
-def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExportPath = ""):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
-    aktuelleZeit = str(datetime.now())[:-7].replace(":","-")   # aktuelles Datum und Zeit
+def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExportPath = "", pZeit=""):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
+    aktuelleZeit = pZeit   # aktuelles Datum und Zeit
     pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
     #print("\n\n*************************************************************")
     #print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
@@ -91,7 +91,7 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
             print("Ihre Datei wurden unter", pathWithoutExtension+"_"+str(index)+".png gespeichert")
             cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird              
             """
-            dirName = os.path.join(pExportPath, "Ausgangsbilder vom " + aktuelleZeit)
+            dirName = os.path.join(pExportPath, "Originalbilder vom " + aktuelleZeit)
             if os.path.exists(dirName):
                 pass
             else:
@@ -113,7 +113,7 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
         #print(ergMeanImage)
 
         if pExport == True:
-            dirName = os.path.join(pExportPath, "Ausgangsbilder vom " + aktuelleZeit)
+            dirName = os.path.join(pExportPath, "Originalbilder vom " + aktuelleZeit)
             if os.path.exists(dirName):
                 pass
             else:
@@ -132,8 +132,8 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
     else:
         return bildDaten
 
-def importFunction(pImportPath, pExport = False, pExportPath=""): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
-    aktuelleZeit = str(datetime.now())[:-7].replace(":","-")   # aktuelles Datum und Zeit
+def importFunction(pImportPath, pExport = False, pExportPath="", pZeit=""): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
+    aktuelleZeit = pZeit   # aktuelles Datum und Zeit
     bild = cv2.imread(pImportPath, flags= -1)
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
     if np.shape(bildDaten[0]) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
@@ -144,7 +144,7 @@ def importFunction(pImportPath, pExport = False, pExportPath=""): #vill noch ne 
     #cv2.waitKey()
     #cv2.destroyAllWindows()
     if pExport == True:
-        dirName = os.path.join(pExportPath, "Ausgangsbilder vom " + aktuelleZeit)
+        dirName = os.path.join(pExportPath, "Originalbilder vom " + aktuelleZeit)
         if os.path.exists(dirName):
             pass
         else:
@@ -152,7 +152,7 @@ def importFunction(pImportPath, pExport = False, pExportPath=""): #vill noch ne 
         fileName = os.path.splitext(os.path.basename(pImportPath))[0] +  "_original.png"
         #cv2.imshow('image', bild)                                             # Array als Bild anzeigen
         #cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
-        #cv2.imwrite(os.path.join(pExportPath, "Ausgangsbilder", os.path.basename(pImportPath)) + "_Original.png", bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+        #cv2.imwrite(os.path.join(pExportPath, "Originalbilder", os.path.basename(pImportPath)) + "_Original.png", bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
         cv2.imwrite(os.path.join(dirName, fileName), bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
         
         #cv2.waitKey()
@@ -171,16 +171,17 @@ def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPa
     #bildDaten = []
     rows, cols, anzahl, farbtiefe = getAufloesungUndAnzahlUndFarbtiefe(pImportPath[0])
     bildDaten = np.empty((0,rows,cols), dtype=farbtiefe)
+    aktuelleZeit = str(datetime.now())[:-7].replace(":","-")   # aktuelles Datum und Zeit
     for aktuellerPfad in pImportPath:
         dateiEndung = (os.path.splitext(os.path.basename(aktuellerPfad)) [1]).lower() # Dateiendung aus dem Pfad seperarieren, kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
         if dateiEndung == ".his": # Eine his-Datei
             
-            aktuellesArray = hisImportFunction(aktuellerPfad, pExport, pMittelwert, pExportPath)
-            bildDaten = np.append(bildDaten, aktuellesArray, axis= 0 )
+            aktuellesArray = hisImportFunction(aktuellerPfad, pExport, pMittelwert, pExportPath, aktuelleZeit)
+            bildDaten = np.append(bildDaten, aktuellesArray, axis= 0)
             #bildDaten.append( hisImportFunction(aktuellerPfad, pExport, pMittelwert) )
         elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
             #bildDaten.append( importFunction(aktuellerPfad, pExport) )
-            bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport, pExportPath=pExportPath), axis= 0 )
+            bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport, pExportPath=pExportPath, pZeit= aktuelleZeit), axis= 0 )
     return bildDaten
 
    
@@ -213,9 +214,6 @@ def checkGreyimage(pImportPath):
         return False   
 
 
-pExportPath = "/Users/julian/Google Drive/Studium/Master/2. Semester/"
-s = os.path.join(pExportPath, "Ausgangsbilder", os.path.splitext(os.path.basename("/Users/julian/Google Drive/Studium/Master/2. Semester/Energiesysteme/MABM130B_Energiesysteme_rev02.pdf")) [0] +  "_Original.png")
-print(s)
 """
 import os
 import platform

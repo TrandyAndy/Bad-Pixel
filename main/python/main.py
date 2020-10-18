@@ -23,6 +23,7 @@ import numpy as np
 from _thread import start_new_thread, allocate_lock #oder mit therading lib.
 import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
+from datetime import datetime
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     def startClicked():
         global aktuellerTab
         #Speichern wie bei forward
-        Speichern.Write_json(DATA) #Schreiben am Ende
+        Speichern.Write_json(DATA) #Schreiben am Ende   # Julian: eigentlich unnötig, da startClicked einem Forward Klick entspricht
         # Check BPM is valid
         # Check Bilddaten is valid
         if mW.tableWidgetBilddaten.rowCount() == 0:
@@ -87,7 +88,9 @@ if __name__ == '__main__':
             return False
         # Check Algorithmus is valid
 
-
+        # Update UI
+        fortschritt.textEdit.clear()    # Info Textfeld löschen
+        fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
         # Import Pictures
         
         global bildDaten
@@ -96,7 +99,7 @@ if __name__ == '__main__':
             pathlist.append(mW.tableWidgetBilddaten.item(index,4).text())
         if mW.checkBoxRohbilderSpeichern.isChecked():
             bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=True, pExportPath= mW.lineEditSpeicherort.text())
-            fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert\n")
+            fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert.\n")
         else:
             bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=False)
         
@@ -673,8 +676,10 @@ if __name__ == '__main__':
             BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
             # Korrigieren
             global bildDaten
+            aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
             if mW.checkBoxAlgorithmusKorrigieren.isChecked():
                 Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
+                ergCorrection = 0
                 for i in range(np.shape(bildDaten)[0]):
                     if mW.radioButtonAlgorithmusNachbar.isChecked():
                         GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges,Methode,int(eK.labelNachbarFensterbreite.text())))
@@ -682,7 +687,14 @@ if __name__ == '__main__':
                         GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges,Methode,int(eK.labelGradientFensterbreite.text())))
                     #if mW.radioButtonAlgorithmusNagao():
                     # Export Aufruf
-                    exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
+                    if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
+                        openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                        fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
+                    else:
+                        exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
+                        
+            fortschritt.textEdit.insertPlainText("Fertig.\n")
+            fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
     timer = core.QTimer()
     #timer=QTimer()     # damit man das nicht nochmal extra importieren muss
