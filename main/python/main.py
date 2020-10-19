@@ -141,7 +141,7 @@ if __name__ == '__main__':
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
-            cfg.holocaust=True #alle Treads killen
+            cfg.treadEndloesung=True #alle Treads killen
             cfg.Ladebalken=0
             timer.stop() #Prozess ist damit abgeschalten.
             print("Try to join")
@@ -150,7 +150,7 @@ if __name__ == '__main__':
                     ID.join()
                     print(ID,"der leuft ja noch!")
             print("Treads sind alle tot")
-            cfg.holocaust=False
+            cfg.treadEndloesung=False
 
         print("startClicked")   # debug
     def msgButtonClick():
@@ -700,9 +700,10 @@ if __name__ == '__main__':
             global bildDaten
             aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
             Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
+            fortschritt.textEdit.insertPlainText("Bilder Korrigiert und Gespeichert: ") 
             for i in range(np.shape(bildDaten)[0]):
                 cfg.LadebalkenExport=cfg.LadebalkenExport+1
-                if cfg.holocaust==True:
+                if cfg.treadEndloesung==True:
                     return -1
                 if mW.radioButtonAlgorithmusNachbar.isChecked():
                     GOOD=np.uint16(correction.nachbar2(bildDaten[i],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
