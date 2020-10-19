@@ -61,6 +61,7 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
         print("Bild Nr. ",i)
         cfg.lock.acquire()
         if cfg.treadEndloesung == True: #kill Tread
+            cfg.errorCode=-1
             return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()        
@@ -110,7 +111,8 @@ def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
         quadrat=int(Fensterbreite/2) #+1
         for y in range(breite):
             if cfg.treadEndloesung == True: #kill Tread / aMW zu langsam für abbruch nach Bild.
-                return -6
+                cfg.errorCode=-1
+                return 
             for x in range(hoehe):
                 supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
                 #a= np.shape(supBPM)[0]+1
@@ -141,6 +143,7 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
         cfg.lock.acquire()
         cfg.Ladebalken=cfg.Ladebalken+Anz #Damit ist es abgearbeitet.
         cfg.lock.release()
+        cfg.errorCode=-2
         return -1 #Hoffeltlich wird das Ausgewertet.
     BPM=np.zeros((hoehe,breite))
     Zaehler=0
@@ -150,6 +153,7 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     for Nr in range(Anz):
         cfg.lock.acquire()
         if cfg.treadEndloesung == True: #kill Tread
+            cfg.errorCode=-1
             return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()
