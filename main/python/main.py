@@ -64,34 +64,65 @@ if __name__ == '__main__':
 
     """ Funktionen für die GUI:___________________________________________________________________________________ """
     ############ Allgemeine Funktionen ########################################################################################
-    def startClicked():
+    def startClicked():     # Funktion wenn der Start-Button geklickt wird
         global aktuellerTab
         #Speichern wie bei forward
         Speichern.Write_json(DATA) #Schreiben am Ende   # Julian: eigentlich unnötig, da startClicked einem Forward Klick entspricht
+        
         # Check BPM is valid
-        # Check Bilddaten is valid
+
+        # Check Bilddaten are valid
         if mW.tableWidgetBilddaten.rowCount() == 0:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Keine Bilder importiert",informativeText="Bitte importieren Sie Bilder.",windowTitle="Keine Bilder importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             aktuellerTab = 1
             mW.tabWidget.setCurrentIndex(aktuellerTab)
             return False
         for aktuelleZeile in range(mW.tableWidgetBilddaten.rowCount()):
-            if mW.tableWidgetBilddaten.item(0, 1).text() != mW.tableWidgetBilddaten.item(aktuelleZeile, 1).text():
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                aktuellerTab = 1
+            # Beim Suchen und Korrigieren wird folgendes überprüft... 
+            if mW.checkBoxAlgorithmusSuchen.isChecked() or mW.checkBoxAlgorithmusKorrigieren.isChecked():
+                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
+                if mW.tableWidgetBilddaten.item(0, 1).text() != mW.tableWidgetBilddaten.item(aktuelleZeile, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    aktuellerTab = 1
+                    mW.tabWidget.setCurrentIndex(aktuellerTab)
+                    return False
+                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
+                if mW.tableWidgetBilddaten.item(0, 3).text() != mW.tableWidgetBilddaten.item(aktuelleZeile, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    aktuellerTab = 1
+                    mW.tabWidget.setCurrentIndex(aktuellerTab)
+                    return False
+                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
+                """
+                if mW.tableWidgetBilddaten.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    return False  
+                """
+        # Check Speicherort is valid
+        if mW.checkBoxAlgorithmusKorrigieren.isChecked() or mW.checkBoxRohbilderSpeichern.isChecked(): # Speicherort ist beim Suchalgorithmus nicht notwendig. 
+            if os.path.exists(mW.lineEditSpeicherort.text()) == False:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                aktuellerTab = 2
                 mW.tabWidget.setCurrentIndex(aktuellerTab)
                 return False
-        # Check Speicherort is valid
-        if os.path.exists(mW.lineEditSpeicherort.text()) == False:
-            openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-            aktuellerTab = 2
-            mW.tabWidget.setCurrentIndex(aktuellerTab)
-            return False
         # Check Algorithmus is valid
 
+        # wenn nicht angekreuzt wurde:
+        if mW.checkBoxAlgorithmusSuchen.isChecked() == False and mW.checkBoxAlgorithmusKorrigieren.isChecked() == False and mW.checkBoxRohbilderSpeichern.isChecked() == False:
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben nichts ausgewählt",informativeText="Bitte wählen sie mind. eine Checkbox aus.",windowTitle="Nichts ausgewählt.",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            return False
+        # wenn nichts innerhalb von Suchen angekreuzt wurde:
+        if mW.checkBoxAlgorithmusSuchen.isChecked():
+            if mW.checkBoxAlgorithmusSchwellwertfilter.isChecked() == False and mW.checkBoxAlgorithmusDynamic.isChecked() == False and mW.checkBoxAlgorithmusWindow.isChecked() == False:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben nichts für den Suchalgorithmus ausgewählt",informativeText="Bitte wählen sie mind. eine Checkbox für den Suchalgorithmus aus.",windowTitle="Nichts ausgewählt Suchalgorithmus.",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                return False
+        
         # Update UI
         fortschritt.textEdit.clear()    # Info Textfeld löschen
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
+        # wenn nur Suchen ausgewählt ist, soll nicht der Speicherort anzeigen Button erscheinen
+        if mW.checkBoxAlgorithmusSuchen.isChecked() == True and mW.checkBoxAlgorithmusKorrigieren.isChecked() == False and mW.checkBoxRohbilderSpeichern.isChecked() == False:
+            fortschritt.pushButtonOeffnen.setVisible(False)
         # Import Pictures
         
         global bildDaten
@@ -710,9 +741,9 @@ if __name__ == '__main__':
                         openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                         fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
                     else:
-                        exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
-    
-            fortschritt.textEdit.insertPlainText("Korrektur ist abgeschlossen.\n")       
+                        exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,i).text(), pImage= GOOD, pZeit= aktuelleZeit)
+            if(mW.checkBoxAlgorithmusKorrigieren.isChecked()):
+                fortschritt.textEdit.insertPlainText("Korrektur ist abgeschlossen.\n")       
             fortschritt.textEdit.insertPlainText("Fertig.\n")
             fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
