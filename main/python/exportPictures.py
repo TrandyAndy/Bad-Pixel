@@ -23,7 +23,7 @@ def exportPictures(pPath, pImagename, pImage, pZeit):  # pPath: Zielverzeichnis,
     else:
         os.mkdir(dirName)
     fileName = pImagename +  "_korrigiert.png"
-    print("Image beim Exportieren: ", pImage, "Typ ist", type(pImage), "Shape ist: ", np.shape(pImage))
+    #print("Image beim Exportieren: ", pImage, "Typ ist", type(pImage), "Shape ist: ", np.shape(pImage))
     
     cv2.imwrite(os.path.join(dirName, fileName), pImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
     print(os.path.join(pPath, pImagename))
