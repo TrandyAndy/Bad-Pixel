@@ -499,7 +499,11 @@ if __name__ == '__main__':
     def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
             if fF.exec() == widgets.QDialog.Accepted:
-                print("Läuft")
+                pass
+                #print("Läuft")
+            else:   # wenn Abbrechen geklickt wird
+                mW.checkBoxAlgorithmusFFK.setChecked(False)
+                
     ### Flat-Field-Korrektur
 
     def fF_radioButtonGespeicherteBilder():
@@ -623,7 +627,7 @@ if __name__ == '__main__':
     mW.pushButtonAlgorithmusSuchenEinstellungen.clicked.connect(mW_pushButtonAlgorithmusSuchenEinstellungen)
     mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(mW_checkBoxAlgorithmusKorrigieren)
     mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(mW_pushButtonAlgorithmusKorrigierenEinstellungen)
-    mW.checkBoxAlgorithmusFFK.stateChanged.connect(mW_checkBoxAlgorithmusFFK)
+    mW.checkBoxAlgorithmusFFK.clicked.connect(mW_checkBoxAlgorithmusFFK)    # statt clicked kann auch toggled verwendet werden stateChanged funktioniert nicht
 
     ### Flat-Field-Korrektur
     fF.radioButtonGespeicherteBilder.clicked.connect(fF_radioButtonGespeicherteBilder)
@@ -671,7 +675,7 @@ if __name__ == '__main__':
         cfg.lock.release()
 
         if FertigFlag:
-            fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.")
+            fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
             timer.stop()
             #Zusammenfassen
             BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
