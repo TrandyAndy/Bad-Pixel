@@ -122,21 +122,29 @@ if __name__ == '__main__':
         #BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
         #BPM_Dynamik=BPM_Schwellwert
         #BPM_Window=BPM_Schwellwert
-        
+        IDs=[]
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
                 T_ID_MPPC=threading.Thread(target=detection.MultiPicturePixelCompare,args=(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
+                IDs.append(T_ID_MPPC)
                 T_ID_MPPC.start()
             if(mW.checkBoxAlgorithmusDynamic.isChecked()):
                 #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
                 T_ID_dC=threading.Thread(target=detection.dynamicCheck,args=(bildDaten,float(eS.labelDynamicSchwellwert.text())))
+                IDs.append(T_ID_dC)
                 T_ID_dC.start()
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] 
-                T_ID_aMW=threading.Thread(target=detection.advancedMovingWindow,args=(bildDaten,float(eS.labelMovingSchwellwert.text()),float(eS.labelMovingSchwellwert.text())))
+                T_ID_aMW=threading.Thread(target=detection.advancedMovingWindow,args=(bildDaten,float(eS.labelMovingSchwellwert.text()),int(eS.labelMovingFensterbreite.text())))
+                IDs.append(T_ID_aMW)
                 T_ID_aMW.start()
+        #====Jetzt wird gesucht!====#
+        #if Suchen:
         timer.start(500) # ms heruntersetzen für Performance
+        #if Korrektur:
+        #    startKorrektur()
+        #startExport()
         # Methoden Checken
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median       #radioButtonMedian
         #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert   #radioButtonMittelwert
@@ -146,13 +154,13 @@ if __name__ == '__main__':
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
             cfg.holocaust=True #alle Treads killen
             cfg.Ladebalken=0
-            timer.stop()
+            timer.stop() #Prozess ist damit abgeschalten.
             print("Try to join")
-            if isAlive(T_ID_aMW):
-                T_ID_aMW.join()
-            T_ID_MPPC.join()
-            T_ID_dC.join()
-            print("Treads sind tot")
+            for ID in IDs:
+                if ID.is_alive():
+                    ID.join()
+                    print(ID,"der leuft ja noch!")
+            print("Treads sind alle tot")
             cfg.holocaust=False
 
         print("startClicked")   # debug
@@ -704,7 +712,7 @@ if __name__ == '__main__':
                     else:
                         exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
 
-            Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!        
+            Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.    
             fortschritt.textEdit.insertPlainText("Fertig.\n")
             fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
