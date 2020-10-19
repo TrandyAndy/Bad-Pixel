@@ -38,7 +38,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Schwellwert für Hot-Pixel:</string>
+           <string>Schwellwert für helle Pixel:</string>
           </property>
          </widget>
         </item>
@@ -81,7 +81,7 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Schwellwert für Dead-Pixel:</string>
+           <string>Schwellwert für dunkle Pixel:</string>
           </property>
          </widget>
         </item>
@@ -216,7 +216,7 @@
         <item>
          <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>Schwellwert:</string>
+           <string>Empfindlichkeit:</string>
           </property>
          </widget>
         </item>

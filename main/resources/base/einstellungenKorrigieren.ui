@@ -163,7 +163,7 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Fensterbreite:</string>
+           <string>Länge des Gradienten:</string>
           </property>
          </widget>
         </item>
