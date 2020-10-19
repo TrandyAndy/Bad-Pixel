@@ -20,7 +20,7 @@ Ladebalken=0 #Globaler Tread Ladebalken
 LadebalkenMax=100 #auf Anz der Bilder * Detections setzen
 LadebalkenExport=0
 lock=allocate_lock() #Mutex
-treadEndloesung=False #Kill flag für alle Treads 
+killFlagThreads=False #Kill flag für alle Treads 
 errorCode=0 #0=ok -1=Fehler allgemein -2=Fehler Dynamic hat zu wenig Bilder, 
 
 """

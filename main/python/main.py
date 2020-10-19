@@ -122,6 +122,8 @@ if __name__ == '__main__':
         # wenn nur Suchen ausgewählt ist, soll nicht der Speicherort anzeigen Button erscheinen
         if mW.checkBoxAlgorithmusSuchen.isChecked() == True and mW.checkBoxAlgorithmusKorrigieren.isChecked() == False and mW.checkBoxRohbilderSpeichern.isChecked() == False:
             fortschritt.pushButtonOeffnen.setVisible(False)
+        else:
+            fortschritt.pushButtonOeffnen.setVisible(True)
         # Import Pictures
         
         global bildDaten
