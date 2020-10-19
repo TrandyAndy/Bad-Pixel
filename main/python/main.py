@@ -118,10 +118,7 @@ if __name__ == '__main__':
         Anz=int(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked())+int(mW.checkBoxAlgorithmusWindow.isChecked())+int(mW.checkBoxAlgorithmusDynamic.isChecked())
         cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]
         print("Rechenschritte=",cfg.LadebalkenMax)
-        # Suchen
-        #BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
-        #BPM_Dynamik=BPM_Schwellwert
-        #BPM_Window=BPM_Schwellwert
+        # Suchen Treads
         IDs=[]
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
@@ -136,19 +133,11 @@ if __name__ == '__main__':
                 T_ID_dC.start()
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] 
-                T_ID_aMW=threading.Thread(target=detection.advancedMovingWindow,args=(bildDaten,float(eS.labelMovingSchwellwert.text()),int(eS.labelMovingFensterbreite.text())))
+                T_ID_aMW=threading.Thread(target=detection.advancedMovingWindow,args=(bildDaten,int(eS.labelMovingFensterbreite.text()),float(eS.labelMovingSchwellwert.text())))
                 IDs.append(T_ID_aMW)
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
-        #if Suchen:
         timer.start(500) # ms heruntersetzen für Performance
-        #if Korrektur:
-        #    startKorrektur()
-        #startExport()
-        # Methoden Checken
-        #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median       #radioButtonMedian
-        #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert   #radioButtonMittelwert
-        #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement  #radioButtonSimple
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
@@ -529,7 +518,7 @@ if __name__ == '__main__':
 
     ### Einstellungen Suchen
                                                         #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,01 Dunkel: min 0 max 0,05 ival 0,01
-                                                        #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 1,5 max 3 ival 0,1
+                                                        #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 2 max 3,5 ival 0,1
                                                         #Andy Vorgabe Dynamic Empfindlichkeit: min 1.03 max 2 ival 0.01
     eS.horizontalSliderSchwellwertHot.setMinimum(0) 
     eS.horizontalSliderSchwellwertHot.setMaximum(5)
@@ -557,7 +546,7 @@ if __name__ == '__main__':
     eS.horizontalSliderMovingSchwellwert.setTickInterval(1)
     def eS_horizontalSliderMovingSchwellwert():
         value = eS.horizontalSliderMovingSchwellwert.value()
-        eS.labelMovingSchwellwert.setText( str( round(value*0.1 + 1.5, 2 ) ) )
+        eS.labelMovingSchwellwert.setText( str( round(value*0.1 + 2, 2 ) ) )
 
     eS.horizontalSliderDynamicSchwellwert.setMinimum(0) 
     eS.horizontalSliderDynamicSchwellwert.setMaximum(97)
@@ -715,7 +704,6 @@ if __name__ == '__main__':
                     if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
                         openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                         fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
-                        #errorFlagKorrektur=True
                     else:
                         exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
     
@@ -724,7 +712,6 @@ if __name__ == '__main__':
             fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
     timer = core.QTimer()
-    #timer=QTimer()     # damit man das nicht nochmal extra importieren muss
     timer.timeout.connect(Prozess)
     
 
