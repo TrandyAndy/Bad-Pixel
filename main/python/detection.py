@@ -60,6 +60,8 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     for i in range(Bilderanzahl):  
         print("Bild Nr. ",i)
         cfg.lock.acquire()
+        if cfg.holocaust == True: #kill Tread
+            return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()        
         BPM_Dead, Anz_Dead =DeadPixelFinder(D3_Bilder[i],GrenzeDead) #Check for Black
@@ -106,6 +108,8 @@ def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
         D2_Bild=D3_Bild[i]
         quadrat=int(Fensterbreite/2) #+1
         for y in range(breite):
+            if cfg.holocaust == True: #kill Tread / aMW zu langsam für abbruch nach Bild.
+                return -6
             for x in range(hoehe):
                 supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
                 #a= np.shape(supBPM)[0]+1
@@ -143,6 +147,8 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     Dunkelste=np.ones((hoehe,breite))*2**cfg.Farbtiefe
     for Nr in range(Anz):
         cfg.lock.acquire()
+        if cfg.holocaust == True: #kill Tread
+            return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()
         for s in range(hoehe):

@@ -8,12 +8,23 @@
  * @Description: Python Programm um ein Array als Bild speichern zu können
  */
  """
-import numpy
+import numpy as np
 import cv2
 import os
+from datetime import datetime
 
-def exportPictures(pPath, pImagename, pImage):  # pPath: Zielverzeichnis, pImagename: Name des Bildes, pImage: Array des Bildes
+def exportPictures(pPath, pImagename, pImage, pZeit):  # pPath: Zielverzeichnis, pImagename: Name des Bildes, pImage: Array des Bildes
     # os.path.join() für Crossplatform-Funktionalität, fügt / oder \ je nach Betriebssystem
-    cv2.imwrite(os.path.join(pPath, pImagename) + "_korrigiert.png", pImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+    
+    aktuelleZeit = str(pZeit)
+    dirName = os.path.join(pPath, "Korregierte Bilder vom " + aktuelleZeit)
+    if os.path.exists(dirName):
+        pass
+    else:
+        os.mkdir(dirName)
+    fileName = pImagename +  "_korrigiert.png"
+    #print("Image beim Exportieren: ", pImage, "Typ ist", type(pImage), "Shape ist: ", np.shape(pImage))
+    
+    cv2.imwrite(os.path.join(dirName, fileName), pImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
     print(os.path.join(pPath, pImagename))
     #print("exportPictures") # debug

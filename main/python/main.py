@@ -21,6 +21,10 @@ import types
 import os
 import numpy as np
 from _thread import start_new_thread, allocate_lock #oder mit therading lib.
+import threading
+import platform     # für das Öffnen des File Explores
+import subprocess   # für das Öffnen des File Explores
+from datetime import datetime
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
@@ -54,6 +58,8 @@ if __name__ == '__main__':
     fF = uic.loadUi(dateiFlatFieldKorrektur)
     dateiFortschritt = appctxt.get_resource("fortschritt.ui")
     fortschritt = uic.loadUi(dateiFortschritt)
+    dateiBildFenster = appctxt.get_resource("bildFenster.ui")
+    bildFenster = uic.loadUi(dateiBildFenster)
     msgBox = widgets.QMessageBox()  # Die Message Box
 
     """ Funktionen für die GUI:___________________________________________________________________________________ """
@@ -61,7 +67,7 @@ if __name__ == '__main__':
     def startClicked():
         global aktuellerTab
         #Speichern wie bei forward
-        Speichern.Write_json(DATA) #Schreiben am Ende
+        Speichern.Write_json(DATA) #Schreiben am Ende   # Julian: eigentlich unnötig, da startClicked einem Forward Klick entspricht
         # Check BPM is valid
         # Check Bilddaten is valid
         if mW.tableWidgetBilddaten.rowCount() == 0:
@@ -83,14 +89,23 @@ if __name__ == '__main__':
             return False
         # Check Algorithmus is valid
 
-
+        # Update UI
+        fortschritt.textEdit.clear()    # Info Textfeld löschen
+        fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
         # Import Pictures
         
         global bildDaten
         pathlist = []
         for index in range(anzahlBilder):   # alle Pfade aus der Tabelle in eine Liste schreiben
             pathlist.append(mW.tableWidgetBilddaten.item(index,4).text())
-        bildDaten = imP.importUIFunction(pathlist,pMittelwert=True)
+        if mW.checkBoxRohbilderSpeichern.isChecked():
+            bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=True, pExportPath= mW.lineEditSpeicherort.text())
+            fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert.\n")
+        else:
+            bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=False)
+        
+
+        
 
 
             #if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
@@ -103,34 +118,40 @@ if __name__ == '__main__':
         Anz=int(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked())+int(mW.checkBoxAlgorithmusWindow.isChecked())+int(mW.checkBoxAlgorithmusDynamic.isChecked())
         cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]
         print("Rechenschritte=",cfg.LadebalkenMax)
-        # Suchen
-        #BPM_Schwellwert=np.zeros((cfg.Bildhoehe,cfg.Bildbreite)) #von wo kommen die Infos!!
-        #BPM_Dynamik=BPM_Schwellwert
-        #BPM_Window=BPM_Schwellwert
-        
+        # Suchen Treads
+        IDs=[]
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
-                start_new_thread(detection.MultiPicturePixelCompare,(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
+                T_ID_MPPC=threading.Thread(target=detection.MultiPicturePixelCompare,args=(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
+                IDs.append(T_ID_MPPC)
+                T_ID_MPPC.start()
             if(mW.checkBoxAlgorithmusDynamic.isChecked()):
                 #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
-                start_new_thread(detection.dynamicCheck,(bildDaten,float(eS.labelDynamicSchwellwer.text())))
+                T_ID_dC=threading.Thread(target=detection.dynamicCheck,args=(bildDaten,float(eS.labelDynamicSchwellwert.text())))
+                IDs.append(T_ID_dC)
+                T_ID_dC.start()
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] 
-                T_ID=start_new_thread(detection.advancedMovingWindow,(bildDaten,float(eS.labelMovingSchwellwert.text()),float(eS.labelMovingSchwellwert.text())))
-        timer.start(500) # heruntersetzen für Performance
-        # Methoden Checken
-        #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median       #radioButtonMedian
-        #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert   #radioButtonMittelwert
-        #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement  #radioButtonSimple
+                T_ID_aMW=threading.Thread(target=detection.advancedMovingWindow,args=(bildDaten,int(eS.labelMovingFensterbreite.text()),float(eS.labelMovingSchwellwert.text())))
+                IDs.append(T_ID_aMW)
+                T_ID_aMW.start()
+        #====Jetzt wird gesucht!====#
+        timer.start(500) # ms heruntersetzen für Performance
         fortschritt.progressBar.setValue(0)
-        if fortschritt.exec() == widgets.QDialog.Rejected:
-            print("Gecancelt gedrückt")
-            # hier muss dann der Prozess gestoppt werden.
+        if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
+            print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
+            cfg.holocaust=True #alle Treads killen
             cfg.Ladebalken=0
-            timer.stop()
-            #for i in T_ID:
-            #T_ID.kill #Alles töten
+            timer.stop() #Prozess ist damit abgeschalten.
+            print("Try to join")
+            for ID in IDs:
+                if ID.is_alive():
+                    ID.join()
+                    print(ID,"der leuft ja noch!")
+            print("Treads sind alle tot")
+            cfg.holocaust=False
+
         print("startClicked")   # debug
     def msgButtonClick():
         print("message")
@@ -225,6 +246,8 @@ if __name__ == '__main__':
         # Einstellungen Korrigieren
         eK_horizontalSliderNachbarFensterbreite()
         eK_horizontalSliderGradientFensterbreite()
+        # Fortschritt Fenster
+        fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
     ############ Ende Allgemeine Funktionen ########################################################################################
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
     def mW_comboBoxBPMSensor():
@@ -484,7 +507,11 @@ if __name__ == '__main__':
     def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
             if fF.exec() == widgets.QDialog.Accepted:
-                print("Läuft")
+                pass
+                #print("Läuft")
+            else:   # wenn Abbrechen geklickt wird
+                mW.checkBoxAlgorithmusFFK.setChecked(False)
+                
     ### Flat-Field-Korrektur
 
     def fF_radioButtonGespeicherteBilder():
@@ -496,7 +523,7 @@ if __name__ == '__main__':
 
     ### Einstellungen Suchen
                                                         #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,01 Dunkel: min 0 max 0,05 ival 0,01
-                                                        #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 1,5 max 3 ival 0,1
+                                                        #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 2 max 3,5 ival 0,1
                                                         #Andy Vorgabe Dynamic Empfindlichkeit: min 1.03 max 2 ival 0.01
     eS.horizontalSliderSchwellwertHot.setMinimum(0) 
     eS.horizontalSliderSchwellwertHot.setMaximum(5)
@@ -524,7 +551,7 @@ if __name__ == '__main__':
     eS.horizontalSliderMovingSchwellwert.setTickInterval(1)
     def eS_horizontalSliderMovingSchwellwert():
         value = eS.horizontalSliderMovingSchwellwert.value()
-        eS.labelMovingSchwellwert.setText( str( round(value*0.1 + 1.5, 2 ) ) )
+        eS.labelMovingSchwellwert.setText( str( round(value*0.1 + 2, 2 ) ) )
 
     eS.horizontalSliderDynamicSchwellwert.setMinimum(0) 
     eS.horizontalSliderDynamicSchwellwert.setMaximum(97)
@@ -533,6 +560,12 @@ if __name__ == '__main__':
         value = eS.horizontalSliderDynamicSchwellwert.value()
         eS.labelDynamicSchwellwert.setText( str( round(value*0.01 + 1.03,2)  ) )     
 
+    def eS_pushButtonVorschau():
+        pixmap = gui.QPixmap("Bild.png")
+        bildFenster.label.setPixmap(pixmap)
+        bildFenster.label.setScaledContents(True)
+        bildFenster.label.resize(pixmap.width(), pixmap.height())
+        bildFenster.exec()
     ### Einstellungen Korrektur 
     eK.horizontalSliderNachbarFensterbreite.setMinimum(0) #Andy Vorgabe: min 3 max 21 ival 2 
     eK.horizontalSliderNachbarFensterbreite.setMaximum(9)
@@ -554,6 +587,23 @@ if __name__ == '__main__':
         #else:
         #    eK.labelGradientFensterbreite.setStyleSheet('color: black')
         #print("eK_horizontalSliderGradientFensterbreite", value)   # debug
+
+    def eK_pushButtonVorschau():
+        pixmap = gui.QPixmap("Bild.png")
+        bildFenster.label.setPixmap(pixmap)
+        bildFenster.label.setScaledContents(True)
+        bildFenster.label.resize(pixmap.width(), pixmap.height())
+        bildFenster.exec()
+    ### Fortschritt Fenster
+    def fortschritt_pushButtonOeffnen():
+        path = mW.lineEditSpeicherort.text()
+        if platform.system() == "Windows":
+            os.startfile(path)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", path])
+        else:
+            subprocess.Popen(["xdg-open", path])
+        #print("Speicherort im File Explorer öffnen")   # debug
 
     """ GUI-Elemente mit Funktionen verbinden:___________________________________________________________________________________ """   
     #### UI Aktionen #### 
@@ -585,10 +635,7 @@ if __name__ == '__main__':
     mW.pushButtonAlgorithmusSuchenEinstellungen.clicked.connect(mW_pushButtonAlgorithmusSuchenEinstellungen)
     mW.checkBoxAlgorithmusKorrigieren.stateChanged.connect(mW_checkBoxAlgorithmusKorrigieren)
     mW.pushButtonAlgorithmusKorrigierenEinstellungen.clicked.connect(mW_pushButtonAlgorithmusKorrigierenEinstellungen)
-    mW.checkBoxAlgorithmusFFK.stateChanged.connect(mW_checkBoxAlgorithmusFFK)
-    eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
-    eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
-    eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+    mW.checkBoxAlgorithmusFFK.clicked.connect(mW_checkBoxAlgorithmusFFK)    # statt clicked kann auch toggled verwendet werden stateChanged funktioniert nicht
 
     ### Flat-Field-Korrektur
     fF.radioButtonGespeicherteBilder.clicked.connect(fF_radioButtonGespeicherteBilder)
@@ -600,11 +647,20 @@ if __name__ == '__main__':
     eS.horizontalSliderMovingFensterbreite.valueChanged.connect(eS_horizontalSliderMovingFensterbreite)
     eS.horizontalSliderMovingSchwellwert.valueChanged.connect(eS_horizontalSliderMovingSchwellwert)
     eS.horizontalSliderDynamicSchwellwert.valueChanged.connect(eS_horizontalSliderDynamicSchwellwert)
-    
+    eS.pushButtonVorschau.clicked.connect(eS_pushButtonVorschau)
+
+    eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung der Schwellwerte: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+    eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+    eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+
     ### Einstellungen Korrektur
     eK.horizontalSliderNachbarFensterbreite.valueChanged.connect(eK_horizontalSliderNachbarFensterbreite)
     eK.horizontalSliderGradientFensterbreite.valueChanged.connect(eK_horizontalSliderGradientFensterbreite)
-    
+    eK.pushButtonVorschau.clicked.connect(eK_pushButtonVorschau)
+
+    ### Fortschritt Fenster
+    fortschritt.pushButtonOeffnen.clicked.connect(fortschritt_pushButtonOeffnen)
+
     #### QT UI anzeigen####
     mW.show()
 
@@ -627,24 +683,40 @@ if __name__ == '__main__':
         cfg.lock.release()
 
         if FertigFlag:
+            fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
             timer.stop()
-            #Zusammenfassen
-            BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
+            #Zusammenfassen + Speichern oder Laden
+            if mW.checkBoxAlgorithmusSuchen.isChecked():
+                BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
+                #BPM Speichern
+                Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
+            else: #laden
+                BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+            
             # Korrigieren
             global bildDaten
+            aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
             if mW.checkBoxAlgorithmusKorrigieren.isChecked():
                 Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
+                ergCorrection = 0
                 for i in range(np.shape(bildDaten)[0]):
                     if mW.radioButtonAlgorithmusNachbar.isChecked():
                         GOOD=np.uint16(correction.nachbar2(bildDaten[i],BAD_Ges,Methode,int(eK.labelNachbarFensterbreite.text())))
                     elif mW.radioButtonAlgorithmusGradient.isChecked():
                         GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges,Methode,int(eK.labelGradientFensterbreite.text())))
                     #if mW.radioButtonAlgorithmusNagao():
-                    # Export Aufruf
-                    exP.exportPictures(mW.lineEditSpeicherort.text(), mW.tableWidgetBilddaten.item(0,0).text(),GOOD)
+                    # Export Aufruf______________________________________________________________
+                    if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
+                        openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                        fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
+                    else:
+                        exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
+    
+            fortschritt.textEdit.insertPlainText("Korrektur ist abgeschlossen.\n")       
+            fortschritt.textEdit.insertPlainText("Fertig.\n")
+            fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
     timer = core.QTimer()
-    #timer=QTimer()     # damit man das nicht nochmal extra importieren muss
     timer.timeout.connect(Prozess)
     
 

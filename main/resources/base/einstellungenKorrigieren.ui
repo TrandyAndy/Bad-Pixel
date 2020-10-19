@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>524</width>
-    <height>448</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -163,7 +163,7 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Fensterbreite:</string>
+           <string>Länge des Gradienten:</string>
           </property>
          </widget>
         </item>
@@ -190,6 +190,20 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonVorschau">
+     <property name="text">
+      <string>Vorschau anzeigen</string>
+     </property>
     </widget>
    </item>
    <item>

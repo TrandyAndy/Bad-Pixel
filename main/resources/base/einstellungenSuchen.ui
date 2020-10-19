@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>524</width>
-    <height>569</height>
+    <height>618</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Schwellwert für Hot-Pixel:</string>
+           <string>Schwellwert für helle Pixel:</string>
           </property>
          </widget>
         </item>
@@ -81,7 +81,7 @@
         <item>
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Schwellwert für Dead-Pixel:</string>
+           <string>Schwellwert für dunkle Pixel:</string>
           </property>
          </widget>
         </item>
@@ -216,7 +216,7 @@
         <item>
          <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>Schwellwert:</string>
+           <string>Empfindlichkeit:</string>
           </property>
          </widget>
         </item>
@@ -240,6 +240,20 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonVorschau">
+     <property name="text">
+      <string>Vorschau anzeigen</string>
+     </property>
     </widget>
    </item>
    <item>

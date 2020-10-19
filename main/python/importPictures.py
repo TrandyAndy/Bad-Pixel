@@ -12,6 +12,7 @@
 import os                                                                   # Für die Path-Manipulation
 import numpy as np                                                          # Für Arrays
 import cv2                                                                  # Import OpenCV
+from datetime import datetime
 
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
@@ -57,7 +58,8 @@ def hisImportFunction2(pImportPath, pExport = False):                        # F
     return im
 
 
-def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
+def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExportPath = "", pZeit=""):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
+    aktuelleZeit = pZeit   # aktuelles Datum und Zeit
     pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
     #print("\n\n*************************************************************")
     #print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
@@ -83,13 +85,21 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):       
         #cv2.destroyAllWindows()
         #Ende test
         if pExport == True:
-            
+            """
             cv2.imshow('image', im)                                             # Array als Bild anzeigen
             cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
             print("Ihre Datei wurden unter", pathWithoutExtension+"_"+str(index)+".png gespeichert")
             cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird              
-    if pExport == True:
-        cv2.destroyAllWindows()                                                 # Alle Fenster schließen    
+            """
+            dirName = os.path.join(pExportPath, "Originalbilder vom " + aktuelleZeit)
+            if os.path.exists(dirName):
+                pass
+            else:
+                os.mkdir(dirName)
+            fileName = os.path.splitext(os.path.basename(pImportPath))[0] +  "_original_" + str(index) + ".png"
+            cv2.imwrite(os.path.join(dirName, fileName), im, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+    #if pExport == True:
+        #cv2.destroyAllWindows()                                                 # Alle Fenster schließen    
     
     if pMittelwert == True:
         meanImage = np.zeros([rows,cols],dtype=np.uint32)
@@ -103,17 +113,27 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False):       
         #print(ergMeanImage)
 
         if pExport == True:
+            dirName = os.path.join(pExportPath, "Originalbilder vom " + aktuelleZeit)
+            if os.path.exists(dirName):
+                pass
+            else:
+                os.mkdir(dirName)
+            fileName = os.path.splitext(os.path.basename(pImportPath))[0] +  "_original_mittelwert.png"
+            cv2.imwrite(os.path.join(dirName, fileName), ergMeanImage[0], [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+            """
             cv2.imshow("Mittelwert",ergMeanImage)
             cv2.imwrite(pathWithoutExtension+ "_mittelwert.png",ergMeanImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
             print("Ihre Datei wurden unter", pathWithoutExtension + "_mittelwert.png gespeichert")
             cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird              
+            """
     fd.close()                                                              # File schließen
     if pMittelwert == True:
         return ergMeanImage
     else:
         return bildDaten
 
-def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
+def importFunction(pImportPath, pExport = False, pExportPath="", pZeit=""): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
+    aktuelleZeit = pZeit   # aktuelles Datum und Zeit
     bild = cv2.imread(pImportPath, flags= -1)
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
     if np.shape(bildDaten[0]) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
@@ -124,10 +144,19 @@ def importFunction(pImportPath, pExport = False): #vill noch ne fehlermeldung We
     #cv2.waitKey()
     #cv2.destroyAllWindows()
     if pExport == True:
-        cv2.imshow('image', bild)                                             # Array als Bild anzeigen
-        cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
-        cv2.waitKey()
-        cv2.destroyAllWindows()      
+        dirName = os.path.join(pExportPath, "Originalbilder vom " + aktuelleZeit)
+        if os.path.exists(dirName):
+            pass
+        else:
+            os.mkdir(dirName)
+        fileName = os.path.splitext(os.path.basename(pImportPath))[0] +  "_original.png"
+        #cv2.imshow('image', bild)                                             # Array als Bild anzeigen
+        #cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+        #cv2.imwrite(os.path.join(pExportPath, "Originalbilder", os.path.basename(pImportPath)) + "_Original.png", bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+        cv2.imwrite(os.path.join(dirName, fileName), bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+        
+        #cv2.waitKey()
+        #cv2.destroyAllWindows()      
     return bildDaten
    
 def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
@@ -138,20 +167,21 @@ def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array un
         bildDaten = importFunction(pImportPath, pExport)
     return bildDaten
    
-def importUIFunction(pImportPath, pMittelwert = True, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
+def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPath=""): # Rückgabe Bild-Array und Auflösung Breite und Höhe
     #bildDaten = []
     rows, cols, anzahl, farbtiefe = getAufloesungUndAnzahlUndFarbtiefe(pImportPath[0])
     bildDaten = np.empty((0,rows,cols), dtype=farbtiefe)
+    aktuelleZeit = str(datetime.now())[:-7].replace(":","-")   # aktuelles Datum und Zeit
     for aktuellerPfad in pImportPath:
         dateiEndung = (os.path.splitext(os.path.basename(aktuellerPfad)) [1]).lower() # Dateiendung aus dem Pfad seperarieren, kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
         if dateiEndung == ".his": # Eine his-Datei
             
-            aktuellesArray = hisImportFunction(aktuellerPfad, pExport, pMittelwert)
-            bildDaten = np.append(bildDaten, aktuellesArray, axis= 0 )
+            aktuellesArray = hisImportFunction(aktuellerPfad, pExport, pMittelwert, pExportPath, aktuelleZeit)
+            bildDaten = np.append(bildDaten, aktuellesArray, axis= 0)
             #bildDaten.append( hisImportFunction(aktuellerPfad, pExport, pMittelwert) )
         elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
             #bildDaten.append( importFunction(aktuellerPfad, pExport) )
-            bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport), axis= 0 )
+            bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport, pExportPath=pExportPath, pZeit= aktuelleZeit), axis= 0 )
     return bildDaten
 
    
@@ -183,6 +213,22 @@ def checkGreyimage(pImportPath):
     else:
         return False   
 
+
+"""
+import os
+import platform
+import subprocess
+
+def open_file(path):
+    if platform.system() == "Windows":
+        os.startfile(path)
+    elif platform.system() == "Darwin":
+        subprocess.Popen(["open", path])
+    else:
+        subprocess.Popen(["xdg-open", path])
+
+open_file("/Users/julian/Documents")
+"""
 
 
 """
