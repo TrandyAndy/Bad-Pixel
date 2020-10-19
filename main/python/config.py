@@ -20,7 +20,7 @@ Ladebalken=0 #Globaler Tread Ladebalken
 LadebalkenMax=100 #auf Anz der Bilder * Detections setzen
 LadebalkenExport=0
 lock=allocate_lock() #Mutex
-holocaust=False #Kill flag für alle Treads 
+killFlagThreads=False #Kill flag für alle Treads 
 
 """
 

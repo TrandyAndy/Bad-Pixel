@@ -172,7 +172,7 @@ if __name__ == '__main__':
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
-            cfg.treadEndloesung=True #alle Treads killen
+            cfg.killFlagThreads=True #alle Treads killen
             cfg.Ladebalken=0
             timer.stop() #Prozess ist damit abgeschalten.
             print("Try to join")
@@ -181,7 +181,7 @@ if __name__ == '__main__':
                     ID.join()
                     print(ID,"der leuft ja noch!")
             print("Treads sind alle tot")
-            cfg.treadEndloesung=False
+            cfg.killFlagThreads=False
 
         print("startClicked")   # debug
     def msgButtonClick():
@@ -734,7 +734,7 @@ if __name__ == '__main__':
             fortschritt.textEdit.insertPlainText("Bilder Korrigiert und Gespeichert: ") 
             for i in range(np.shape(bildDaten)[0]):
                 cfg.LadebalkenExport=cfg.LadebalkenExport+1
-                if cfg.treadEndloesung==True:
+                if cfg.killFlagThreads==True:
                     return -1
                 if mW.radioButtonAlgorithmusNachbar.isChecked():
                     GOOD=np.uint16(correction.nachbar2(bildDaten[i],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
