@@ -671,6 +671,7 @@ if __name__ == '__main__':
         cfg.lock.release()
 
         if FertigFlag:
+            fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.")
             timer.stop()
             #Zusammenfassen
             BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
@@ -692,7 +693,7 @@ if __name__ == '__main__':
                         fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
                     else:
                         exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
-                        
+                fortschritt.textEdit.insertPlainText("Korrektur ist abgeschlossen.\n")       
             fortschritt.textEdit.insertPlainText("Fertig.\n")
             fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
