@@ -116,7 +116,7 @@ if __name__ == '__main__':
         #Ladebalken init
         cfg.Ladebalken=0
         Anz=int(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked())+int(mW.checkBoxAlgorithmusWindow.isChecked())+int(mW.checkBoxAlgorithmusDynamic.isChecked())
-        cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]
+        cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]+Anz 
         print("Rechenschritte=",cfg.LadebalkenMax)
         # Suchen Treads
         IDs=[]
@@ -137,7 +137,7 @@ if __name__ == '__main__':
                 IDs.append(T_ID_aMW)
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
-        timer.start(500) # ms heruntersetzen für Performance
+        timer.start(1000) # ms heruntersetzen für Performance
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
