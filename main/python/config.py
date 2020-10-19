@@ -18,6 +18,7 @@ Global_BPM_Multi=0
 Global_BPM_Dynamik=0
 Ladebalken=0 #Globaler Tread Ladebalken
 LadebalkenMax=100 #auf Anz der Bilder * Detections setzen
+LadebalkenExport=0
 lock=allocate_lock() #Mutex
 holocaust=False #Kill flag für alle Treads 
 
