@@ -153,17 +153,17 @@ if __name__ == '__main__':
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
-                T_ID_MPPC=threading.Thread(target=detection.MultiPicturePixelCompare,args=(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
+                T_ID_MPPC=threading.Thread(name="MPPC",target=detection.MultiPicturePixelCompare,args=(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
                 IDs.append(T_ID_MPPC)
                 T_ID_MPPC.start()
             if(mW.checkBoxAlgorithmusDynamic.isChecked()):
                 #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
-                T_ID_dC=threading.Thread(target=detection.dynamicCheck,args=(bildDaten,float(eS.labelDynamicSchwellwert.text())))
+                T_ID_dC=threading.Thread(name="dc",target=detection.dynamicCheck,args=(bildDaten,float(eS.labelDynamicSchwellwert.text())))
                 IDs.append(T_ID_dC)
                 T_ID_dC.start()
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] 
-                T_ID_aMW=threading.Thread(target=detection.advancedMovingWindow,args=(bildDaten,int(eS.labelMovingFensterbreite.text()),float(eS.labelMovingSchwellwert.text())))
+                T_ID_aMW=threading.Thread(name="aMW",target=detection.advancedMovingWindow,args=(bildDaten,int(eS.labelMovingFensterbreite.text()),float(eS.labelMovingSchwellwert.text())))
                 IDs.append(T_ID_aMW)
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
@@ -182,7 +182,7 @@ if __name__ == '__main__':
             print("Treads sind alle tot")
             cfg.killFlagThreads=False
 
-        print("startClicked")   # debug
+        print("startClicked")   # Debug
     def msgButtonClick():
         print("message")
         pass
@@ -195,7 +195,7 @@ if __name__ == '__main__':
         msgBox.buttonClicked.connect(pFunction) # msgBox.buttonClicked.connect(msgButtonClick)
         returnValue = msgBox.exec()
         if returnValue == widgets.QMessageBox.Ok:
-            print("OK clicked") # debug
+            print("OK clicked") # Debug
         return returnValue        
     def mW_pushButtonMainBack():
         print(eS.labelMovingSchwellwert.text())
@@ -207,7 +207,7 @@ if __name__ == '__main__':
             mW.pushButtonMainForward.setText("Weiter")
         if aktuellerTab <= 0:
             mW.pushButtonMainBack.setVisible(False)
-        # print(aktuellerTab)   # debug      
+        # print(aktuellerTab)   # Debug      
     def mW_pushButtonMainForward():
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab >= 3:
@@ -722,11 +722,14 @@ if __name__ == '__main__':
             #Zusammenfassen + Speichern oder Laden
             if mW.checkBoxAlgorithmusSuchen.isChecked():
                 BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
-                #BPM Speichern
+                #BPM Speichern vill auch am Ende.
                 Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
+                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=555 #anzahl an pixeln.
+                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+5
+                #Abschließend noch Speichern in JSON!
             else: #laden
                 BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-            ID_T=threading.Thread(target=KorrekturExportFkt(BAD_Ges),)
+            ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt(BAD_Ges),)
             ID_T.start()
             #KorrekturExportFkt(BAD_Ges)
     def KorrekturExportFkt(BPM): # Korrigieren

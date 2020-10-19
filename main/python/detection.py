@@ -60,7 +60,9 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     for i in range(Bilderanzahl):  
         print("Bild Nr. ",i)
         cfg.lock.acquire()
-        if cfg.killFlagThreads == True: #kill Tread
+        if cfg.treadEndloesung == True: #kill Tread
+            cfg.errorCode=-1
+            cfg.lock.release() 
             return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()        
@@ -109,8 +111,9 @@ def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
         D2_Bild=D3_Bild[i]
         quadrat=int(Fensterbreite/2) #+1
         for y in range(breite):
-            if cfg.killFlagThreads == True: #kill Tread / aMW zu langsam für abbruch nach Bild.
-                return -6
+            if cfg.treadEndloesung == True: #kill Tread / aMW zu langsam für abbruch nach Bild.
+                cfg.errorCode=-1
+                return 
             for x in range(hoehe):
                 supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
                 #a= np.shape(supBPM)[0]+1
@@ -141,6 +144,7 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
         cfg.lock.acquire()
         cfg.Ladebalken=cfg.Ladebalken+Anz #Damit ist es abgearbeitet.
         cfg.lock.release()
+        cfg.errorCode=-2
         return -1 #Hoffeltlich wird das Ausgewertet.
     BPM=np.zeros((hoehe,breite))
     Zaehler=0
@@ -149,7 +153,9 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     Dunkelste=np.ones((hoehe,breite))*2**cfg.Farbtiefe
     for Nr in range(Anz):
         cfg.lock.acquire()
-        if cfg.killFlagThreads == True: #kill Tread
+        if cfg.treadEndloesung == True: #kill Tread
+            cfg.errorCode=-1
+            cfg.lock.release()
             return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()
