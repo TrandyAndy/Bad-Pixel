@@ -62,6 +62,7 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
         cfg.lock.acquire()
         if cfg.treadEndloesung == True: #kill Tread
             cfg.errorCode=-1
+            cfg.lock.release() 
             return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()        
@@ -154,6 +155,7 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
         cfg.lock.acquire()
         if cfg.treadEndloesung == True: #kill Tread
             cfg.errorCode=-1
+            cfg.lock.release()
             return -6
         cfg.Ladebalken=cfg.Ladebalken+1 
         cfg.lock.release()
