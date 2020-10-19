@@ -688,11 +688,14 @@ if __name__ == '__main__':
             #Zusammenfassen + Speichern oder Laden
             if mW.checkBoxAlgorithmusSuchen.isChecked():
                 BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
-                #BPM Speichern
+                #BPM Speichern vill auch am Ende.
                 Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
+                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=555 #anzahl an pixeln.
+                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+5
+                #Abschließend noch Speichern in JSON!
             else: #laden
                 BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-            ID_T=threading.Thread(target=KorrekturExportFkt(BAD_Ges),)
+            ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt(BAD_Ges),)
             ID_T.start()
             #KorrekturExportFkt(BAD_Ges)
     def KorrekturExportFkt(BPM): # Korrigieren
