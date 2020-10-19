@@ -21,6 +21,7 @@ import types
 import os
 import numpy as np
 from _thread import start_new_thread, allocate_lock #oder mit therading lib.
+import threading
 import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
 from datetime import datetime
@@ -125,26 +126,35 @@ if __name__ == '__main__':
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             if(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked()):
                 #BPM_Schwellwert=detection.MultiPicturePixelCompare(bildDaten,GrenzeHot=0.995,GrenzeDead=0.1)[0]
-                start_new_thread(detection.MultiPicturePixelCompare,(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
+                T_ID_MPPC=threading.Thread(target=detection.MultiPicturePixelCompare,args=(bildDaten,float(eS.labelSchwellwertHot.text()),float(eS.labelSchwellwertDead.text())))
+                T_ID_MPPC.start()
             if(mW.checkBoxAlgorithmusDynamic.isChecked()):
                 #BPM_Dynamik=detection.dynamicCheck(bildDaten,Faktor=1.03)[0]
-                start_new_thread(detection.dynamicCheck,(bildDaten,float(eS.labelDynamicSchwellwert.text())))
+                T_ID_dC=threading.Thread(target=detection.dynamicCheck,args=(bildDaten,float(eS.labelDynamicSchwellwert.text())))
+                T_ID_dC.start()
             if(mW.checkBoxAlgorithmusWindow.isChecked()):
                 #BPM_Window=detection.advancedMovingWindow(bildDaten[0],Faktor=2.0,Fensterbreite=10)[0] 
-                T_ID=start_new_thread(detection.advancedMovingWindow,(bildDaten,float(eS.labelMovingSchwellwert.text()),float(eS.labelMovingSchwellwert.text())))
-        timer.start(500) # heruntersetzen für Performance
+                T_ID_aMW=threading.Thread(target=detection.advancedMovingWindow,args=(bildDaten,float(eS.labelMovingSchwellwert.text()),float(eS.labelMovingSchwellwert.text())))
+                T_ID_aMW.start()
+        timer.start(500) # ms heruntersetzen für Performance
         # Methoden Checken
         #KMethode=cfg.Methoden.NMFC if mW.checkBoxAlgorithmus???.isChecked(): #Median       #radioButtonMedian
         #KMethode=cfg.Methoden.NARC if mW.checkBoxAlgorithmus???.isChecked(): #Mittelwert   #radioButtonMittelwert
         #KMethode=cfg.Methoden.NSRC if mW.checkBoxAlgorithmus???.isChecked(): #Replacement  #radioButtonSimple
         fortschritt.progressBar.setValue(0)
-        if fortschritt.exec() == widgets.QDialog.Rejected:
-            print("Gecancelt gedrückt")
-            # hier muss dann der Prozess gestoppt werden.
+        if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
+            print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
+            cfg.holocaust=True #alle Treads killen
             cfg.Ladebalken=0
             timer.stop()
-            #for i in T_ID:
-            #T_ID.kill #Alles töten
+            print("Try to join")
+            if isAlive(T_ID_aMW):
+                T_ID_aMW.join()
+            T_ID_MPPC.join()
+            T_ID_dC.join()
+            print("Treads sind tot")
+            cfg.holocaust=False
+
         print("startClicked")   # debug
     def msgButtonClick():
         print("message")
@@ -686,13 +696,15 @@ if __name__ == '__main__':
                     elif mW.radioButtonAlgorithmusGradient.isChecked():
                         GOOD=np.uint16(correction.Gradient(bildDaten[i],BAD_Ges,Methode,int(eK.labelGradientFensterbreite.text())))
                     #if mW.radioButtonAlgorithmusNagao():
-                    # Export Aufruf
+                    # Export Aufruf______________________________________________________________
                     if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
                         openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                         fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
+                        #errorFlagKorrektur=True
                     else:
                         exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(0,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
-                        
+
+            Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!        
             fortschritt.textEdit.insertPlainText("Fertig.\n")
             fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
             # image = imP.importFunction("/Users/julian/Desktop/simulationsbild.tif")
