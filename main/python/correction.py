@@ -121,11 +121,11 @@ def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
                 
 
 def Methoden(Pixels, Methode):
-    if Methode==cfg.Methoden.NMFC:
+    if Methode==cfg.Methoden.NMFC.value:
         return np.median(Pixels)
-    elif Methode==cfg.Methoden.NARC: #NARC
+    elif Methode==cfg.Methoden.NARC.value: #NARC
         return np.mean(Pixels) #ohne den Bad ist schwer
-    elif Methode==cfg.Methoden.NSRC: #NSRC
+    elif Methode==cfg.Methoden.NSRC.value: #NSRC
         flatPixels=(np.reshape(Pixels,-1))
         l=len(flatPixels)
         m=int(l/2-1) # Rand Probleme
