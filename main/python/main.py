@@ -45,6 +45,8 @@ if __name__ == '__main__':
     anzahlBilderDunkel = 0    # Anzahl der importierten Bilder Dunkel für die Zeilenanzahl der Tabelle Flat-Field-Korrektur
     sensorList = ["Bitte Ihren Sensor auswählen"]
     bildDaten = 0       # hier werden die importierten Bilder gespeichert, 3D-Array: [anzahlBilder][Zeilen][Spalten]
+    bildDatenHell = 0       # hier werden die importierten Bilder gespeichert, 2D-Array: [Zeilen][Spalten]
+    bildDatenDunkel = 0       # hier werden die importierten Bilder gespeichert, 2D-Array: [Zeilen][Spalten]
     DATA = 0            # Die Daten für die Speicherung der Config Datei
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
@@ -124,9 +126,16 @@ if __name__ == '__main__':
                 openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben nichts für den Suchalgorithmus ausgewählt",informativeText="Bitte wählen sie mind. eine Checkbox für den Suchalgorithmus aus.",windowTitle="Nichts ausgewählt Suchalgorithmus.",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                 return False
         
+        # Check Flat-Field-Korrektur ist valid:
+        if mW.checkBoxAlgorithmusFFK.isChecked() and mW.checkBoxAlgorithmusKorrigieren.isChecked():
+            pass
+
+
         # Update UI
         fortschritt.textEdit.clear()    # Info Textfeld löschen
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
+        #todo Prüfen ob es bereits alte Biler gibt für die FFK
+
         # wenn nur Suchen ausgewählt ist, soll nicht der Speicherort anzeigen Button erscheinen
         if mW.checkBoxAlgorithmusSuchen.isChecked() == True and mW.checkBoxAlgorithmusKorrigieren.isChecked() == False and mW.checkBoxRohbilderSpeichern.isChecked() == False:
             fortschritt.pushButtonOeffnen.setVisible(False)
@@ -143,6 +152,22 @@ if __name__ == '__main__':
             fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert.\n")
         else:
             bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=False)
+
+        #Import Flatfield Bilder
+        if mW.checkBoxAlgorithmusFFK.isChecked() and mW.checkBoxAlgorithmusKorrigieren.isChecked():
+            global anzahlBilderHell
+            global anzahlBilderDunkel
+            global bildDatenHell
+            global bildDatenDunkel
+            pathlistHell = []
+            pathlistDunkel = []
+            for index in range(anzahlBilderHell):   # alle Pfade aus der Tabelle in eine Liste schreiben
+                pathlistHell.append(fF.tableWidgetHell.item(index,4).text())
+            bildDatenHell = imP.importUIFunction(pImportPath=pathlistHell,pMittelwertGesamt=True)
+            for index in range(anzahlBilderDunkel):
+                pathlistDunkel.append(fF.tableWidgetDunkel.item(index,4).text())
+            bildDatenDunkel = imP.importUIFunction(pImportPath=pathlistDunkel,pMittelwertGesamt=True)
+        
 
 
             #if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
@@ -544,20 +569,75 @@ if __name__ == '__main__':
             eK.radioButtonMedian.setChecked(Methode==cfg.Methoden.NMFC)
             eK.radioButtonMittelwert.setChecked(Methode==cfg.Methoden.NARC)
             eK.radioButtonReplacement.setChecked(Methode==cfg.Methoden.NSRC)
+    def openFFKWindow():
+        global anzahlBilderHell
+        global anzahlBilderDunkel
+        if fF.exec() == widgets.QDialog.Accepted:
+            if anzahlBilderHell == 0:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Hellbilder importiert ",informativeText="Bitte importieren Sie Hellbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openFFKWindow()
+                return False
+            if anzahlBilderDunkel == 0:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Dunkelbilder importiert ",informativeText="Bitte importieren Sie Dunkelbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openFFKWindow()
+                return False  
+            for aktuelleZeile in range(fF.tableWidgetHell.rowCount()):
+                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
+                if fF.tableWidgetHell.item(0, 1).text() != fF.tableWidgetHell.item(aktuelleZeile, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
+                if fF.tableWidgetHell.item(0, 3).text() != fF.tableWidgetHell.item(aktuelleZeile, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
+                """
+                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+                """
+                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != fF.tableWidgetDunkel.item(0, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflöung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Auslösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                if fF.tableWidgetHell.item(aktuelleZeile, 3).text() != fF.tableWidgetDunkel.item(0, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+            
+            for aktuelleZeile in range(fF.tableWidgetDunkel.rowCount()):
+                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
+                if fF.tableWidgetDunkel.item(0, 1).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
+                if fF.tableWidgetDunkel.item(0, 3).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
+                """
+                if fF.tableWidgetDunkel.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+                """
+            #print("Läuft")
+        else:   # wenn Abbrechen geklickt wird
+            mW.checkBoxAlgorithmusFFK.setChecked(False)
+            # alle Tabellen sollen gelöscht werden
+            fF.tableWidgetHell.setRowCount(0)
+            anzahlBilderHell = 0
+            fF.tableWidgetDunkel.setRowCount(0)
+            anzahlBilderDunkel = 0
+
     def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
-            if fF.exec() == widgets.QDialog.Accepted:
-                pass
-                #print("Läuft")
-            else:   # wenn Abbrechen geklickt wird
-                mW.checkBoxAlgorithmusFFK.setChecked(False)
-                # alle Tabellen sollen gelöscht werden
-                fF.tableWidgetHell.setRowCount(0)
-                global anzahlBilderHell
-                anzahlBilderHell = 0
-                fF.tableWidgetDunkel.setRowCount(0)
-                global anzahlBilderDunkel
-                anzahlBilderDunkel = 0
+            openFFKWindow()
                 
     ### Flat-Field-Korrektur
 
