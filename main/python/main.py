@@ -105,7 +105,11 @@ if __name__ == '__main__':
                 mW.tabWidget.setCurrentIndex(aktuellerTab)
                 return False
         # Check Algorithmus is valid
-
+        if mW.checkBoxAlgorithmusWindow.isChecked() and anzahlBilder>8: #Nur Warnung
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Eine große Zahl an Bildern führt zu erhöten Laufzeiten bei dem Moving Window Algorithmus.",informativeText="Wählen Sie andere Algorithmen, oder wenden Sie Moving Window nur auf eine untermenge der Importe an. Für die Korrektur können anschließen all Ihre Importe ohne Suchen verarbeitet werden.",windowTitle="Laufzeitwarnung Moving Window",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        if mW.checkBoxAlgorithmusDynamic.isChecked() and anzahlBilder<3:
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Die Anzahl an Bildern ist zu gering für einen Dynamic Algorithmus",informativeText="Erhöhen Sie die Importe, oder wählen Sie z.B. Moving Window",windowTitle="geringe Anzahl an Bildern Dynamic",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)     
+            return False
         # wenn nicht angekreuzt wurde:
         if mW.checkBoxAlgorithmusSuchen.isChecked() == False and mW.checkBoxAlgorithmusKorrigieren.isChecked() == False and mW.checkBoxRohbilderSpeichern.isChecked() == False:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben nichts ausgewählt",informativeText="Bitte wählen sie mind. eine Checkbox aus.",windowTitle="Nichts ausgewählt.",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
@@ -291,6 +295,7 @@ if __name__ == '__main__':
         mW.textEditBPM.setText("Hallo Julian")
     def mW_comboBoxBPMBPM():
         #print("mW_comboBoxBPMBPM")
+        pass
     def mW_pushButtonBPMNeuerSensor():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
         # filename = widgets.QFileDialog.getOpenFileNames() [0]      
@@ -594,12 +599,13 @@ if __name__ == '__main__':
         value = eS.horizontalSliderDynamicSchwellwert.value()
         eS.labelDynamicSchwellwert.setText( str( round(value*0.01 + 1.03,2)  ) )     
 
-    def eS_pushButtonVorschau():
+    def eS_pushButtonVorschau():#Detection #Beim Drücken soll eine Vorschau von Bild Nr 1 mit Aktuellen Einstellungen entstehen.
         pixmap = gui.QPixmap("Bild.png")
         bildFenster.label.setPixmap(pixmap)
         bildFenster.label.setScaledContents(True)
         bildFenster.label.resize(pixmap.width(), pixmap.height())
         bildFenster.exec()
+        #Aufrugf der Vorschaufunktion/Prozess. /Eigentlich wie Startbutton blos ohne Speichern.
     ### Einstellungen Korrektur 
     eK.horizontalSliderNachbarFensterbreite.setMinimum(0) #Andy Vorgabe: min 3 max 21 ival 2 
     eK.horizontalSliderNachbarFensterbreite.setMaximum(9)
