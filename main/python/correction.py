@@ -203,12 +203,17 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     for i in range(len(c)):
         if c[i]>1.2: # passiet nur im Fehlerfall 2 falsche bilder
             print(i, c[i]," Falsches Bild gewählt")
+            cfg.errorCode=-4
             Fehler=Fehler+1
             c[i]=0.2
     m=np.amax(c)
+    if m==0:
+        print("Alle Bilder gleich! So kann man kein FCC machen.")
+        m=1
+        cfg.errorCode=-4
     c=np.divide(c,m)
     beautiful=c*2**16-1
-    beautiful=np.uint(beautiful.reshape(hoehe,breite))
+    beautiful=np.uint16(beautiful.reshape(hoehe,breite))#int 16 geht das???
     return beautiful, Fehler
 
 def Hybrid(Bild, BPM,Methode=1): #zusätzlich Einstellungen?
