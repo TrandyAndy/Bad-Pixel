@@ -33,6 +33,7 @@ import config as cfg
 import detection
 import correction
 
+
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
 if __name__ == '__main__':
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext    # für das fbs
@@ -707,6 +708,36 @@ if __name__ == '__main__':
     #### QT UI anzeigen####
     mW.show()
 
+    def KorrekturExportFkt(BPM,F): # Korrigieren
+        flagExportFehler = False
+        if mW.checkBoxAlgorithmusKorrigieren.isChecked():
+            global bildDaten
+            aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
+            Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
+            fortschritt.textEdit.insertPlainText("Bilder Korrigiert und Gespeichert: ") # verstehe den Sinn dahinter nicht
+            for i in range(np.shape(bildDaten)[0]):
+                cfg.LadebalkenExport=cfg.LadebalkenExport+1
+                if cfg.killFlagThreads==True:
+                    return -1
+                if mW.radioButtonAlgorithmusNachbar.isChecked():
+                    GOOD=np.uint16(correction.nachbar2(bildDaten[i],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
+                elif mW.radioButtonAlgorithmusGradient.isChecked():
+                    GOOD=np.uint16(correction.Gradient(bildDaten[i],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
+                #if mW.radioButtonAlgorithmusNagao():
+                # Export Aufruf______________________________________________________________
+                if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
+                    flagExportFehler = True
+                else:
+                    exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(i,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
+                    fortschritt.textEdit.insertPlainText(str(cfg.LadebalkenExport)+" ")  # verstehe den Sinn dahinter nicht
+            fortschritt.textEdit.insertPlainText("Korrektur ist abgeschlossen.\n")       
+            if flagExportFehler == False:
+                fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
+        fortschritt.textEdit.insertPlainText("Fertig.\n")
+        fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
+
     def Prozess(): #Hauptprozess nach Start
         if cfg.LadebalkenMax != 0:
             fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
@@ -739,43 +770,12 @@ if __name__ == '__main__':
                 #Abschließend noch Speichern in JSON!
             else: #laden
                 BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-            ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt(BAD_Ges),)
+            ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt,args=(BAD_Ges,12))
             ID_T.start()
-            #KorrekturExportFkt(BAD_Ges)
-    def KorrekturExportFkt(BPM): # Korrigieren
-        flagExportFehler = False
-        if mW.checkBoxAlgorithmusKorrigieren.isChecked():
-            global bildDaten
-            aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
-            Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
-            #fortschritt.textEdit.insertPlainText("Bilder Korrigiert und Gespeichert: ") # verstehe den Sinn dahinter nicht
-            for i in range(np.shape(bildDaten)[0]):
-                cfg.LadebalkenExport=cfg.LadebalkenExport+1
-                if cfg.killFlagThreads==True:
-                    return -1
-                if mW.radioButtonAlgorithmusNachbar.isChecked():
-                    GOOD=np.uint16(correction.nachbar2(bildDaten[i],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
-                elif mW.radioButtonAlgorithmusGradient.isChecked():
-                    GOOD=np.uint16(correction.Gradient(bildDaten[i],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
-                #if mW.radioButtonAlgorithmusNagao():
-                # Export Aufruf______________________________________________________________
-                if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
-                    flagExportFehler = True
-                else:
-                    exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(i,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
-                    #fortschritt.textEdit.insertPlainText(str(cfg.LadebalkenExport)+" ")  # verstehe den Sinn dahinter nicht
-            fortschritt.textEdit.insertPlainText("Korrektur ist abgeschlossen.\n")       
-            if flagExportFehler == False:
-                fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
-        fortschritt.textEdit.insertPlainText("Fertig.\n")
-        fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
 
     timer = core.QTimer()
     timer.timeout.connect(Prozess)
     
-
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)
 
