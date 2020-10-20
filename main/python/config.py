@@ -21,7 +21,8 @@ LadebalkenMax=100 #auf Anz der Bilder * Detections setzen
 LadebalkenExport=0
 lock=allocate_lock() #Mutex
 killFlagThreads=False #Kill flag für alle Treads 
-errorCode=0 #0=ok -1=Fehler allgemein -2=Fehler Dynamic hat zu wenig Bilder, 
+errorCode=0 #0=ok -1=Fehler allgemein -2=Fehler Dynamic hat zu wenig Bilder, -3=Viele Bilder überbelichtet.
+fehlerSammler={"aMW": -1, "dC": -1, "MPPC": -1} #Die gefundenen Fehler 
 
 """
 
