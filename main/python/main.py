@@ -318,18 +318,22 @@ if __name__ == '__main__':
     #### ######## Funktionen von dem ab Sensor / BPM ########################################################################################
     def updateTextBPM():
         mW.textEditBPM.clear()
-        
-        mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
-        mW.textEditBPM.insertPlainText("Sensor Auflösung:\t \n")
-        geleseneBilder = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]
-        mW.textEditBPM.insertPlainText("Gelesene Bilder:\t " + str(geleseneBilder) + "\n")
-        anzahlPixelfehler = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]
-        mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t " + str(anzahlPixelfehler) + "\n")
-        spalten = 0
-        zeilen = 0
-        mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t " + str( anzahlPixelfehler/(spalten * zeilen)*100 ) + " % \n")
-        mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t " +  DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"] + "\n")
-
+        lokalBPM=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+        aufloesung = np.shape(lokalBPM)
+        print("Rückgabe aufloesung: ",aufloesung)
+        if aufloesung == ():  # noch keine BBM vorhanden
+            mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+            mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler Liste angelegt.")
+        else:
+            zeilen, spalten = aufloesung
+            mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+            mW.textEditBPM.insertPlainText("Sensor Auflösung:\t" + str(zeilen) + " x " + str(spalten) + "\n")
+            geleseneBilder = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]
+            mW.textEditBPM.insertPlainText("Gelesene Bilder:\t" + str(geleseneBilder) + "\n")
+            anzahlPixelfehler = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]
+            mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t" + str(anzahlPixelfehler) + "\n")
+            mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
+            mW.textEditBPM.insertPlainText("Erstelldatum:\t\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
     
     def mW_comboBoxBPMSensor():
         print("mW_comboBoxBPMSensor")
@@ -337,10 +341,8 @@ if __name__ == '__main__':
         #mW.textEditBPM.setText("Hallo Julian")
         updateTextBPM()
 
-        lokalBPM=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-        aufloesung=np.shape(lokalBPM)
 
-        mW.textEditBPM.setText(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"])
+        #mW.textEditBPM.setText(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"])
     def mW_comboBoxBPMBPM():
         #print("mW_comboBoxBPMBPM")
         pass
@@ -967,6 +969,7 @@ if __name__ == '__main__':
                 fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
         fortschritt.textEdit.insertPlainText("Fertig.\n")
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
+        updateTextBPM() # Text auf dem erstem Tab aktualisieren
 
     def Prozess(): #Hauptprozess nach Start
         if cfg.LadebalkenMax != 0:
