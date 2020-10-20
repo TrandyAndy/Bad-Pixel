@@ -826,11 +826,11 @@ if __name__ == '__main__':
             fortschritt.textEdit.insertPlainText("Bilder korrigiert und gespeichert: ")
             if mW.checkBoxAlgorithmusFFK.isChecked(): #FCC Vorbereiten
                 if mW.radioButtonAlgorithmusNachbar.isChecked():
-                    Hell_Mittel_Bild=np.uint16(correction.nachbar2(bildDaten[1],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
-                    Dunkel_Mittel_Bild=np.uint16(correction.nachbar2(bildDaten[1],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
+                    Hell_Mittel_Bild=np.uint16(correction.nachbar2(bildDatenHell,BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
+                    Dunkel_Mittel_Bild=np.uint16(correction.nachbar2(bildDatenDunkel,BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
                 elif mW.radioButtonAlgorithmusGradient.isChecked():
-                    Hell_Mittel_Bild=np.uint16(correction.Gradient(bildDaten[1],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
-                    Dunkel_Mittel_Bild=np.uint16(correction.Gradient(bildDaten[1],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
+                    Hell_Mittel_Bild=np.uint16(correction.Gradient(bildDatenHell,BPM,Methode,int(eK.labelGradientFensterbreite.text())))
+                    Dunkel_Mittel_Bild=np.uint16(correction.Gradient(bildDatenDunkel,BPM,Methode,int(eK.labelGradientFensterbreite.text())))
             #Korrektur Loop
             for i in range(np.shape(bildDaten)[0]):
                 cfg.LadebalkenExport=cfg.LadebalkenExport+1
