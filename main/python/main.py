@@ -315,11 +315,27 @@ if __name__ == '__main__':
         # Fortschritt Fenster
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
     ############ Ende Allgemeine Funktionen ########################################################################################
-    ############ Funktionen von dem ab Sensor / BPM ########################################################################################
+    #### ######## Funktionen von dem ab Sensor / BPM ########################################################################################
+    def updateTextBPM():
+        mW.textEditBPM.clear()
+        
+        mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+        mW.textEditBPM.insertPlainText("Sensor Auflösung:\t \n")
+        geleseneBilder = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]
+        mW.textEditBPM.insertPlainText("Gelesene Bilder:\t " + str(geleseneBilder) + "\n")
+        anzahlPixelfehler = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]
+        mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t " + str(anzahlPixelfehler) + "\n")
+        spalten = 0
+        zeilen = 0
+        mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t " + str( anzahlPixelfehler/(spalten * zeilen)*100 ) + " % \n")
+        mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t " +  DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"] + "\n")
+
+    
     def mW_comboBoxBPMSensor():
         print("mW_comboBoxBPMSensor")
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
-        mW.textEditBPM.setText("Hallo Julian")
+        #mW.textEditBPM.setText("Hallo Julian")
+        updateTextBPM()
     def mW_comboBoxBPMBPM():
         #print("mW_comboBoxBPMBPM")
         pass
@@ -339,6 +355,7 @@ if __name__ == '__main__':
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
             DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
+            updateTextBPM()
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
@@ -985,7 +1002,8 @@ if __name__ == '__main__':
 
     timer = core.QTimer()
     timer.timeout.connect(Prozess)
-    
+
+
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)
 
