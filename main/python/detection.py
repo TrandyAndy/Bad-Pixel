@@ -86,6 +86,9 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     print("Multi Picture findet ",Fehler)
     #Tread Zeugs
     cfg.lock.acquire()
+    if UberLicht>Bilderanzahl/3: #Warning
+        cfg.errorCode=-3
+    cfg.fehlerSammler["MPPC"]=Fehler
     cfg.Global_BPM_Multi =BPM #Tread
     cfg.Ladebalken=cfg.Ladebalken+1 #Final 
     cfg.lock.release()
@@ -132,6 +135,7 @@ def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
     #Tread Zeugs
     cfg.lock.acquire()
+    cfg.fehlerSammler["aMW"]=Zaehler
     cfg.Global_BPM_Moving =BPM #Tread
     cfg.Ladebalken=cfg.Ladebalken+1 #Final 
     cfg.lock.release()
@@ -178,6 +182,7 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
     print(Zaehler," Fehler gefunden (DynamikCheck).")
     #Tread Zeugs
     cfg.lock.acquire()
+    cfg.fehlerSammler["dC"]=Zaehler
     cfg.Global_BPM_Dynamik =BPM #Tread
     cfg.Ladebalken=cfg.Ladebalken+1 #Final 
     cfg.lock.release()
