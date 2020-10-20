@@ -680,7 +680,7 @@ if __name__ == '__main__':
         global anzahlBilderHell # globale Variable Anzahl der Bilder bekannt machen
         # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
         # Alle Pfäde der Dateien werden in filename gespeichert
-        filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        filename = widgets.QFileDialog.getOpenFileNames(directory = DATA["Import_Pfad"], filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
         # print(filename) # debug
         anzahlBilderHell = anzahlBilderHell + len(filename) # Anzahl der Bilder aktualisieren
         fF.tableWidgetHell.setRowCount(anzahlBilderHell) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
@@ -728,7 +728,7 @@ if __name__ == '__main__':
         global anzahlBilderDunkel # globale Variable Anzahl der Bilder bekannt machen
         # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
         # Alle Pfäde der Dateien werden in filename gespeichert
-        filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        filename = widgets.QFileDialog.getOpenFileNames(directory = DATA["Import_Pfad"], filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
         # print(filename) # debug
         anzahlBilderDunkel = anzahlBilderDunkel + len(filename) # Anzahl der Bilder aktualisieren
         fF.tableWidgetDunkel.setRowCount(anzahlBilderDunkel) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
