@@ -323,7 +323,7 @@ if __name__ == '__main__':
         print("Rückgabe aufloesung: ",aufloesung)
         if aufloesung == ():  # noch keine BBM vorhanden
             mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
-            mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler Liste angelegt.")
+            mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
         else:
             zeilen, spalten = aufloesung
             mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
