@@ -83,7 +83,7 @@ InitConfigData ={
     "Sensors" : [
         {
             "Sensor_Name" : "X-0815",
-            "Erstell_Datum" : "19950101",
+            "Erstell_Datum" : "1995-01-01",
             "Anz_Bilder" : 0, 
             "Anz_PixelFehler" : 0, 
 	        "last_Fensterbreite_advWindow" : 88,
