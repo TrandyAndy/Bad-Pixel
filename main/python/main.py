@@ -338,6 +338,7 @@ if __name__ == '__main__':
             #mW.comboBoxBPMSensor.addItems(sensorList)
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
+            DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
