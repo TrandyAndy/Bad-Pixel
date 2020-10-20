@@ -712,7 +712,7 @@ if __name__ == '__main__':
             global bildDaten
             aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
             Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
-            fortschritt.textEdit.insertPlainText("Bilder Korrigiert und Gespeichert: ") # verstehe den Sinn dahinter nicht
+            fortschritt.textEdit.insertPlainText("Bilder korrigiert und gespeichert: ")
             for i in range(np.shape(bildDaten)[0]):
                 cfg.LadebalkenExport=cfg.LadebalkenExport+1
                 if cfg.killFlagThreads==True:
@@ -725,12 +725,12 @@ if __name__ == '__main__':
                 # Export Aufruf______________________________________________________________
                 if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
                     openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    fortschritt.textEdit.insertPlainText("Fehler beim Korrigieren.\n")
+                    fortschritt.textEdit.insertPlainText("\nFehler beim Korrigieren.\n")
                     flagExportFehler = True
                 else:
                     exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= mW.tableWidgetBilddaten.item(i,0).text(), pImage= GOOD, pZeit= aktuelleZeit)
-                    fortschritt.textEdit.insertPlainText(str(cfg.LadebalkenExport)+" ")  # verstehe den Sinn dahinter nicht
-            fortschritt.textEdit.insertPlainText("Korrektur ist abgeschlossen.\n")       
+                    fortschritt.textEdit.insertPlainText(str(cfg.LadebalkenExport)+" ")
+            fortschritt.textEdit.insertPlainText("\nKorrektur ist abgeschlossen.\n")       
             if flagExportFehler == False:
                 fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
         fortschritt.textEdit.insertPlainText("Fertig.\n")
