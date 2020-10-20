@@ -106,11 +106,12 @@ if __name__ == '__main__':
                 mW.tabWidget.setCurrentIndex(aktuellerTab)
                 return False
         # Check Algorithmus is valid
-        if mW.checkBoxAlgorithmusWindow.isChecked() and anzahlBilder>8: #Nur Warnung
-            openMessageBox(icon=widgets.QMessageBox.Information, text="Eine große Zahl an Bildern führt zu erhöten Laufzeiten bei dem Moving Window Algorithmus.",informativeText="Wählen Sie andere Algorithmen, oder wenden Sie Moving Window nur auf eine untermenge der Importe an. Für die Korrektur können anschließen all Ihre Importe ohne Suchen verarbeitet werden.",windowTitle="Laufzeitwarnung Moving Window",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-        if mW.checkBoxAlgorithmusDynamic.isChecked() and anzahlBilder<3:
-            openMessageBox(icon=widgets.QMessageBox.Information, text="Die Anzahl an Bildern ist zu gering für einen Dynamic Algorithmus",informativeText="Erhöhen Sie die Importe, oder wählen Sie z.B. Moving Window",windowTitle="geringe Anzahl an Bildern Dynamic",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)     
-            return False
+        if mW.checkBoxAlgorithmusSuchen.isChecked() == True:
+            if mW.checkBoxAlgorithmusWindow.isChecked() and anzahlBilder>8: #Nur Warnung
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Eine große Zahl an Bildern führt zu erhöten Laufzeiten bei dem Moving Window Algorithmus.",informativeText="Wählen Sie andere Algorithmen, oder wenden Sie Moving Window nur auf eine untermenge der Importe an. Für die Korrektur können anschließen all Ihre Importe ohne Suchen verarbeitet werden.",windowTitle="Laufzeitwarnung Moving Window",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            if mW.checkBoxAlgorithmusDynamic.isChecked() and anzahlBilder<3:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Die Anzahl an Bildern ist zu gering für einen Dynamic Algorithmus",informativeText="Erhöhen Sie die Importe, oder wählen Sie z.B. Moving Window",windowTitle="geringe Anzahl an Bildern Dynamic",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)     
+                return False
         # wenn nicht angekreuzt wurde:
         if mW.checkBoxAlgorithmusSuchen.isChecked() == False and mW.checkBoxAlgorithmusKorrigieren.isChecked() == False and mW.checkBoxRohbilderSpeichern.isChecked() == False:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben nichts ausgewählt",informativeText="Bitte wählen sie mind. eine Checkbox aus.",windowTitle="Nichts ausgewählt.",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
@@ -140,9 +141,6 @@ if __name__ == '__main__':
             fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert.\n")
         else:
             bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=False)
-        
-
-        
 
 
             #if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
@@ -765,7 +763,9 @@ if __name__ == '__main__':
                 BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
                 #BPM Speichern vill auch am Ende.
                 Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
-                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=555 #anzahl an pixeln.
+                Fehlerzahl=cfg.fehlerSammler["aMW"]+cfg.fehlerSammler["MPPC"]+cfg.fehlerSammler["dC"]
+                print("BPM enthält ",Fehlerzahl," Pixel")
+                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=Fehlerzahl #anzahl an pixeln.
                 DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+5
                 #Abschließend noch Speichern in JSON!
             else: #laden
