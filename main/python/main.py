@@ -316,7 +316,7 @@ if __name__ == '__main__':
     ############ Ende Allgemeine Funktionen ########################################################################################
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
     def mW_comboBoxBPMSensor():
-        #print("mW_comboBoxBPMSensor")
+        print("mW_comboBoxBPMSensor")
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
         mW.textEditBPM.setText("Hallo Julian")
     def mW_comboBoxBPMBPM():
@@ -637,6 +637,11 @@ if __name__ == '__main__':
 
     def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
+            alteFFKBilder = True # todo
+            if alteFFKBilder:
+                fF.radioButtonGespeicherteBilder.setEnabled(True)
+            else:
+                fF.radioButtonGespeicherteBilder.setEnabled(False)
             openFFKWindow()
                 
     ### Flat-Field-Korrektur
