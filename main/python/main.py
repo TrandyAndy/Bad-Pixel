@@ -336,6 +336,11 @@ if __name__ == '__main__':
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
         #mW.textEditBPM.setText("Hallo Julian")
         updateTextBPM()
+
+        lokalBPM=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+        aufloesung=np.shape(lokalBPM)
+
+        mW.textEditBPM.setText(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"])
     def mW_comboBoxBPMBPM():
         #print("mW_comboBoxBPMBPM")
         pass
