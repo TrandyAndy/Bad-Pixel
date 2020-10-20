@@ -112,7 +112,7 @@ if __name__ == '__main__':
         # Check Algorithmus is valid
         if mW.checkBoxAlgorithmusSuchen.isChecked() == True:
             if mW.checkBoxAlgorithmusWindow.isChecked() and anzahlBilder>8: #Nur Warnung
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Eine große Zahl an Bildern führt zu erhöten Laufzeiten bei dem Moving Window Algorithmus.",informativeText="Wählen Sie andere Algorithmen, oder wenden Sie Moving Window nur auf eine untermenge der Importe an. Für die Korrektur können anschließen all Ihre Importe ohne Suchen verarbeitet werden.",windowTitle="Laufzeitwarnung Moving Window",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Eine große Zahl an Bildern führt zu erhöhten Laufzeiten bei dem Moving Window Algorithmus.",informativeText="Wählen Sie andere Algorithmen, oder wenden Sie Moving Window nur auf eine untermenge der Importe an. Für die Korrektur können anschließen all Ihre Importe ohne Suchen verarbeitet werden.",windowTitle="Laufzeitwarnung Moving Window",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             if mW.checkBoxAlgorithmusDynamic.isChecked() and anzahlBilder<3:
                 openMessageBox(icon=widgets.QMessageBox.Information, text="Die Anzahl an Bildern ist zu gering für einen Dynamic Algorithmus",informativeText="Erhöhen Sie die Importe, oder wählen Sie z.B. Moving Window",windowTitle="geringe Anzahl an Bildern Dynamic",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)     
                 return False
@@ -904,6 +904,14 @@ if __name__ == '__main__':
             aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
             Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
             fortschritt.textEdit.insertPlainText("Bilder korrigiert und gespeichert: ")
+            if mW.checkBoxAlgorithmusFFK.isChecked(): #FCC Vorbereiten
+                if mW.radioButtonAlgorithmusNachbar.isChecked():
+                    Hell_Mittel_Bild=np.uint16(correction.nachbar2(bildDaten[1],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
+                    Dunkel_Mittel_Bild=np.uint16(correction.nachbar2(bildDaten[1],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
+                elif mW.radioButtonAlgorithmusGradient.isChecked():
+                    Hell_Mittel_Bild=np.uint16(correction.Gradient(bildDaten[1],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
+                    Dunkel_Mittel_Bild=np.uint16(correction.Gradient(bildDaten[1],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
+            #Korrektur Loop
             for i in range(np.shape(bildDaten)[0]):
                 cfg.LadebalkenExport=cfg.LadebalkenExport+1
                 if cfg.killFlagThreads==True:
@@ -913,6 +921,10 @@ if __name__ == '__main__':
                 elif mW.radioButtonAlgorithmusGradient.isChecked():
                     GOOD=np.uint16(correction.Gradient(bildDaten[i],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
                 #if mW.radioButtonAlgorithmusNagao():
+                if mW.checkBoxAlgorithmusFFK.isChecked():
+                    print("FFC Start")
+                    GOOD=correction.Flatfield(GOOD, Hell_Mittel_Bild, Dunkel_Mittel_Bild)[0]
+                    print("FFC Ende")
                 # Export Aufruf______________________________________________________________
                 if np.shape(GOOD) == ():   # wenn GOOD eine -1 (Integer) ist
                     openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der Bad-Pixel-Map und des Bildes sind unterschiedlich",informativeText="Bitte verwenden Sie andere Bilder.",windowTitle="Unterschiedliche Auflösungen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
