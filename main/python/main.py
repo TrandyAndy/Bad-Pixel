@@ -147,7 +147,10 @@ if __name__ == '__main__':
 
         #Ladebalken init
         cfg.Ladebalken=0
-        Anz=int(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked())+int(mW.checkBoxAlgorithmusWindow.isChecked())+int(mW.checkBoxAlgorithmusDynamic.isChecked())
+        if mW.checkBoxAlgorithmusSuchen.isChecked():
+            Anz=int(mW.checkBoxAlgorithmusSchwellwertfilter.isChecked())+int(mW.checkBoxAlgorithmusWindow.isChecked())+int(mW.checkBoxAlgorithmusDynamic.isChecked())
+        else:
+            Anz=0
         cfg.LadebalkenMax=Anz*np.shape(bildDaten)[0]+Anz 
         print("Rechenschritte=",cfg.LadebalkenMax)
         # Suchen Treads
@@ -283,11 +286,11 @@ if __name__ == '__main__':
     ############ Ende Allgemeine Funktionen ########################################################################################
     ############ Funktionen von dem ab Sensor / BPM ########################################################################################
     def mW_comboBoxBPMSensor():
-        print("mW_comboBoxBPMSensor")
+        #print("mW_comboBoxBPMSensor")
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
         mW.textEditBPM.setText("Hallo Julian")
     def mW_comboBoxBPMBPM():
-        print("mW_comboBoxBPMBPM")
+        #print("mW_comboBoxBPMBPM")
     def mW_pushButtonBPMNeuerSensor():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
         # filename = widgets.QFileDialog.getOpenFileNames() [0]      
@@ -303,7 +306,6 @@ if __name__ == '__main__':
             #mW.comboBoxBPMSensor.addItems(sensorList)
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
-            print("Läuft 3")
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
@@ -458,7 +460,7 @@ if __name__ == '__main__':
         mW.tableWidgetBilddaten.setItem(1,1, abc[1])
         """
         #mW.tableWidgetBilddaten.setItem(1,1, widgets.QTableWidgetItem("Yeay4"))
-        print("mW_pushButtonBilddatenDelete")
+        #print("mW_pushButtonBilddatenDelete")
         
     def mW_pushButtonBilddatenDeleteAll():
         #mW.tableWidgetBilddaten.clearContents()
@@ -467,7 +469,7 @@ if __name__ == '__main__':
         #mW.tableWidgetBilddaten.setRowCount(1)
         global anzahlBilder
         anzahlBilder = 0
-        print("mW_pushButtonBilddatenDeleteAll")
+        #print("mW_pushButtonBilddatenDeleteAll")
     ### Tab Speicherort
     def mW_pushButtonSpeicherortDurchsuchen():
         if DATA["Export_Pfad"]==" ":
@@ -476,7 +478,7 @@ if __name__ == '__main__':
             filename = widgets.QFileDialog.getExistingDirectory(directory = DATA["Export_Pfad"])    
         mW.lineEditSpeicherort.setText(filename)
         DATA["Export_Pfad"]=filename
-        print("mW_pushButtonSpeicherortDurchsuchen")
+        #print("mW_pushButtonSpeicherortDurchsuchen")
     ### Tab Algorithmus
     def mW_checkBoxAlgorithmusSuchen():
         if mW.checkBoxAlgorithmusSuchen.isChecked():

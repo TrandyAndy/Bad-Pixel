@@ -27,10 +27,10 @@ def HotPixelFinder(D2_Bild, Schwelle=0.99):
             if D2_Bild[z,s]>=int(2**  cfg.Farbtiefe)*Schwelle:
                 BPM[z,s]=1 #Digital
                 Zaehler +=1
-    print("Hot Pixel: " , Zaehler)
+    #print("Hot Pixel: " , Zaehler)
     if Zaehler>hohe*breite*Lichtschutz: #Überbelichtungsschutz 
         Zaehler=-1
-        print("Überbelichtet")
+        #print("Überbelichtet")
     return BPM, Zaehler
 
 # Dead Pixel finder:
@@ -43,10 +43,10 @@ def DeadPixelFinder(D2_Bild, Schwelle=0.01):
             if D2_Bild[z,s]<=int(2**  cfg.Farbtiefe)*Schwelle:
                 BPM[z,s]=1 #Digital
                 Zaehler +=1
-    print("Tote Pixel: " , Zaehler)
+    #print("Tote Pixel: " , Zaehler)
     if Zaehler>hohe*breite*Lichtschutz: 
         Zaehler=-1
-        print("zu viele Dead Pixel")
+        #print("zu viele Dead Pixel")
     return BPM, Zaehler 
 
 def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
