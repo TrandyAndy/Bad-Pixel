@@ -41,6 +41,8 @@ if __name__ == '__main__':
     """ Globale Variablen:___________________________________________________________________________________ """
     aktuellerTab = 0    # Zustand des Tabs der GUI
     anzahlBilder = 0    # Anzahl der importierten Bilder für die Zeilenanzahl der Tabelle
+    anzahlBilderHell = 0    # Anzahl der importierten Bilder Hell für die Zeilenanzahl der Tabelle Flat-Field-Korrektur
+    anzahlBilderDunkel = 0    # Anzahl der importierten Bilder Dunkel für die Zeilenanzahl der Tabelle Flat-Field-Korrektur
     sensorList = ["Bitte Ihren Sensor auswählen"]
     bildDaten = 0       # hier werden die importierten Bilder gespeichert, 3D-Array: [anzahlBilder][Zeilen][Spalten]
     DATA = 0            # Die Daten für die Speicherung der Config Datei
@@ -551,15 +553,116 @@ if __name__ == '__main__':
                 #print("Läuft")
             else:   # wenn Abbrechen geklickt wird
                 mW.checkBoxAlgorithmusFFK.setChecked(False)
+                # alle Tabellen sollen gelöscht werden
+                fF.tableWidgetHell.setRowCount(0)
+                global anzahlBilderHell
+                anzahlBilderHell = 0
+                fF.tableWidgetDunkel.setRowCount(0)
+                global anzahlBilderDunkel
+                anzahlBilderDunkel = 0
                 
     ### Flat-Field-Korrektur
 
     def fF_radioButtonGespeicherteBilder():
         fF.groupBox.setEnabled(False)
-        print("Radio Button FFK Dunkel")
+        #print("Radio Button FFK Dunkel")
+    def fF_pushButtonHellAdd():
+        #print("fF_pushButtonHellAdd")
+        global anzahlBilderHell # globale Variable Anzahl der Bilder bekannt machen
+        # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
+        # Alle Pfäde der Dateien werden in filename gespeichert
+        filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        # print(filename) # debug
+        anzahlBilderHell = anzahlBilderHell + len(filename) # Anzahl der Bilder aktualisieren
+        fF.tableWidgetHell.setRowCount(anzahlBilderHell) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
+        # print(anzahlBilderHell) # debug
+        for index in range(len(filename)):  # Alle importieren Bilder durchgehen
+            fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,0, widgets.QTableWidgetItem( os.path.basename(filename[index]))) # Den Dateinamen aller markierten Bilder in die erste Spalte schreiben
+            rows, cols, anzahlHisBilder, farbtiefe = imP.getAufloesungUndAnzahlUndFarbtiefe(filename[index])
+            # data = imP.importUIFunction(filename[index])
+            # print(data, imP.np.shape(data))
+            fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
+            fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
+            fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+            fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
+            
+            fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
+            fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 2).setTextAlignment(core.Qt.AlignCenter)
+            fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 3).setTextAlignment(core.Qt.AlignCenter)
+            
+    def fF_pushButtonHellDelete():
+        global anzahlBilderHell
+        zeilen =  fF.tableWidgetHell.selectedItems()
+        print(zeilen)
+        zeilenLoeschen = []
+        alterWert = -1
+        for index in zeilen:    # weiß nicht was das macht
+            if alterWert != index.row():
+                zeilenLoeschen.append( index.row() )
+            alterWert = index.row()
+        #print(zeilenLoeschen)
+        zeilenLoeschen.sort()
+        #print(zeilenLoeschen)
+        zeilenLoeschen.reverse()
+        #print(zeilenLoeschen)
+        for index in range(len(zeilenLoeschen)):
+            fF.tableWidgetHell.removeRow(zeilenLoeschen[index]) 
+        anzahlBilderHell = anzahlBilderHell - len(zeilenLoeschen)
+        #print(anzahlBilder)
+    def fF_pushButtonHellDeleteAll():
+        fF.tableWidgetHell.setRowCount(0)
+        global anzahlBilderHell
+        anzahlBilderHell = 0
+        
+    def fF_pushButtonDunkelAdd():
+        #print("fF_pushButtonDunkelAdd")
+        global anzahlBilderDunkel # globale Variable Anzahl der Bilder bekannt machen
+        # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
+        # Alle Pfäde der Dateien werden in filename gespeichert
+        filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        # print(filename) # debug
+        anzahlBilderDunkel = anzahlBilderDunkel + len(filename) # Anzahl der Bilder aktualisieren
+        fF.tableWidgetDunkel.setRowCount(anzahlBilderDunkel) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
+        # print(anzahlBilderDunkel) # debug
+        for index in range(len(filename)):  # Alle importieren Bilder durchgehen
+            fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,0, widgets.QTableWidgetItem( os.path.basename(filename[index]))) # Den Dateinamen aller markierten Bilder in die erste Spalte schreiben
+            rows, cols, anzahlHisBilder, farbtiefe = imP.getAufloesungUndAnzahlUndFarbtiefe(filename[index])
+            # data = imP.importUIFunction(filename[index])
+            # print(data, imP.np.shape(data))
+            fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
+            fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
+            fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+            fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
+            
+            fF.tableWidgetDunkel.item((index + (anzahlBilderDunkel - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
+            fF.tableWidgetDunkel.item((index + (anzahlBilderDunkel - len(filename))), 2).setTextAlignment(core.Qt.AlignCenter)
+            fF.tableWidgetDunkel.item((index + (anzahlBilderDunkel - len(filename))), 3).setTextAlignment(core.Qt.AlignCenter)
+    def fF_pushButtonDunkelDelete():
+        global anzahlBilderDunkel
+        zeilen =  fF.tableWidgetDunkel.selectedItems()
+        print(zeilen)
+        zeilenLoeschen = []
+        alterWert = -1
+        for index in zeilen:    # weiß nicht was das macht
+            if alterWert != index.row():
+                zeilenLoeschen.append( index.row() )
+            alterWert = index.row()
+        #print(zeilenLoeschen)
+        zeilenLoeschen.sort()
+        #print(zeilenLoeschen)
+        zeilenLoeschen.reverse()
+        #print(zeilenLoeschen)
+        for index in range(len(zeilenLoeschen)):
+            fF.tableWidgetDunkel.removeRow(zeilenLoeschen[index]) 
+        anzahlBilderDunkel = anzahlBilderDunkel - len(zeilenLoeschen)
+        #print(anzahlBilder)
+    def fF_pushButtonDunkelDeleteAll():
+        fF.tableWidgetDunkel.setRowCount(0)
+        global anzahlBilderDunkel
+        anzahlBilderDunkel = 0
     def fF_radioButtonNeueBilder():
         fF.groupBox.setEnabled(True)
-        print("Radio Button FFK Hell")
+        #print("Radio Button FFK Hell")
 
     ### Einstellungen Suchen
                                                         #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,01 Dunkel: min 0 max 0,05 ival 0,01
@@ -680,7 +783,15 @@ if __name__ == '__main__':
 
     ### Flat-Field-Korrektur
     fF.radioButtonGespeicherteBilder.clicked.connect(fF_radioButtonGespeicherteBilder)
+    fF.pushButtonHellAdd.clicked.connect(fF_pushButtonHellAdd)
+    fF.pushButtonHellDelete.clicked.connect(fF_pushButtonHellDelete)
+    fF.pushButtonHellDeleteAll.clicked.connect(fF_pushButtonHellDeleteAll)
+    fF.pushButtonDunkelAdd.clicked.connect(fF_pushButtonDunkelAdd)
+    fF.pushButtonDunkelDelete.clicked.connect(fF_pushButtonDunkelDelete)
+    fF.pushButtonDunkelDeleteAll.clicked.connect(fF_pushButtonDunkelDeleteAll)
     fF.radioButtonNeueBilder.clicked.connect(fF_radioButtonNeueBilder)
+    
+
     
     ### Einstellungen Suchen
     eS.horizontalSliderSchwellwertHot.valueChanged.connect(eS_horizontalSliderSchwellwertHot)
