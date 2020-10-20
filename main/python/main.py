@@ -216,7 +216,8 @@ if __name__ == '__main__':
                     print(ID,"der leuft ja noch!")
             print("Treads sind alle tot")
             cfg.killFlagThreads=False
-
+        else:
+            updateTextBPM() # Text auf dem erstem Tab aktualisieren
         print("startClicked")   # Debug
     def msgButtonClick():
         print("message")
@@ -774,22 +775,22 @@ if __name__ == '__main__':
         #print("Radio Button FFK Hell")
 
     ### Einstellungen Suchen
-                                                        #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,01 Dunkel: min 0 max 0,05 ival 0,01
+                                                        #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,002 Dunkel: min 0 max 0,05 ival 0,005 # früher: ival 0,01
                                                         #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 2 max 3,5 ival 0,1
                                                         #Andy Vorgabe Dynamic Empfindlichkeit: min 1.03 max 2 ival 0.01
     eS.horizontalSliderSchwellwertHot.setMinimum(0) 
-    eS.horizontalSliderSchwellwertHot.setMaximum(5)
+    eS.horizontalSliderSchwellwertHot.setMaximum(50)
     eS.horizontalSliderSchwellwertHot.setTickInterval(1)
     def eS_horizontalSliderSchwellwertHot():
         value = eS.horizontalSliderSchwellwertHot.value()
-        eS.labelSchwellwertHot.setText( str(round( value*(-0.01)+1,2) ) )
+        eS.labelSchwellwertHot.setText( str(round( value*(-0.002)+1,3) ) )
 
     eS.horizontalSliderSchwellwertDead.setMinimum(0) 
-    eS.horizontalSliderSchwellwertDead.setMaximum(5)
+    eS.horizontalSliderSchwellwertDead.setMaximum(50)
     eS.horizontalSliderSchwellwertDead.setTickInterval(1)
     def eS_horizontalSliderSchwellwertDead():
         value = eS.horizontalSliderSchwellwertDead.value()
-        eS.labelSchwellwertDead.setText( str(round(value*0.01,2) ) ) 
+        eS.labelSchwellwertDead.setText( str(round(value*0.002,3) ) ) 
 
     eS.horizontalSliderMovingFensterbreite.setMinimum(0) 
     eS.horizontalSliderMovingFensterbreite.setMaximum(6)
@@ -803,14 +804,14 @@ if __name__ == '__main__':
     eS.horizontalSliderMovingSchwellwert.setTickInterval(1)
     def eS_horizontalSliderMovingSchwellwert():
         value = eS.horizontalSliderMovingSchwellwert.value()
-        eS.labelMovingSchwellwert.setText( str( round(value*0.1 + 2, 2 ) ) )
+        eS.labelMovingSchwellwert.setText( str( round(value*(-0.1) + 3.5, 2 ) ) )
 
     eS.horizontalSliderDynamicSchwellwert.setMinimum(0) 
     eS.horizontalSliderDynamicSchwellwert.setMaximum(97)
     eS.horizontalSliderDynamicSchwellwert.setTickInterval(1)
     def eS_horizontalSliderDynamicSchwellwert():
         value = eS.horizontalSliderDynamicSchwellwert.value()
-        eS.labelDynamicSchwellwert.setText( str( round(value*0.01 + 1.03,2)  ) )     
+        eS.labelDynamicSchwellwert.setText( str( round(value*(-0.01) + 2,2)  ) )     
 
     def eS_pushButtonVorschau():#Detection #Beim Drücken soll eine Vorschau von Bild Nr 1 mit Aktuellen Einstellungen entstehen.
         pixmap = gui.QPixmap("Bild.png")
@@ -969,7 +970,7 @@ if __name__ == '__main__':
                 fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
         fortschritt.textEdit.insertPlainText("Fertig.\n")
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
-        updateTextBPM() # Text auf dem erstem Tab aktualisieren
+        
 
     def Prozess(): #Hauptprozess nach Start
         if cfg.LadebalkenMax != 0:
