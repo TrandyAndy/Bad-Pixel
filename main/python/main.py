@@ -209,13 +209,13 @@ if __name__ == '__main__':
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
         timer.start(cfg.recallTime) # ms heruntersetzen für Performance
-
+        """
         pixmap = gui.QPixmap(" ")
         
         fortschritt.label.setPixmap(pixmap)
         fortschritt.label.setScaledContents(True)
         fortschritt.label.resize(pixmap.width(), pixmap.height())
-
+        """
 
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
@@ -831,11 +831,13 @@ if __name__ == '__main__':
         eS.labelDynamicSchwellwert.setText( str( round(value*(-0.01) + 2,2)  ) )     
 
     def eS_pushButtonVorschau():#Detection #Beim Drücken soll eine Vorschau von Bild Nr 1 mit Aktuellen Einstellungen entstehen.
+        """
         pixmap = gui.QPixmap("Bild.png")
         #pixmap.scaled()
         bildFenster.label.setPixmap(pixmap)
         bildFenster.label.setScaledContents(True)
         bildFenster.label.resize(pixmap.width(), pixmap.height())
+        """
         bildFenster.exec()
         #Aufrugf der Vorschaufunktion/Prozess. /Eigentlich wie Startbutton blos ohne Speichern.
     ### Einstellungen Korrektur 
@@ -861,10 +863,12 @@ if __name__ == '__main__':
         #print("eK_horizontalSliderGradientFensterbreite", value)   # debug
 
     def eK_pushButtonVorschau():
+        """
         pixmap = gui.QPixmap("Bild.png")
         bildFenster.label.setPixmap(pixmap)
         bildFenster.label.setScaledContents(True)
         bildFenster.label.resize(pixmap.width(), pixmap.height())
+        """
         bildFenster.exec()
     ### Fortschritt Fenster
     def fortschritt_pushButtonOeffnen():
