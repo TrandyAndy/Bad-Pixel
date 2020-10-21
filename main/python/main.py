@@ -49,6 +49,7 @@ if __name__ == '__main__':
     bildDatenHell = 0       # hier werden die importierten Bilder gespeichert, 2D-Array: [Zeilen][Spalten]
     bildDatenDunkel = 0       # hier werden die importierten Bilder gespeichert, 2D-Array: [Zeilen][Spalten]
     DATA = 0            # Die Daten für die Speicherung der Config Datei
+    mittelwertBilder = 0    # Mittelwert aller importierten Bilder
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
@@ -145,6 +146,7 @@ if __name__ == '__main__':
         # Import Pictures
         
         global bildDaten
+        global mittelwertBilder
         pathlist = []
         for index in range(anzahlBilder):   # alle Pfade aus der Tabelle in eine Liste schreiben
             pathlist.append(mW.tableWidgetBilddaten.item(index,4).text())
@@ -153,6 +155,7 @@ if __name__ == '__main__':
             fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert.\n")
         else:
             bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=False)
+        mittelwertBilder = imP.importUIFunction(pImportPath=pathlist,pMittelwertGesamt=True)
 
         #Import Flatfield Bilder
         if mW.checkBoxAlgorithmusFFK.isChecked() and mW.checkBoxAlgorithmusKorrigieren.isChecked():
@@ -204,6 +207,13 @@ if __name__ == '__main__':
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
         timer.start(cfg.recallTime) # ms heruntersetzen für Performance
+
+        pixmap = gui.QPixmap("Bild.png")
+        fortschritt.label.setPixmap(pixmap)
+        fortschritt.label.setScaledContents(True)
+        fortschritt.label.resize(pixmap.width(), pixmap.height())
+
+
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
