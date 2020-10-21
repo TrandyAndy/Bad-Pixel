@@ -1003,6 +1003,12 @@ if __name__ == '__main__':
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
             #Vorschau anzeigen...
             
+            exportPath = exP.exportPicturesEasy(pPath=Speichern.dir_path, pImagename="bpmVorschau.png", pImage=vorschauBild)
+            pixmap = gui.QPixmap(exportPath)
+            fortschritt.label.setPixmap(pixmap)
+            fortschritt.label.setScaledContents(True)
+            fortschritt.label.resize(pixmap.width(), pixmap.height())
+            
             
 
         #Abfrage Fertig_________
