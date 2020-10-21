@@ -208,7 +208,7 @@ if __name__ == '__main__':
         #====Jetzt wird gesucht!====#
         timer.start(cfg.recallTime) # ms heruntersetzen für Performance
 
-        pixmap = gui.QPixmap("Bild.png")
+        pixmap = gui.QPixmap(" ")
         
         fortschritt.label.setPixmap(pixmap)
         fortschritt.label.setScaledContents(True)
