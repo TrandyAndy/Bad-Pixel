@@ -25,6 +25,7 @@ import threading
 import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
 from datetime import datetime
+import copy
 import cv2
 # lokale Bibliotheken
 import importPictures as imP
@@ -794,14 +795,14 @@ if __name__ == '__main__':
                                                         #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 2 max 3,5 ival 0,1
                                                         #Andy Vorgabe Dynamic Empfindlichkeit: min 1.03 max 2 ival 0.01
     eS.horizontalSliderSchwellwertHot.setMinimum(0) 
-    eS.horizontalSliderSchwellwertHot.setMaximum(50)
+    eS.horizontalSliderSchwellwertHot.setMaximum(50) #Vill etwas mehr.
     eS.horizontalSliderSchwellwertHot.setTickInterval(1)
     def eS_horizontalSliderSchwellwertHot():
         value = eS.horizontalSliderSchwellwertHot.value()
         eS.labelSchwellwertHot.setText( str(round( value*(-0.002)+1,3) ) )
 
     eS.horizontalSliderSchwellwertDead.setMinimum(0) 
-    eS.horizontalSliderSchwellwertDead.setMaximum(50)
+    eS.horizontalSliderSchwellwertDead.setMaximum(50) #Vill etwas mehr.
     eS.horizontalSliderSchwellwertDead.setTickInterval(1)
     def eS_horizontalSliderSchwellwertDead():
         value = eS.horizontalSliderSchwellwertDead.value()
@@ -986,7 +987,10 @@ if __name__ == '__main__':
                 fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
         fortschritt.textEdit.insertPlainText("Fertig.\n")
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
-        
+        cfg.Global_BPM_Dynamik=0
+        cfg.Global_BPM_Moving=0
+        cfg.Global_BPM_Multi=0 #Alles wieder zurücksetzen.
+
     once = False
     myImage = 0
     def Prozess(): #Hauptprozess nach Start
@@ -998,14 +1002,14 @@ if __name__ == '__main__':
         print("ladebalken = ",cfg.Ladebalken)
 
         #Vorschau Live__________
-        if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): #True=Vorschau aktiv
-            vorschauBild = mittelwertBilder #Bild erstellen
-            if np.shape(cfg.Global_BPM_Multi) != ():
-                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
+        if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): 
+            vorschauBild = copy.copy(mittelwertBilder) #Bild erstellen
             if np.shape(cfg.Global_BPM_Dynamik) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Dynamik,pBild=vorschauBild,bgr = 2)#Dynamic =rot
             if np.shape(cfg.Global_BPM_Moving) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
+            if np.shape(cfg.Global_BPM_Multi) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
             #Vorschau anzeigen...
             cv2.imshow("image",vorschauBild)
             cv2.waitKey(1)
@@ -1027,23 +1031,23 @@ if __name__ == '__main__':
         FertigFlag=False
         cfg.lock.acquire()
         if cfg.Ladebalken==cfg.LadebalkenMax:
+            fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
             print("Done")
             FertigFlag=True
         cfg.lock.release()
 
-        if FertigFlag:
-            if mW.checkBoxAlgorithmusSuchen.isChecked(): # Text nur anzeigen, wenn Suchen ausgewählt ist
-                fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
+        if FertigFlag:              
             timer.stop()
             #Zusammenfassen + Speichern oder Laden
             if mW.checkBoxAlgorithmusSuchen.isChecked():
+                fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
                 BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
                 #BPM Speichern vill auch am Ende.
                 Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
                 Fehlerzahl=cfg.fehlerSammler["aMW"]+cfg.fehlerSammler["MPPC"]+cfg.fehlerSammler["dC"]
                 print("BPM enthält ",Fehlerzahl," Pixel")
                 DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=Fehlerzahl #anzahl an pixeln.
-                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+5
+                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+anzahlBilder
                 #Abschließend noch Speichern in JSON!
             else: #laden
                 BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
