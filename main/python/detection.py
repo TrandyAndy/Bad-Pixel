@@ -58,7 +58,7 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     UberLicht=0
     UnterLicht=0
     for i in range(Bilderanzahl):  
-        print("Bild Nr. ",i)
+        #print("Bild Nr. ",i)
         cfg.lock.acquire()
         if cfg.killFlagThreads == True: #kill Tread
             cfg.errorCode=-1
