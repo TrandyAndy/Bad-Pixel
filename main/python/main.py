@@ -993,15 +993,18 @@ if __name__ == '__main__':
         print("ladebalken = ",cfg.Ladebalken)
 
         #Vorschau Live__________
-        if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked() and True): #True=Vorschau aktiv
-            vorschauBild=(bildDaten[0]) #Bild erstellen
-            if cfg.Global_BPM_Multi != 0:
-                vorschauBild=telemetry.markPixelsVirtuel(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
-            #Dynamic =rot
-            #MovingW = gelb
+        if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): #True=Vorschau aktiv
+            vorschauBild = (bildDaten[0]) #Bild erstellen
+            if np.shape(cfg.Global_BPM_Multi) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
+            if np.shape(cfg.Global_BPM_Dynamik) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Dynamik,pBild=vorschauBild,bgr = 2)#Dynamic =rot
+            if np.shape(cfg.Global_BPM_Moving) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
             #Vorschau anzeigen...
             
             
+
         #Abfrage Fertig_________
         FertigFlag=False
         cfg.lock.acquire()
@@ -1026,6 +1029,9 @@ if __name__ == '__main__':
                 #Abschließend noch Speichern in JSON!
             else: #laden
                 BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+                if np.shape(BAD_Ges) ==(): #Wenns noch keine gibt.
+                    fortschritt.textEdit.insertPlainText("Es gibt noch keinen Datensatz. Suchen Erforderlich!\n")
+                    return
             ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt,args=(BAD_Ges,12))
             ID_T.start()
             exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= "Vorschau", pImage= vorschauBild, pZeit= "aktuelleZeit") #Debug Vorschau
