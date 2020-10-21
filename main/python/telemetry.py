@@ -28,12 +28,16 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1, Bildname="Bildname", Algorithm
     #cv2.waitKey()
     #cv2.destroyAllWindows()
 
-def markPixelsVirtuel(bpm, pBild, bgr = 1): #für die Vorschau
-    colorPicture = cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
-    if(np.shape(pBild) !=np.shape(bpm)):        
-        print("Digga schau das die Dimensionen passen!")
+def markPixelsVirtuell(bpm, pBild, bgr = 1, erstes=False): #für die Vorschau
+    Dummy = np.zeros( (np.shape(pBild)[0], np.shape(pBild)[1]), dtype=pBild.dtype)
+    if np.shape(Dummy) == np.shape(pBild): # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
+        colorPicture=cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
+    else:
+        colorPicture=pBild
+    if np.shape(bpm) == (): #if(np.shape(pBild[2]) !=np.shape(bpm)):        
+        print("BPM ist leer")
         return pBild #Wenn die BPM noch nicht da ist kommt das Orginal zurück.
-    hoehe, breite = np.shape(pBild)
+    hoehe, breite, farbe = np.shape(colorPicture)
     for z in range(hoehe):
         for s in range(breite):
             if(bpm[z,s] != 0):
