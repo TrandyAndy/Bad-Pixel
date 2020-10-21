@@ -990,6 +990,9 @@ if __name__ == '__main__':
         cfg.Global_BPM_Dynamik=0
         cfg.Global_BPM_Moving=0
         cfg.Global_BPM_Multi=0 #Alles wieder zurücksetzen.
+        cfg.fehlerSammler["aMW"]=0
+        cfg.fehlerSammler["MPPC"]=0
+        cfg.fehlerSammler["dC"]=0
 
     once = False
     myImage = 0
@@ -1021,17 +1024,12 @@ if __name__ == '__main__':
             fortschritt.label.setScaledContents(True)
             fortschritt.label.resize(pixmap.width(), pixmap.height())
             """
-            
-            
-
-            
-            
-
+   
         #Abfrage Fertig_________
         FertigFlag=False
         cfg.lock.acquire()
         if cfg.Ladebalken==cfg.LadebalkenMax:
-            fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
+            fortschritt.progressBar.setValue(int(100))
             print("Done")
             FertigFlag=True
         cfg.lock.release()
@@ -1056,7 +1054,7 @@ if __name__ == '__main__':
                     return
             ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt,args=(BAD_Ges,12))
             ID_T.start()
-            exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= "Vorschau", pImage= vorschauBild, pZeit= "aktuelleZeit") #Debug Vorschau
+            #exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= "Vorschau", pImage= vorschauBild, pZeit= "aktuelleZeit") #Debug Vorschau
 
     timer = core.QTimer()
     timer.timeout.connect(Prozess)

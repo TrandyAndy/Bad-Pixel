@@ -24,7 +24,7 @@ def BPM_Save(BPM, Sensor_Name):
             if(Zahl>Nr):
                 Nr=Zahl
                 #y=x[i]
-    if len(x)>200:
+    if len(x)>300:
         print("Speicher voll")
         return -1
     else:     
