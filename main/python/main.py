@@ -32,6 +32,7 @@ import Speichern
 import config as cfg
 import detection
 import correction
+import telemetry
 
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
@@ -205,7 +206,7 @@ if __name__ == '__main__':
                 IDs.append(T_ID_aMW)
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
-        timer.start(1000) # ms heruntersetzen für Performance
+        timer.start(cfg.recallTime) # ms heruntersetzen für Performance
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
@@ -941,11 +942,11 @@ if __name__ == '__main__':
             fortschritt.textEdit.insertPlainText("Bilder korrigiert und gespeichert: ")
             if mW.checkBoxAlgorithmusFFK.isChecked(): #FCC Vorbereiten
                 if mW.radioButtonAlgorithmusNachbar.isChecked():
-                    Hell_Mittel_Bild=np.uint16(correction.nachbar2(bildDaten[1],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
-                    Dunkel_Mittel_Bild=np.uint16(correction.nachbar2(bildDaten[1],BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
+                    Hell_Mittel_Bild=np.uint16(correction.nachbar2(bildDatenHell,BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
+                    Dunkel_Mittel_Bild=np.uint16(correction.nachbar2(bildDatenDunkel,BPM,Methode,int(eK.labelNachbarFensterbreite.text())))
                 elif mW.radioButtonAlgorithmusGradient.isChecked():
-                    Hell_Mittel_Bild=np.uint16(correction.Gradient(bildDaten[1],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
-                    Dunkel_Mittel_Bild=np.uint16(correction.Gradient(bildDaten[1],BPM,Methode,int(eK.labelGradientFensterbreite.text())))
+                    Hell_Mittel_Bild=np.uint16(correction.Gradient(bildDatenHell,BPM,Methode,int(eK.labelGradientFensterbreite.text())))
+                    Dunkel_Mittel_Bild=np.uint16(correction.Gradient(bildDatenDunkel,BPM,Methode,int(eK.labelGradientFensterbreite.text())))
             #Korrektur Loop
             for i in range(np.shape(bildDaten)[0]):
                 cfg.LadebalkenExport=cfg.LadebalkenExport+1
@@ -981,10 +982,16 @@ if __name__ == '__main__':
         else:
             fortschritt.progressBar.setValue(100)
         print("ladebalken = ",cfg.Ladebalken)
-        # if i_Zeit>3000:
-        #     print("Timeout Detection 404")  
-        #     break
 
+        #Vorschau Live__________
+        if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked() and True): #True=Vorschau aktiv
+            vorschauBild=(bildDaten[0]) #Bild erstellen
+            if cfg.Global_BPM_Multi != 0:
+                vorschauBild=telemetry.markPixelsVirtuel(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
+            #Dynamic =rot
+            #MovingW = gelb
+            #Vorschau anzeigen...
+            
         #Abfrage Fertig_________
         FertigFlag=False
         cfg.lock.acquire()
@@ -1011,6 +1018,7 @@ if __name__ == '__main__':
                 BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
             ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt,args=(BAD_Ges,12))
             ID_T.start()
+            exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= "Vorschau", pImage= vorschauBild, pZeit= "aktuelleZeit") #Debug Vorschau
 
     timer = core.QTimer()
     timer.timeout.connect(Prozess)
