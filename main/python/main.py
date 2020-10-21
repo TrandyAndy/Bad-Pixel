@@ -994,7 +994,7 @@ if __name__ == '__main__':
 
         #Vorschau Live__________
         if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): #True=Vorschau aktiv
-            vorschauBild = (bildDaten[0]) #Bild erstellen
+            vorschauBild = (mittelwertBilder) #Bild erstellen
             if np.shape(cfg.Global_BPM_Multi) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
             if np.shape(cfg.Global_BPM_Dynamik) != ():
