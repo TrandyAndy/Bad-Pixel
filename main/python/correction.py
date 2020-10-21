@@ -36,7 +36,7 @@ def nachbar(Bild, BPM):  #Mittelwert der beiden Nachbarn
     return beautiful
 
 # Nachbar
-def nachbar2(Bild, BPM, Methode=1, Fester=6):  # Fenster um BadPixel
+def nachbar2(Bild, BPM, Methode=cfg.Methoden.NMFC, Fester=4):  # Fenster um BadPixel
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -77,7 +77,7 @@ def neigborhood(Bild, BPM, Methode=0):
 
 # Gradient
 
-def Gradient(Bild, BPM, Methode=1, Laenge=10):
+def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
     if(np.shape(Bild) != np.shape(BPM)):
         print("Digga schau das die Dimensionen passen!")
         return -1
@@ -85,19 +85,19 @@ def Gradient(Bild, BPM, Methode=1, Laenge=10):
     Richtung=-1
     beautiful=copy.copy(Bild)
     l=int(Laenge/2)
-    großBild=np.zeros((hoehe+Laenge,breite+Laenge)) #Radfehler müssen Weg!
-    großBild[l:hoehe+l,l:breite+l]=Bild
-    großBPM=np.zeros((hoehe+Laenge,breite+Laenge))
-    großBPM[l:hoehe+l,l:breite+l]=BPM
-    for z in range(l,hoehe):
-        for s in range(l,breite):
-            if BPM[z-l,s-l] !=0:
+    for z in range(hoehe):
+        for s in range(breite):
+            if BPM[z,s] !=0:
                 #Gradienten legen
-                vertikal=großBild[z-l:z+l,s]
-                horizontal=großBild[z,s-l:s+l]
-                sub=großBild[z-l:z+l,s-l:s+l]
-                nordost=np.diagonal(sub)
-                nordwest=np.fliplr(sub).diagonal()
+                vertikal=beautiful[bottom(z-l):top(z+l,hoehe),s]
+                horizontal=beautiful[z,bottom(s-l):top(s+l,breite)]
+                sub=beautiful[bottom(z-l):top(z+l+1,hoehe),bottom(s-l):top(s+l+1,breite)]
+                if sub.size <(l*2+1)**2:
+                    nordost=[-2**16,+2**16]
+                    nordwest=nordost
+                else:             
+                    nordost=np.diagonal(sub) #Falsch benannt
+                    nordwest=np.fliplr(sub).diagonal() #trifft nicht Pixel
                 #low Gradient berechnen
                 Gradient=[max(np.gradient(vertikal)),max(np.gradient(horizontal)),max(np.gradient(nordost)),max(np.gradient(nordwest))]
                 Low=2**16
@@ -105,35 +105,45 @@ def Gradient(Bild, BPM, Methode=1, Laenge=10):
                     if Low>Gradient[i]:
                         Low=Gradient[i]
                         Richtung=i
-                #Grauwert berechen
+                #Grauwert berechnen
                 if Richtung==0:
                     Grau=Methoden(vertikal,Methode)
                 elif Richtung==1:
-                    Grau=np.mean(horizontal)
+                    Grau=Methoden(horizontal,Methode)
                 elif Richtung==2:
-                    Grau=np.mean(nordost)
+                    Grau=Methoden(nordost,Methode)
                 elif Richtung==3:
-                    Grau=np.mean(nordwest)
+                    Grau=Methoden(nordwest,Methode)
                 else:
                     print("Error")
-                beautiful[z-l,s-l]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
+                beautiful[z,s]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
     return beautiful
                 
 
 def Methoden(Pixels, Methode):
-    if Methode==1: #Methoden.NMFC:
+    if Methode==cfg.Methoden.NMFC.value:
         return np.median(Pixels)
-    elif Methode==2: #NARC
-        return np.mean(Pixels) #ohne den Bad??
-    elif Methode==3: #NSRC
+    elif Methode==cfg.Methoden.NARC.value: #NARC
+        return np.mean(Pixels) #ohne den Bad ist schwer
+    elif Methode==cfg.Methoden.NSRC.value: #NSRC
         flatPixels=(np.reshape(Pixels,-1))
         l=len(flatPixels)
-        m=int(l/2-1) # ist das der linke?
+        m=int(l/2-1) # Rand Probleme
         return flatPixels[m]
     else:
         return -1
 
+def top(x,Max):
+    if x>=Max:
+        return Max
+    else:
+        return x
 
+def bottom(x,Min=0):
+    if x<Min:
+        return Min
+    else:
+        return x
 
 #Nagao
 
@@ -193,12 +203,17 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     for i in range(len(c)):
         if c[i]>1.2: # passiet nur im Fehlerfall 2 falsche bilder
             print(i, c[i]," Falsches Bild gewählt")
+            cfg.errorCode=-4
             Fehler=Fehler+1
             c[i]=0.2
     m=np.amax(c)
+    if m==0:
+        print("Alle Bilder gleich! So kann man kein FCC machen.")
+        m=1
+        cfg.errorCode=-4
     c=np.divide(c,m)
     beautiful=c*2**16-1
-    beautiful=np.uint(beautiful.reshape(hoehe,breite))
+    beautiful=np.uint16(beautiful.reshape(hoehe,breite))#int 16 geht das???
     return beautiful, Fehler
 
 def Hybrid(Bild, BPM,Methode=1): #zusätzlich Einstellungen?

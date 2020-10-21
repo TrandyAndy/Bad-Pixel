@@ -27,10 +27,10 @@ def HotPixelFinder(D2_Bild, Schwelle=0.99):
             if D2_Bild[z,s]>=int(2**  cfg.Farbtiefe)*Schwelle:
                 BPM[z,s]=1 #Digital
                 Zaehler +=1
-    print("Hot Pixel: " , Zaehler)
+    #print("Hot Pixel: " , Zaehler)
     if Zaehler>hohe*breite*Lichtschutz: #Überbelichtungsschutz 
         Zaehler=-1
-        print("Überbelichtet")
+        #print("Überbelichtet")
     return BPM, Zaehler
 
 # Dead Pixel finder:
@@ -43,10 +43,10 @@ def DeadPixelFinder(D2_Bild, Schwelle=0.01):
             if D2_Bild[z,s]<=int(2**  cfg.Farbtiefe)*Schwelle:
                 BPM[z,s]=1 #Digital
                 Zaehler +=1
-    print("Tote Pixel: " , Zaehler)
+    #print("Tote Pixel: " , Zaehler)
     if Zaehler>hohe*breite*Lichtschutz: 
         Zaehler=-1
-        print("zu viele Dead Pixel")
+        #print("zu viele Dead Pixel")
     return BPM, Zaehler 
 
 def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
@@ -58,7 +58,14 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     UberLicht=0
     UnterLicht=0
     for i in range(Bilderanzahl):  
-        print("Bild Nr. ",i)        
+        #print("Bild Nr. ",i)
+        cfg.lock.acquire()
+        if cfg.killFlagThreads == True: #kill Tread
+            cfg.errorCode=-1
+            cfg.lock.release() 
+            return -6
+        cfg.Ladebalken=cfg.Ladebalken+1 
+        cfg.lock.release()        
         BPM_Dead, Anz_Dead =DeadPixelFinder(D3_Bilder[i],GrenzeDead) #Check for Black
         if(Anz_Dead<0):
             BPM_Dead=Ungueltig
@@ -77,6 +84,14 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     Fehler=np.nonzero(BPM)
     Fehler=len(Fehler[0])
     print("Multi Picture findet ",Fehler)
+    #Tread Zeugs
+    cfg.lock.acquire()
+    if UberLicht>Bilderanzahl/3: #Warning
+        cfg.errorCode=-3
+    cfg.fehlerSammler["MPPC"]=Fehler
+    cfg.Global_BPM_Multi =BPM #Tread
+    cfg.Ladebalken=cfg.Ladebalken+1 #Final 
+    cfg.lock.release()
     return BPM, Fehler 
     
 def top(x,Max):
@@ -91,39 +106,63 @@ def bottom(x):
     else:
         return x
 
-def advancedMovingWindow(D2_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
-    hoehe, breite = np.shape(D2_Bild)
+def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
+    Anz, hoehe, breite = np.shape(D3_Bild)
     #print(hoehe,breite)
     BPM=np.zeros((hoehe,breite))
-    quadrat=int(Fensterbreite/2) #+1
-    Zaehler=0
-    for y in range(breite):
-        for x in range(hoehe):
-            supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
-            #a= np.shape(supBPM)[0]+1
-            #b= np.shape(supBPM)[1]+1
-            #Elemente=a+b
-            #print("Elemente",Elemente," a=",a," b=",b)
-            Std=np.sqrt(np.var(supBPM))
-            #debug= abs(np.mean(supBPM)-D2_Bild[x,y])
-            if Std*Faktor< abs(np.mean(supBPM)-D2_Bild[x,y]):
-                BPM[x,y]=1 #Digital
-                Zaehler +=1
-                #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
+    for i in range(Anz):
+        D2_Bild=D3_Bild[i]
+        quadrat=int(Fensterbreite/2) #+1
+        for y in range(breite):
+            if cfg.killFlagThreads == True: #kill Tread / aMW zu langsam für abbruch nach Bild.
+                cfg.errorCode=-1
+                return 
+            for x in range(hoehe):
+                supBPM=D2_Bild[bottom(x-quadrat):top(x+quadrat,breite),bottom(y-quadrat):top(y+quadrat,hoehe)]
+                #a= np.shape(supBPM)[0]+1
+                #b= np.shape(supBPM)[1]+1
+                #Elemente=a+b
+                #print("Elemente",Elemente," a=",a," b=",b)
+                Std=np.sqrt(np.var(supBPM))
+                #debug= abs(np.mean(supBPM)-D2_Bild[x,y])
+                if float(Std)*Faktor< abs(np.mean(supBPM)-D2_Bild[x,y]): #TypeError: can't multiply sequence by non-int of type 'numpy.float64'
+                    BPM[x,y]=1 #Digital
+                    #print("Std: ",Std," Abweichung= ", abs(np.mean(supBPM)-Bilder[Nr,x,y]))
+        cfg.lock.acquire()
+        cfg.Ladebalken=cfg.Ladebalken+1 
+        cfg.lock.release()
+    Zaehler=np.count_nonzero(BPM)
     print("advWindow erkennt ",Zaehler," Fehler. Festerbreite= ",Fensterbreite)
+    #Tread Zeugs
+    cfg.lock.acquire()
+    cfg.fehlerSammler["aMW"]=Zaehler
+    cfg.Global_BPM_Moving =BPM #Tread
+    cfg.Ladebalken=cfg.Ladebalken+1 #Final 
+    cfg.lock.release()
     return BPM ,Zaehler 
 
 def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle und Dunkle!) , Faktor ist Schwellwert für Erkennung. 1.03-1.2
     Anz, hoehe, breite = np.shape(D3_Bilder)
     if Anz<2:
         print("zu wenig Bilder")
-        return -1
+        cfg.lock.acquire()
+        cfg.Ladebalken=cfg.Ladebalken+Anz #Damit ist es abgearbeitet.
+        cfg.lock.release()
+        cfg.errorCode=-2
+        return -1 #Hoffeltlich wird das Ausgewertet.
     BPM=np.zeros((hoehe,breite))
     Zaehler=0
     #Hell Dunkel erstellen
     Hellste=np.ones((hoehe,breite))
     Dunkelste=np.ones((hoehe,breite))*2**cfg.Farbtiefe
     for Nr in range(Anz):
+        cfg.lock.acquire()
+        if cfg.killFlagThreads == True: #kill Tread
+            cfg.errorCode=-1
+            cfg.lock.release()
+            return -6
+        cfg.Ladebalken=cfg.Ladebalken+1 
+        cfg.lock.release()
         for s in range(hoehe):
             for z in range(breite):
                 if Hellste[s,z]<D3_Bilder[Nr,s,z]:
@@ -141,6 +180,12 @@ def dynamicCheck(D3_Bilder, Faktor=1.5): #Bilder müssen verschiene sein (Helle 
                 BPM[s,z]=1 #Digital 
                 Zaehler+=1
     print(Zaehler," Fehler gefunden (DynamikCheck).")
+    #Tread Zeugs
+    cfg.lock.acquire()
+    cfg.fehlerSammler["dC"]=Zaehler
+    cfg.Global_BPM_Dynamik =BPM #Tread
+    cfg.Ladebalken=cfg.Ladebalken+1 #Final 
+    cfg.lock.release()
     return BPM, Zaehler 
 
 def Mapping(BPM_A,BPM_B,BPM_C=0,BPM_D=0,BPM_E=0):

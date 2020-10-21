@@ -33,12 +33,18 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Hellbilder ohne Bauteil auswählen:</string>
+         <string>Hellbilder ohne Bauteil auswählen (es wird automatisch ein Mittelwert gebildet):</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QTableWidget" name="tableWidgetFlatFieldHell">
+       <widget class="QTableWidget" name="tableWidgetHell">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
         <column>
          <property name="text">
           <string>Dateiname</string>
@@ -69,21 +75,21 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QPushButton" name="pushButtonFlatFieldHellAdd">
+         <widget class="QPushButton" name="pushButtonHellAdd">
           <property name="text">
            <string>Elemente hinzufügen ...</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButtonFlatFieldHellDelete">
+         <widget class="QPushButton" name="pushButtonHellDelete">
           <property name="text">
            <string>Elemente löschen</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButtonFlatFieldHellDeleteAll">
+         <widget class="QPushButton" name="pushButtonHellDeleteAll">
           <property name="text">
            <string>Gesamte Liste löschen</string>
           </property>
@@ -101,12 +107,18 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Dunkelbilder ohne Bauteil auswählen</string>
+         <string>Dunkelbilder ohne Bauteil auswählen (es wird automatisch ein Mittelwert gebildet):</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QTableWidget" name="tableWidgetFlatFieldDunkel">
+       <widget class="QTableWidget" name="tableWidgetDunkel">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
         <column>
          <property name="text">
           <string>Dateiname</string>
@@ -137,21 +149,21 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="pushButtonFlatFieldDunkelAdd">
+         <widget class="QPushButton" name="pushButtonDunkelAdd">
           <property name="text">
            <string>Elemente hinzufügen ...</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButtonFlatFieldDunkelDelete">
+         <widget class="QPushButton" name="pushButtonDunkelDelete">
           <property name="text">
            <string>Elemente löschen</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButtonFlatFieldDunkelDeleteAll">
+         <widget class="QPushButton" name="pushButtonDunkelDeleteAll">
           <property name="text">
            <string>Gesamte Liste löschen</string>
           </property>

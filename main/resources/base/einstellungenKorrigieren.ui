@@ -6,14 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>452</height>
+    <width>524</width>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Weitere Einstellungen für Korrekturalgorithmus</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>2</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -52,7 +65,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButtonSimple">
+       <widget class="QRadioButton" name="radioButtonReplacement">
         <property name="text">
          <string>Simple Replacement</string>
         </property>
@@ -60,6 +73,19 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>1</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_2">
@@ -79,7 +105,7 @@
         <item>
          <widget class="QLabel" name="labelNachbarFensterbreite">
           <property name="text">
-           <string> </string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -114,6 +140,19 @@
     </widget>
    </item>
    <item>
+    <spacer name="verticalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>2</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Gradient-Verfahren</string>
@@ -124,14 +163,14 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Fensterbreite:</string>
+           <string>Länge des Gradienten:</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="labelGradientFensterbreite">
           <property name="text">
-           <string> </string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -151,6 +190,20 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonVorschau">
+     <property name="text">
+      <string>Vorschau anzeigen</string>
+     </property>
     </widget>
    </item>
    <item>
