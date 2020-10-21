@@ -207,6 +207,13 @@ if __name__ == '__main__':
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
         timer.start(cfg.recallTime) # ms heruntersetzen für Performance
+
+        pixmap = gui.QPixmap("Bild.png")
+        fortschritt.label.setPixmap(pixmap)
+        fortschritt.label.setScaledContents(True)
+        fortschritt.label.resize(pixmap.width(), pixmap.height())
+
+
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
