@@ -25,6 +25,7 @@ import threading
 import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
 from datetime import datetime
+import cv2
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
@@ -228,8 +229,10 @@ if __name__ == '__main__':
                     print(ID,"der leuft ja noch!")
             print("Treads sind alle tot")
             cfg.killFlagThreads=False
+            cv2.destroyAllWindows()
         else:
             updateTextBPM() # Text auf dem erstem Tab aktualisieren
+            cv2.destroyAllWindows()
         print("startClicked")   # Debug
     def msgButtonClick():
         print("message")
@@ -984,8 +987,10 @@ if __name__ == '__main__':
         fortschritt.textEdit.insertPlainText("Fertig.\n")
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
         
-
+    once = False
+    myImage = 0
     def Prozess(): #Hauptprozess nach Start
+        global mittelwertBilder
         if cfg.LadebalkenMax != 0:
             fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
         else:
@@ -994,7 +999,7 @@ if __name__ == '__main__':
 
         #Vorschau Live__________
         if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): #True=Vorschau aktiv
-            vorschauBild = (mittelwertBilder) #Bild erstellen
+            vorschauBild = mittelwertBilder #Bild erstellen
             if np.shape(cfg.Global_BPM_Multi) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
             if np.shape(cfg.Global_BPM_Dynamik) != ():
@@ -1002,12 +1007,19 @@ if __name__ == '__main__':
             if np.shape(cfg.Global_BPM_Moving) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
             #Vorschau anzeigen...
+            cv2.imshow("image",vorschauBild)
+            cv2.waitKey(1)
             
             exportPath = exP.exportPicturesEasy(pPath=Speichern.dir_path, pImagename="bpmVorschau.png", pImage=vorschauBild)
             pixmap = gui.QPixmap(exportPath)
+            """
             fortschritt.label.setPixmap(pixmap)
             fortschritt.label.setScaledContents(True)
             fortschritt.label.resize(pixmap.width(), pixmap.height())
+            """
+            
+            
+
             
             
 
