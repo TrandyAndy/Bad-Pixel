@@ -175,7 +175,6 @@ def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPa
     for aktuellerPfad in pImportPath:
         dateiEndung = (os.path.splitext(os.path.basename(aktuellerPfad)) [1]).lower() # Dateiendung aus dem Pfad seperarieren, kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
         if dateiEndung == ".his": # Eine his-Datei
-            
             aktuellesArray = hisImportFunction(aktuellerPfad, pExport, pMittelwert, pExportPath, aktuelleZeit)
             bildDaten = np.append(bildDaten, aktuellesArray, axis= 0)
             #bildDaten.append( hisImportFunction(aktuellerPfad, pExport, pMittelwert) )
