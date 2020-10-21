@@ -32,6 +32,7 @@ def markPixelsVirtuel(bpm, pBild, bgr = 1): #für die Vorschau
     colorPicture = cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
     if(np.shape(pBild) !=np.shape(bpm)):        
         print("Digga schau das die Dimensionen passen!")
+        return pBild #Wenn die BPM noch nicht da ist kommt das Orginal zurück.
     hoehe, breite = np.shape(pBild)
     for z in range(hoehe):
         for s in range(breite):
