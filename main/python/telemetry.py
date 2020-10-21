@@ -28,6 +28,18 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1, Bildname="Bildname", Algorithm
     #cv2.waitKey()
     #cv2.destroyAllWindows()
 
+def markPixelsVirtuel(bpm, pBild, bgr = 1): #für die Vorschau
+    colorPicture = cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
+    if(np.shape(pBild) !=np.shape(bpm)):        
+        print("Digga schau das die Dimensionen passen!")
+    hoehe, breite = np.shape(pBild)
+    for z in range(hoehe):
+        for s in range(breite):
+            if(bpm[z,s] != 0):
+                colorPicture = drawPlus(colorPicture, z, s, hoehe, breite, bgr)
+    return colorPicture
+
+
 # Daten: 2-D Array (1. Spalte: eingestellter Parameter, 2. Spalte: dazugehöriger Funktionswert, z.B. Fehleranzahl)
 # Bildname: String Name des gespeicherten Bildes
 # Algorithmus: String Verwendeter Suchalgorithmus
