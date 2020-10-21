@@ -209,6 +209,7 @@ if __name__ == '__main__':
         timer.start(cfg.recallTime) # ms heruntersetzen für Performance
 
         pixmap = gui.QPixmap("Bild.png")
+        
         fortschritt.label.setPixmap(pixmap)
         fortschritt.label.setScaledContents(True)
         fortschritt.label.resize(pixmap.width(), pixmap.height())
@@ -826,6 +827,7 @@ if __name__ == '__main__':
 
     def eS_pushButtonVorschau():#Detection #Beim Drücken soll eine Vorschau von Bild Nr 1 mit Aktuellen Einstellungen entstehen.
         pixmap = gui.QPixmap("Bild.png")
+        #pixmap.scaled()
         bildFenster.label.setPixmap(pixmap)
         bildFenster.label.setScaledContents(True)
         bildFenster.label.resize(pixmap.width(), pixmap.height())
@@ -998,6 +1000,7 @@ if __name__ == '__main__':
             #Dynamic =rot
             #MovingW = gelb
             #Vorschau anzeigen...
+            
             
         #Abfrage Fertig_________
         FertigFlag=False
