@@ -63,9 +63,9 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="labelInformation">
      <property name="text">
-      <string>Grün: Schwellwertfilter, Rot: Dynamic-Check,  Blau: Moving-Window,  </string>
+      <string>Grün: Schwellwertfilter, Rot: Dynamic-Check,  Blau: Moving-Window</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

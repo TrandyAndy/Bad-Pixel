@@ -305,6 +305,7 @@ if __name__ == '__main__':
         sensorList=Speichern.WelcheSensorenGibtEs(DATA)[1]
         mW.comboBoxBPMSensor.addItems(sensorList)
         mW.comboBoxBPMSensor.setCurrentText(DATA["last_GenutzterSensor"])
+        updateTextBPM() # Text auf dem erstem Tab aktualisieren
         # Tab: Algorithmus - GroupBox Pixelfehler finden enablen
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             mW.groupBoxSuchen.setEnabled(True)
