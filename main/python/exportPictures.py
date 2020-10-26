@@ -28,3 +28,7 @@ def exportPictures(pPath, pImagename, pImage, pZeit):  # pPath: Zielverzeichnis,
     cv2.imwrite(os.path.join(dirName, fileName), pImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
     print(os.path.join(pPath, pImagename))
     #print("exportPictures") # debug
+
+def exportPicturesEasy(pPath, pImagename, pImage):
+    cv2.imwrite(os.path.join(pPath, pImagename), pImage)
+    return os.path.join(pPath, pImagename)

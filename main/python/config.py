@@ -22,7 +22,8 @@ LadebalkenExport=0
 lock=allocate_lock() #Mutex
 killFlagThreads=False #Kill flag für alle Treads 
 errorCode=0 #0=ok -1=Fehler allgemein -2=Fehler Dynamic hat zu wenig Bilder, -3=Viele Bilder überbelichtet. -4=FCC Fehler
-fehlerSammler={"aMW": -1, "dC": -1, "MPPC": -1} #Die gefundenen Fehler 
+fehlerSammler={"aMW": 0, "dC": 0, "MPPC": 0} #Die gefundenen Fehler 
+recallTime=1000
 
 """
 

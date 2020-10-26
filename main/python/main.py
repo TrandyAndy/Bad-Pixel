@@ -25,6 +25,8 @@ import threading
 import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
 from datetime import datetime
+import copy
+import cv2
 # lokale Bibliotheken
 import importPictures as imP
 import exportPictures as exP
@@ -32,6 +34,7 @@ import Speichern
 import config as cfg
 import detection
 import correction
+import telemetry
 
 
 """ Beginn der Hauptfunktion:__________________________________________________________________________________"""
@@ -45,7 +48,10 @@ if __name__ == '__main__':
     anzahlBilderDunkel = 0    # Anzahl der importierten Bilder Dunkel für die Zeilenanzahl der Tabelle Flat-Field-Korrektur
     sensorList = ["Bitte Ihren Sensor auswählen"]
     bildDaten = 0       # hier werden die importierten Bilder gespeichert, 3D-Array: [anzahlBilder][Zeilen][Spalten]
+    bildDatenHell = 0       # hier werden die importierten Bilder gespeichert, 2D-Array: [Zeilen][Spalten]
+    bildDatenDunkel = 0       # hier werden die importierten Bilder gespeichert, 2D-Array: [Zeilen][Spalten]
     DATA = 0            # Die Daten für die Speicherung der Config Datei
+    mittelwertBilder = 0    # Mittelwert aller importierten Bilder
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
@@ -124,9 +130,16 @@ if __name__ == '__main__':
                 openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben nichts für den Suchalgorithmus ausgewählt",informativeText="Bitte wählen sie mind. eine Checkbox für den Suchalgorithmus aus.",windowTitle="Nichts ausgewählt Suchalgorithmus.",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                 return False
         
+        # Check Flat-Field-Korrektur ist valid:
+        if mW.checkBoxAlgorithmusFFK.isChecked() and mW.checkBoxAlgorithmusKorrigieren.isChecked():
+            pass
+
+
         # Update UI
         fortschritt.textEdit.clear()    # Info Textfeld löschen
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
+        #todo Prüfen ob es bereits alte Biler gibt für die FFK
+
         # wenn nur Suchen ausgewählt ist, soll nicht der Speicherort anzeigen Button erscheinen
         if mW.checkBoxAlgorithmusSuchen.isChecked() == True and mW.checkBoxAlgorithmusKorrigieren.isChecked() == False and mW.checkBoxRohbilderSpeichern.isChecked() == False:
             fortschritt.pushButtonOeffnen.setVisible(False)
@@ -135,6 +148,7 @@ if __name__ == '__main__':
         # Import Pictures
         
         global bildDaten
+        global mittelwertBilder
         pathlist = []
         for index in range(anzahlBilder):   # alle Pfade aus der Tabelle in eine Liste schreiben
             pathlist.append(mW.tableWidgetBilddaten.item(index,4).text())
@@ -143,6 +157,23 @@ if __name__ == '__main__':
             fortschritt.textEdit.insertPlainText("Rohbilder wurden unter: \"" + mW.lineEditSpeicherort.text() + "\" gespeichert.\n")
         else:
             bildDaten = imP.importUIFunction(pathlist,pMittelwert=True, pExport=False)
+        mittelwertBilder = imP.importUIFunction(pImportPath=pathlist,pMittelwertGesamt=True)
+
+        #Import Flatfield Bilder
+        if mW.checkBoxAlgorithmusFFK.isChecked() and mW.checkBoxAlgorithmusKorrigieren.isChecked():
+            global anzahlBilderHell
+            global anzahlBilderDunkel
+            global bildDatenHell
+            global bildDatenDunkel
+            pathlistHell = []
+            pathlistDunkel = []
+            for index in range(anzahlBilderHell):   # alle Pfade aus der Tabelle in eine Liste schreiben
+                pathlistHell.append(fF.tableWidgetHell.item(index,4).text())
+            bildDatenHell = imP.importUIFunction(pImportPath=pathlistHell,pMittelwertGesamt=True)
+            for index in range(anzahlBilderDunkel):
+                pathlistDunkel.append(fF.tableWidgetDunkel.item(index,4).text())
+            bildDatenDunkel = imP.importUIFunction(pImportPath=pathlistDunkel,pMittelwertGesamt=True)
+        
 
 
             #if( np.shape(imP.importUIFunction(mW.tableWidgetBilddaten.item(index,4).text())) [0] > 1):
@@ -177,7 +208,15 @@ if __name__ == '__main__':
                 IDs.append(T_ID_aMW)
                 T_ID_aMW.start()
         #====Jetzt wird gesucht!====#
-        timer.start(1000) # ms heruntersetzen für Performance
+        timer.start(cfg.recallTime) # ms heruntersetzen für Performance
+        """
+        pixmap = gui.QPixmap(" ")
+        
+        fortschritt.label.setPixmap(pixmap)
+        fortschritt.label.setScaledContents(True)
+        fortschritt.label.resize(pixmap.width(), pixmap.height())
+        """
+
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
             print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
@@ -191,7 +230,10 @@ if __name__ == '__main__':
                     print(ID,"der leuft ja noch!")
             print("Treads sind alle tot")
             cfg.killFlagThreads=False
-
+            cv2.destroyAllWindows()
+        else:
+            updateTextBPM() # Text auf dem erstem Tab aktualisieren
+            cv2.destroyAllWindows()
         print("startClicked")   # Debug
     def msgButtonClick():
         print("message")
@@ -262,6 +304,8 @@ if __name__ == '__main__':
         # Tab: Sensor/BPM
         sensorList=Speichern.WelcheSensorenGibtEs(DATA)[1]
         mW.comboBoxBPMSensor.addItems(sensorList)
+        mW.comboBoxBPMSensor.setCurrentText(DATA["last_GenutzterSensor"])
+        updateTextBPM() # Text auf dem erstem Tab aktualisieren
         # Tab: Algorithmus - GroupBox Pixelfehler finden enablen
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             mW.groupBoxSuchen.setEnabled(True)
@@ -289,11 +333,34 @@ if __name__ == '__main__':
         # Fortschritt Fenster
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
     ############ Ende Allgemeine Funktionen ########################################################################################
-    ############ Funktionen von dem ab Sensor / BPM ########################################################################################
+    #### ######## Funktionen von dem ab Sensor / BPM ########################################################################################
+    def updateTextBPM():
+        mW.textEditBPM.clear()
+        lokalBPM=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+        aufloesung = np.shape(lokalBPM)
+        print("Rückgabe aufloesung: ",aufloesung)
+        if aufloesung == ():  # noch keine BBM vorhanden
+            mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+            mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
+        else:
+            zeilen, spalten = aufloesung
+            mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+            mW.textEditBPM.insertPlainText("Sensor Auflösung:\t" + str(zeilen) + " x " + str(spalten) + "\n")
+            geleseneBilder = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]
+            mW.textEditBPM.insertPlainText("Gelesene Bilder:\t" + str(geleseneBilder) + "\n")
+            anzahlPixelfehler = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]
+            mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t" + str(anzahlPixelfehler) + "\n")
+            mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
+            mW.textEditBPM.insertPlainText("Erstelldatum:\t\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
+    
     def mW_comboBoxBPMSensor():
-        #print("mW_comboBoxBPMSensor")
+        print("mW_comboBoxBPMSensor")
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
-        mW.textEditBPM.setText("Hallo Julian")
+        #mW.textEditBPM.setText("Hallo Julian")
+        updateTextBPM()
+
+
+        #mW.textEditBPM.setText(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"])
     def mW_comboBoxBPMBPM():
         #print("mW_comboBoxBPMBPM")
         pass
@@ -312,6 +379,8 @@ if __name__ == '__main__':
             #mW.comboBoxBPMSensor.addItems(sensorList)
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
+            DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
+            updateTextBPM()
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
@@ -544,20 +613,80 @@ if __name__ == '__main__':
             eK.radioButtonMedian.setChecked(Methode==cfg.Methoden.NMFC)
             eK.radioButtonMittelwert.setChecked(Methode==cfg.Methoden.NARC)
             eK.radioButtonReplacement.setChecked(Methode==cfg.Methoden.NSRC)
+    def openFFKWindow():
+        global anzahlBilderHell
+        global anzahlBilderDunkel
+        if fF.exec() == widgets.QDialog.Accepted:
+            if anzahlBilderHell == 0:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Hellbilder importiert ",informativeText="Bitte importieren Sie Hellbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openFFKWindow()
+                return False
+            if anzahlBilderDunkel == 0:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Dunkelbilder importiert ",informativeText="Bitte importieren Sie Dunkelbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openFFKWindow()
+                return False  
+            for aktuelleZeile in range(fF.tableWidgetHell.rowCount()):
+                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
+                if fF.tableWidgetHell.item(0, 1).text() != fF.tableWidgetHell.item(aktuelleZeile, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
+                if fF.tableWidgetHell.item(0, 3).text() != fF.tableWidgetHell.item(aktuelleZeile, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
+                """
+                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+                """
+                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != fF.tableWidgetDunkel.item(0, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflöung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Auslösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                if fF.tableWidgetHell.item(aktuelleZeile, 3).text() != fF.tableWidgetDunkel.item(0, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+            
+            for aktuelleZeile in range(fF.tableWidgetDunkel.rowCount()):
+                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
+                if fF.tableWidgetDunkel.item(0, 1).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
+                if fF.tableWidgetDunkel.item(0, 3).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
+                """
+                if fF.tableWidgetDunkel.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+                """
+            #print("Läuft")
+        else:   # wenn Abbrechen geklickt wird
+            mW.checkBoxAlgorithmusFFK.setChecked(False)
+            # alle Tabellen sollen gelöscht werden
+            fF.tableWidgetHell.setRowCount(0)
+            anzahlBilderHell = 0
+            fF.tableWidgetDunkel.setRowCount(0)
+            anzahlBilderDunkel = 0
+
     def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
-            if fF.exec() == widgets.QDialog.Accepted:
-                pass
-                #print("Läuft")
-            else:   # wenn Abbrechen geklickt wird
-                mW.checkBoxAlgorithmusFFK.setChecked(False)
-                # alle Tabellen sollen gelöscht werden
-                fF.tableWidgetHell.setRowCount(0)
-                global anzahlBilderHell
-                anzahlBilderHell = 0
-                fF.tableWidgetDunkel.setRowCount(0)
-                global anzahlBilderDunkel
-                anzahlBilderDunkel = 0
+            alteFFKBilder = True # todo
+            if alteFFKBilder:
+                fF.radioButtonGespeicherteBilder.setEnabled(True)
+            else:
+                fF.radioButtonGespeicherteBilder.setEnabled(False)
+            openFFKWindow()
                 
     ### Flat-Field-Korrektur
 
@@ -569,7 +698,7 @@ if __name__ == '__main__':
         global anzahlBilderHell # globale Variable Anzahl der Bilder bekannt machen
         # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
         # Alle Pfäde der Dateien werden in filename gespeichert
-        filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        filename = widgets.QFileDialog.getOpenFileNames(directory = DATA["Import_Pfad"], filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
         # print(filename) # debug
         anzahlBilderHell = anzahlBilderHell + len(filename) # Anzahl der Bilder aktualisieren
         fF.tableWidgetHell.setRowCount(anzahlBilderHell) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
@@ -617,7 +746,7 @@ if __name__ == '__main__':
         global anzahlBilderDunkel # globale Variable Anzahl der Bilder bekannt machen
         # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
         # Alle Pfäde der Dateien werden in filename gespeichert
-        filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        filename = widgets.QFileDialog.getOpenFileNames(directory = DATA["Import_Pfad"], filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
         # print(filename) # debug
         anzahlBilderDunkel = anzahlBilderDunkel + len(filename) # Anzahl der Bilder aktualisieren
         fF.tableWidgetDunkel.setRowCount(anzahlBilderDunkel) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
@@ -663,22 +792,22 @@ if __name__ == '__main__':
         #print("Radio Button FFK Hell")
 
     ### Einstellungen Suchen
-                                                        #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,01 Dunkel: min 0 max 0,05 ival 0,01
+                                                        #Andy Vorgabe Multi: Hell: min 1 max 0,95 ival 0,002 Dunkel: min 0 max 0,05 ival 0,005 # früher: ival 0,01
                                                         #Andy Vorgabe Moving Fenster: min 5 max 17 ival 2  Faktor: min 2 max 3,5 ival 0,1
                                                         #Andy Vorgabe Dynamic Empfindlichkeit: min 1.03 max 2 ival 0.01
     eS.horizontalSliderSchwellwertHot.setMinimum(0) 
-    eS.horizontalSliderSchwellwertHot.setMaximum(5)
+    eS.horizontalSliderSchwellwertHot.setMaximum(50) #Vill etwas mehr.
     eS.horizontalSliderSchwellwertHot.setTickInterval(1)
     def eS_horizontalSliderSchwellwertHot():
         value = eS.horizontalSliderSchwellwertHot.value()
-        eS.labelSchwellwertHot.setText( str(round( value*(-0.01)+1,2) ) )
+        eS.labelSchwellwertHot.setText( str(round( value*(-0.002)+1,3) ) )
 
     eS.horizontalSliderSchwellwertDead.setMinimum(0) 
-    eS.horizontalSliderSchwellwertDead.setMaximum(5)
+    eS.horizontalSliderSchwellwertDead.setMaximum(50) #Vill etwas mehr.
     eS.horizontalSliderSchwellwertDead.setTickInterval(1)
     def eS_horizontalSliderSchwellwertDead():
         value = eS.horizontalSliderSchwellwertDead.value()
-        eS.labelSchwellwertDead.setText( str(round(value*0.01,2) ) ) 
+        eS.labelSchwellwertDead.setText( str(round(value*0.002,3) ) ) 
 
     eS.horizontalSliderMovingFensterbreite.setMinimum(0) 
     eS.horizontalSliderMovingFensterbreite.setMaximum(6)
@@ -692,20 +821,23 @@ if __name__ == '__main__':
     eS.horizontalSliderMovingSchwellwert.setTickInterval(1)
     def eS_horizontalSliderMovingSchwellwert():
         value = eS.horizontalSliderMovingSchwellwert.value()
-        eS.labelMovingSchwellwert.setText( str( round(value*0.1 + 2, 2 ) ) )
+        eS.labelMovingSchwellwert.setText( str( round(value*(-0.1) + 3.5, 2 ) ) )
 
     eS.horizontalSliderDynamicSchwellwert.setMinimum(0) 
     eS.horizontalSliderDynamicSchwellwert.setMaximum(97)
     eS.horizontalSliderDynamicSchwellwert.setTickInterval(1)
     def eS_horizontalSliderDynamicSchwellwert():
         value = eS.horizontalSliderDynamicSchwellwert.value()
-        eS.labelDynamicSchwellwert.setText( str( round(value*0.01 + 1.03,2)  ) )     
+        eS.labelDynamicSchwellwert.setText( str( round(value*(-0.01) + 2,2)  ) )     
 
     def eS_pushButtonVorschau():#Detection #Beim Drücken soll eine Vorschau von Bild Nr 1 mit Aktuellen Einstellungen entstehen.
+        """
         pixmap = gui.QPixmap("Bild.png")
+        #pixmap.scaled()
         bildFenster.label.setPixmap(pixmap)
         bildFenster.label.setScaledContents(True)
         bildFenster.label.resize(pixmap.width(), pixmap.height())
+        """
         bildFenster.exec()
         #Aufrugf der Vorschaufunktion/Prozess. /Eigentlich wie Startbutton blos ohne Speichern.
     ### Einstellungen Korrektur 
@@ -731,10 +863,12 @@ if __name__ == '__main__':
         #print("eK_horizontalSliderGradientFensterbreite", value)   # debug
 
     def eK_pushButtonVorschau():
+        """
         pixmap = gui.QPixmap("Bild.png")
         bildFenster.label.setPixmap(pixmap)
         bildFenster.label.setScaledContents(True)
         bildFenster.label.resize(pixmap.width(), pixmap.height())
+        """
         bildFenster.exec()
     ### Fortschritt Fenster
     def fortschritt_pushButtonOeffnen():
@@ -858,47 +992,79 @@ if __name__ == '__main__':
                 fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
         fortschritt.textEdit.insertPlainText("Fertig.\n")
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
+        cfg.Global_BPM_Dynamik=0
+        cfg.Global_BPM_Moving=0
+        cfg.Global_BPM_Multi=0 #Alles wieder zurücksetzen.
+        cfg.fehlerSammler["aMW"]=0
+        cfg.fehlerSammler["MPPC"]=0
+        cfg.fehlerSammler["dC"]=0
 
+    once = False
+    myImage = 0
     def Prozess(): #Hauptprozess nach Start
+        global mittelwertBilder
         if cfg.LadebalkenMax != 0:
             fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
         else:
             fortschritt.progressBar.setValue(100)
         print("ladebalken = ",cfg.Ladebalken)
-        # if i_Zeit>3000:
-        #     print("Timeout Detection 404")  
-        #     break
 
+        #Vorschau Live__________
+        if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): 
+            vorschauBild = copy.copy(mittelwertBilder) #Bild erstellen
+            if np.shape(cfg.Global_BPM_Dynamik) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Dynamik,pBild=vorschauBild,bgr = 2)#Dynamic =rot
+            if np.shape(cfg.Global_BPM_Moving) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
+            if np.shape(cfg.Global_BPM_Multi) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
+            #Vorschau anzeigen...
+            cv2.imshow("image",vorschauBild)
+            cv2.waitKey(1)
+            
+            exportPath = exP.exportPicturesEasy(pPath=Speichern.dir_path, pImagename="bpmVorschau.png", pImage=vorschauBild)
+            pixmap = gui.QPixmap(exportPath)
+            """
+            fortschritt.label.setPixmap(pixmap)
+            fortschritt.label.setScaledContents(True)
+            fortschritt.label.resize(pixmap.width(), pixmap.height())
+            """
+   
         #Abfrage Fertig_________
         FertigFlag=False
         cfg.lock.acquire()
         if cfg.Ladebalken==cfg.LadebalkenMax:
+            fortschritt.progressBar.setValue(int(100))
             print("Done")
             FertigFlag=True
         cfg.lock.release()
 
-        if FertigFlag:
-            if mW.checkBoxAlgorithmusSuchen.isChecked(): # Text nur anzeigen, wenn Suchen ausgewählt ist
-                fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
+        if FertigFlag:              
             timer.stop()
             #Zusammenfassen + Speichern oder Laden
             if mW.checkBoxAlgorithmusSuchen.isChecked():
+                fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
                 BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
                 #BPM Speichern vill auch am Ende.
                 Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
                 Fehlerzahl=cfg.fehlerSammler["aMW"]+cfg.fehlerSammler["MPPC"]+cfg.fehlerSammler["dC"]
                 print("BPM enthält ",Fehlerzahl," Pixel")
                 DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=Fehlerzahl #anzahl an pixeln.
-                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+5
+                DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+anzahlBilder
                 #Abschließend noch Speichern in JSON!
             else: #laden
                 BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+                if np.shape(BAD_Ges) ==(): #Wenns noch keine gibt.
+                    fortschritt.textEdit.insertPlainText("Es gibt noch keinen Datensatz. Suchen Erforderlich!\n")
+                    return
             ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt,args=(BAD_Ges,12))
             ID_T.start()
+            #exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= "Vorschau", pImage= vorschauBild, pZeit= "aktuelleZeit") #Debug Vorschau
 
     timer = core.QTimer()
     timer.timeout.connect(Prozess)
-    
+
+
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)
 

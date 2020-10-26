@@ -167,7 +167,7 @@ def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array un
         bildDaten = importFunction(pImportPath, pExport)
     return bildDaten
    
-def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPath=""): # Rückgabe Bild-Array und Auflösung Breite und Höhe
+def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPath="", pMittelwertGesamt = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
     #bildDaten = []
     rows, cols, anzahl, farbtiefe = getAufloesungUndAnzahlUndFarbtiefe(pImportPath[0])
     bildDaten = np.empty((0,rows,cols), dtype=farbtiefe)
@@ -175,15 +175,25 @@ def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPa
     for aktuellerPfad in pImportPath:
         dateiEndung = (os.path.splitext(os.path.basename(aktuellerPfad)) [1]).lower() # Dateiendung aus dem Pfad seperarieren, kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
         if dateiEndung == ".his": # Eine his-Datei
-            
             aktuellesArray = hisImportFunction(aktuellerPfad, pExport, pMittelwert, pExportPath, aktuelleZeit)
             bildDaten = np.append(bildDaten, aktuellesArray, axis= 0)
             #bildDaten.append( hisImportFunction(aktuellerPfad, pExport, pMittelwert) )
         elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
             #bildDaten.append( importFunction(aktuellerPfad, pExport) )
             bildDaten = np.append(bildDaten, importFunction(aktuellerPfad, pExport, pExportPath=pExportPath, pZeit= aktuelleZeit), axis= 0 )
-    return bildDaten
-
+    if pMittelwertGesamt:
+        meanImage = np.zeros([rows,cols],dtype=np.uint32)
+        for index in range(np.shape(bildDaten)[0]):     # Anzahl der Bilddateien
+            meanImage = meanImage + bildDaten[index]
+        meanImage = meanImage / np.shape(bildDaten)[0]
+        meanImage = np.rint(meanImage) # Werte auf Ganzzahlen runden
+        ergMeanImage = np.zeros((rows, cols), dtype=farbtiefe)   # 3D-Array erzeugen, ansonsten nicht kompatibel
+        ergMeanImage = np.array(meanImage, dtype=farbtiefe)
+        #cv2.imshow("bild.png", ergMeanImage) 
+        #cv2.waitKey()  
+        return ergMeanImage
+    else:
+        return bildDaten
    
 def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
     dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben

@@ -24,7 +24,7 @@ def BPM_Save(BPM, Sensor_Name):
             if(Zahl>Nr):
                 Nr=Zahl
                 #y=x[i]
-    if len(x)>200:
+    if len(x)>300:
         print("Speicher voll")
         return -1
     else:     
@@ -83,7 +83,7 @@ InitConfigData ={
     "Sensors" : [
         {
             "Sensor_Name" : "X-0815",
-            "Erstell_Datum" : 19950101,
+            "Erstell_Datum" : "1995-01-01",
             "Anz_Bilder" : 0, 
             "Anz_PixelFehler" : 0, 
 	        "last_Fensterbreite_advWindow" : 88,
@@ -91,10 +91,11 @@ InitConfigData ={
             "last_Schwellwert_oben" : 99,
             "last_Schwellwert_unten" : 1,
             "last_Faktor_Dynamik" : 8,
-            "last_korrekturmethode" : 3,#int(cfg.Methoden.NSRC),
+            "last_korrekturmethode" : 3, #int(cfg.Methoden.NSRC),
             "last_Fenster_Nachbar" : 5,
             "last_Fenster_Gradient" : 5,
-            "Flat_Field_vorhanden" : False
+            "Flat_Field_vorhanden" : False,
+            "Aenderungs_Datum" : str(date.today())
         }
     ],
     "last_GenutzterSensor" : "erzeuge einen Sensor",
@@ -156,7 +157,8 @@ def SensorAnlegen(Name,Data):
             "last_korrekturmethode" : 3,#int(cfg.Methoden.NSRC),
             "last_Fenster_Nachbar" : 5,
             "last_Fenster_Gradient" : 5,
-            "Flat_Field_vorhanden" : False
+            "Flat_Field_vorhanden" : False,
+            "Aenderungs_Datum" : str(date.today())
         })
     return 0
 

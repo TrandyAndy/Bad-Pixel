@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import cProfile
 import detection
 import os
@@ -28,10 +28,30 @@ def markPixels(bpm, pBild, schwelle=100, bgr = 1, Bildname="Bildname", Algorithm
     #cv2.waitKey()
     #cv2.destroyAllWindows()
 
+def markPixelsVirtuell(bpm, pBild, bgr = 1, erstes=False): #für die Vorschau
+    Dummy = np.zeros( (np.shape(pBild)[0], np.shape(pBild)[1]), dtype=pBild.dtype)
+    if np.shape(Dummy) == np.shape(pBild): # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
+        colorPicture=cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
+    else:
+        colorPicture=pBild
+    if np.shape(bpm) == (): #if(np.shape(pBild[2]) !=np.shape(bpm)):        
+        print("BPM ist leer")
+        return pBild #Wenn die BPM noch nicht da ist kommt das Orginal zurück.
+    hoehe, breite, farbe = np.shape(colorPicture)
+    for z in range(hoehe):
+        for s in range(breite):
+            if(bpm[z,s] != 0):
+                colorPicture = drawPlus(colorPicture, z, s, hoehe, breite, bgr)
+    return colorPicture
+
+
 # Daten: 2-D Array (1. Spalte: eingestellter Parameter, 2. Spalte: dazugehöriger Funktionswert, z.B. Fehleranzahl)
 # Bildname: String Name des gespeicherten Bildes
 # Algorithmus: String Verwendeter Suchalgorithmus
-# Parameter: String Modifizierter Parameter     
+# Parameter: String Modifizierter Parameter 
+# 
+#     
+"""
 def plotData(Daten, Pfadname="Testbilder/", Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter", xBeschriftung="Parameter", yBeschriftung="gefundene Fehler"):    
     plt.clf()
     plt.plot(Daten[0], Daten[1], Daten[0], Daten[1], 'kx')
@@ -98,7 +118,7 @@ def plotDataAuswertungLog(Daten, Pfadname="Testbilder/", Bildname="Bildname", Al
     #plt.savefig(Bildname + "_" + Algorithmus + "_" + Parameter + "_" + aktuelleZeit, bbox_inches='tight', dpi=300)
     plt.savefig(Pfadname + Bildname + "_" + Algorithmus + "_" + Parameter + "_" + "_log", bbox_inches='tight', dpi=300)
     #plt.show()
-
+"""
 
 def drawPlus(colorPicture, zeile, spalte,  hoehe, breite, bgr, wert = 65535,):
     colorPicture[bottom(zeile-2),spalte,bgr] = wert
@@ -149,7 +169,7 @@ def top(aktuellerWert, maxWert):
 def timeTest(pythonFile = "detection", funktionsAufruf = "movingWindow(bildDaten[0])" ):
     cProfile.run(pythonFile + "." + funktionsAufruf)
 
-
+"""
 def logDetection(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 2, messpunkte = 10, BPM0 = 0):
     #Andys Funktion:
     #Bild, BPM0 = verpixler.verpixeln(pBild, 8000, 4, 0)
@@ -263,3 +283,6 @@ def logDetectionOld(pBild, bpmFehlerSchwellert = 100, startwert = 0, stopwert = 
     #plotData(ergAuswertungPlotten, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="ROC-Kurve" , xBeschriftung="false positive rate", yBeschriftung="true positive rate")
     #plotDataAuswertungLog(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")
     #plotDataAuswertung(ergAuswertungPlotten2, aktuellerPfad + "/", "Simulationsbild","Moving Window", Parameter="Gefundene Fehler" , xBeschriftung="Schwellwert", yBeschriftung="gefundene Fehler")    
+
+
+    """

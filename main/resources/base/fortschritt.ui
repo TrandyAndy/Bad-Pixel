@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>266</height>
+    <width>558</width>
+    <height>302</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,6 +61,16 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelInformation">
+     <property name="text">
+      <string>Grün: Schwellwertfilter, Rot: Dynamic-Check,  Blau: Moving-Window</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QTextEdit" name="textEdit">
