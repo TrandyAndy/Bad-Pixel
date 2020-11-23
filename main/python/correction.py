@@ -84,9 +84,9 @@ def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
     Richtung=-1
     beautiful=copy.copy(Bild)
     l=int(Laenge/2)
-    for z in range(hoehe):
+    for z in range(hoehe):                  #Bild Iterationsschleife
         for s in range(breite):
-            if BPM[z,s] !=0:
+            if BPM[z,s] !=0:                #Fehlstellen erkennen
                 #Gradienten legen
                 vertikal=beautiful[bottom(z-l):top(z+l,hoehe),s]
                 horizontal=beautiful[z,bottom(s-l):top(s+l,breite)]
@@ -105,7 +105,7 @@ def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
                         Low=Gradient[i]
                         Richtung=i
                 #Grauwert berechnen
-                if Richtung==0:
+                if Richtung==0:               #Gradient[0]=vertikal
                     Grau=Methoden(vertikal,Methode)
                 elif Richtung==1:
                     Grau=Methoden(horizontal,Methode)
