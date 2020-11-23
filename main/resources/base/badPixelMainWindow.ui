@@ -74,6 +74,20 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonBPMSensorLaden">
+              <property name="text">
+               <string>Sensoren laden ...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonBPMSensorSpeichern">
+              <property name="text">
+               <string>Sensoren exportieren ...</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
