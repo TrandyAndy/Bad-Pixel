@@ -66,11 +66,15 @@
            </layout>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButtonBPMNeuerSensor">
-            <property name="text">
-             <string>Neuer Sensor erstellen ...</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QPushButton" name="pushButtonBPMNeuerSensor">
+              <property name="text">
+               <string>Neuer Sensor erstellen ...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
