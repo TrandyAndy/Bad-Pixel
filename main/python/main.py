@@ -108,8 +108,8 @@ if __name__ == '__main__':
                 """
         # Check Speicherort is valid
         if mW.checkBoxAlgorithmusKorrigieren.isChecked() or mW.checkBoxRohbilderSpeichern.isChecked(): # Speicherort ist beim Suchalgorithmus nicht notwendig. 
-            if os.path.exists(mW.lineEditSpeicherort.text()) == False:
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            if os.path.isdir(mW.lineEditSpeicherort.text()) == False: #exists(mW.lineEditSpeicherort.text()) == False:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad für den Speicherort ist nicht gültig",informativeText="Der Pfad: \"" + mW.lineEditSpeicherort.text() + "\" ist kein gültiger Ordnerpfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                 aktuellerTab = 2
                 mW.tabWidget.setCurrentIndex(aktuellerTab)
                 return False
@@ -327,9 +327,13 @@ if __name__ == '__main__':
         eS_horizontalSliderMovingFensterbreite()
         eS_horizontalSliderMovingSchwellwert()
         eS_horizontalSliderDynamicSchwellwert()
+        eS.line_3.setVisible(False)             # nicht implementier
+        eS.pushButtonVorschau.setVisible(False) # nicht implementier
         # Einstellungen Korrigieren
         eK_horizontalSliderNachbarFensterbreite()
         eK_horizontalSliderGradientFensterbreite()
+        eK.line_3.setVisible(False)             # nicht implementier
+        eK.pushButtonVorschau.setVisible(False) # nicht implementier
         # Fortschritt Fenster
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
     ############ Ende Allgemeine Funktionen ########################################################################################
@@ -417,12 +421,12 @@ if __name__ == '__main__':
     def mW_pushButtonBilddatenImportieren():
         global anzahlBilder
         dirname = mW.lineEditBilddatenDurchsuchen.text()
-        if os.path.exists(dirname): # wenn der Pfad überhaupt existiert
+        if os.path.isdir(dirname):   #os.path.exists(dirname): # wenn der Pfad überhaupt existiert
             if mW.checkBoxBilddaten.isChecked():   # Unterordner auch importieren    
                 print("Unterordner werden auch importiert")
             else:   # keine Unterordner importieren
                 #if dirname != "": 
-                files = os.listdir(dirname) # bug, wenn dirname kein bekannter Pfad ist
+                files = os.listdir(dirname) # bug, wenn dirname kein bekannter Pfad ist --> behoben
                 print(files,type(files))
                 #anzahlBilderLocal = 0
                 imageFiles = []
@@ -431,6 +435,8 @@ if __name__ == '__main__':
                     if dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff" or dateiEndung == ".his":
                         #anzahlBilderLocal = anzahlBilderLocal + 1
                         imageFiles.append(aktuellesFile)
+                if len(imageFiles) <= 0:
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Keine Bilder im aktuellen Verzeichnis",informativeText="Das Verzeichnis: \"" + dirname + "\" enthält keine gültigen Bilddateien. Es sind nur Bilder im PNG, JPG, TIF und HIS Format kompatibel. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Keine Bilder im Verzeichnis",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                 anzahlBilder = anzahlBilder + len(imageFiles)
                 mW.tableWidgetBilddaten.setRowCount(anzahlBilder) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
                 for index in range(len(imageFiles)):  # Alle importieren Bilder durchgehen
@@ -453,7 +459,7 @@ if __name__ == '__main__':
             #Pfad Speichern
             DATA["Import_Pfad"]=dirname
         else:
-            openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad ist nicht gültig",informativeText="Der Pfad: \"" + dirname + "\" ist kein gültiger Pfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Der eingegebene Pfad ist nicht gültig",informativeText="Der Pfad: \"" + dirname + "\" ist kein gültiger Ordnerpfad. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Kein gültiger Pfad",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         
             
     def mW_pushButtonBilddatenAdd():    # Bilddateien importieren
