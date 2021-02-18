@@ -171,7 +171,7 @@ def bottom(x,Min=0):
     
     großBild=Bild
     v_rand=np.ones([:(Q_Fenster*breite)]).reshape(Q_Fenster,breite)
-    h_rand=np-ones([:(Q_Fenster*(heohe+Q_Fenster))]).reshape((heohe+Q_Fenster),Q_Fenster)
+    h_rand=np.ones([:(Q_Fenster*(heohe+Q_Fenster))]).reshape((heohe+Q_Fenster),Q_Fenster)
     np.vstack([großBild,v_rand])
     np.hstack([großBild,h_rand])
     beautiful=Bild

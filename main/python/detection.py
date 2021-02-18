@@ -106,7 +106,7 @@ def bottom(x):
     else:
         return x
 
-def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
+def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor aus Literatur= 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
     Anz, hoehe, breite = np.shape(D3_Bild)
     #print(hoehe,breite)
     BPM=np.zeros((hoehe,breite))
@@ -114,7 +114,7 @@ def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
         D2_Bild=D3_Bild[i]
         quadrat=int(Fensterbreite/2) #+1
         for y in range(breite):
-            if cfg.killFlagThreads == True: #kill Tread / aMW zu langsam für abbruch nach Bild.
+            if cfg.killFlagThreads == True: #kill Tread / aMW zu langsam für Abbruch nach Bild.
                 cfg.errorCode=-1
                 return 
             for x in range(hoehe):
