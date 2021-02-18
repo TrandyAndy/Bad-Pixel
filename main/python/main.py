@@ -998,6 +998,8 @@ if __name__ == '__main__':
                 fortschritt.textEdit.insertPlainText("Alle Bilder wurden gespeichert.\n")
         fortschritt.textEdit.insertPlainText("Fertig.\n")
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(True) # Okay Button able
+        if mW.checkBoxAlgorithmusSuchen.isChecked():
+            fortschritt.textEdit.insertPlainText("Wenn sie die neue Bad-Pixel-Map speichern möchten drücken Sie bitte OK. Ansonsten bitte Cancel oder Abbrechen drücken.")
         cfg.Global_BPM_Dynamik=0
         cfg.Global_BPM_Moving=0
         cfg.Global_BPM_Multi=0 #Alles wieder zurücksetzen.
