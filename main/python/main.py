@@ -342,7 +342,7 @@ if __name__ == '__main__':
         mW.textEditBPM.clear()
         lokalBPM=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
         aufloesung = np.shape(lokalBPM)
-        print("Rückgabe aufloesung: ",aufloesung)
+        #print("Rückgabe aufloesung: ", aufloesung) # Diese Zeile macht ein bug unter mac OS, Programm öffnet und schlißet sich sofort wieder. 
         if aufloesung == ():  # noch keine BBM vorhanden
             mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
             mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
