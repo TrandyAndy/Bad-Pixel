@@ -321,6 +321,15 @@ if __name__ == '__main__':
             mW.groupBoxKorrigieren.setEnabled(False)
             # print("not Checked") # debug
         mW.checkBoxBilddaten.setVisible(False) # noch nicht implementiert
+        # Werte Suchen Laden
+        eS.horizontalSliderSchwellwertHot.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"])
+        eS.horizontalSliderSchwellwertDead.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"])
+        eS.horizontalSliderMovingFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"])
+        eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
+        eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
+        # Werte Korrekur Laden
+        eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
+        eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
         # Einstellungen Suchen
         eS_horizontalSliderSchwellwertHot()
         eS_horizontalSliderSchwellwertDead()
