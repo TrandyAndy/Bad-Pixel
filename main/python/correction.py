@@ -115,7 +115,7 @@ def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
                     Grau=Methoden(nordwest,Methode)
                 else:
                     print("Error")
-                beautiful[z,s]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
+                beautiful[z,s]=Grau  #Oder mit dem Korrigierten Teil weiterarbeiten.
     return beautiful
                 
 

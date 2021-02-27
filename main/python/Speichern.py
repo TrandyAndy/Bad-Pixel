@@ -31,7 +31,7 @@ def BPM_Save(BPM, Sensor_Name):
         #Schreiben
         Nr=Nr+1
         Datei_path=os.sep.join([dir_path,Sensor_Name+"_V"+str(Nr)+".png"])
-        cv2.imwrite(Datei_path, BPM, [cv2.IMWRITE_PNG_COMPRESSION,0])
+        cv2.imwrite(Datei_path, BPM)
         return 0
 
 def BPM_Read(Sensor_Name):

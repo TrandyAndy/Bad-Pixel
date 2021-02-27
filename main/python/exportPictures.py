@@ -15,9 +15,9 @@ from datetime import datetime
 
 def exportPictures(pPath, pImagename, pImage, pZeit):  # pPath: Zielverzeichnis, pImagename: Name des Bildes, pImage: Array des Bildes
     # os.path.join() für Crossplatform-Funktionalität, fügt / oder \ je nach Betriebssystem
-    
+    pImagename = os.path.splitext(pImagename) [0]
     aktuelleZeit = str(pZeit)
-    dirName = os.path.join(pPath, "Korregierte Bilder vom " + aktuelleZeit)
+    dirName = os.path.join(pPath, "Korrigierte Bilder vom " + aktuelleZeit)
     if os.path.exists(dirName):
         pass
     else:
@@ -25,7 +25,11 @@ def exportPictures(pPath, pImagename, pImage, pZeit):  # pPath: Zielverzeichnis,
     fileName = pImagename +  "_korrigiert.png"
     #print("Image beim Exportieren: ", pImage, "Typ ist", type(pImage), "Shape ist: ", np.shape(pImage))
     
-    cv2.imwrite(os.path.join(dirName, fileName), pImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+    cv2.imwrite(os.path.join(dirName, fileName), pImage)   # # Array als PNG speichern mit verlustfreier Kompression
+    #cv2.imwrite(os.path.join(dirName, "0" + fileName), pImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+
+    
+
     print(os.path.join(pPath, pImagename))
     #print("exportPictures") # debug
 

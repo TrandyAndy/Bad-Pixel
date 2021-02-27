@@ -9,8 +9,8 @@ import verpixler
 
 
 def markPixels(bpm, pBild, schwelle=100, bgr = 1, Bildname="Bildname", Algorithmus="Suchalgorithmus", Parameter="Parameter"):
-    cv2.imwrite(Bildname + "_original.png", pBild, [cv2.IMWRITE_PNG_COMPRESSION,0])
-    #cv2.imwrite(Bildname + "_original.png", pBild[0], [cv2.IMWRITE_PNG_COMPRESSION,0])
+    cv2.imwrite(Bildname + "_original.png", pBild)
+    #cv2.imwrite(Bildname + "_original.png", pBild[0])
     colorPicture = cv2.cvtColor(pBild,cv2.COLOR_GRAY2RGB)
     if(np.shape(pBild) !=np.shape(bpm)):        # Wann kann das passieren?
         print("Digga schau das die Dimensionen passen!")
