@@ -250,7 +250,6 @@ if __name__ == '__main__':
             print("OK clicked") # Debug
         return returnValue        
     def mW_pushButtonMainBack():
-        print(eS.labelMovingSchwellwert.text())
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab > 0:
             aktuellerTab = aktuellerTab - 1
@@ -327,9 +326,6 @@ if __name__ == '__main__':
         eS.horizontalSliderMovingFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"])
         eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
         eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
-        # Werte Korrekur Laden
-        eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
-        eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
         # Einstellungen Suchen
         eS_horizontalSliderSchwellwertHot()
         eS_horizontalSliderSchwellwertDead()
@@ -343,6 +339,9 @@ if __name__ == '__main__':
         eK_horizontalSliderGradientFensterbreite()
         eK.line_3.setVisible(False)             # nicht implementier
         eK.pushButtonVorschau.setVisible(False) # nicht implementier
+        # Werte Korrekur Laden
+        eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
+        eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
         # Fortschritt Fenster
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
     ############ Ende Allgemeine Funktionen ########################################################################################
@@ -367,7 +366,7 @@ if __name__ == '__main__':
             mW.textEditBPM.insertPlainText("Erstelldatum:\t\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
     
     def mW_comboBoxBPMSensor():
-        print("mW_comboBoxBPMSensor")
+        # print("mW_comboBoxBPMSensor") # debug
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
         #mW.textEditBPM.setText("Hallo Julian")
         updateTextBPM()
@@ -395,6 +394,22 @@ if __name__ == '__main__':
             DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
             updateTextBPM()
         print("NeueBPM geöffnet")   # debug
+    def mW_pushButtonBPMSensorLaden():
+        pass
+    def mW_pushButtonBPMSensorSpeichern():
+        pass
+    def mW_pushButtonBPMVorschau():
+        akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+        akutelleBPM = akutelleBPM.astype(np.uint8)
+        #temp Ende
+        if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
+            print("keine BPM")
+        else:
+            textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMSensor.currentText()
+            cv2.imshow(textWindow, akutelleBPM)
+            #cv2.destroyAllWindows()
+    def mW_pushButtonBPMVorschau_released():
+        cv2.destroyAllWindows()
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
         currentText = mW.comboBoxBPMSensor.currentText()
@@ -475,7 +490,8 @@ if __name__ == '__main__':
         global anzahlBilder # globale Variable Anzahl der Bilder bekannt machen
         # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
         # Alle Pfäde der Dateien werden in filename gespeichert
-        filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        #filename = widgets.QFileDialog.getOpenFileNames(directory = core.QStandardPaths.writableLocation(core.QStandardPaths.DocumentsLocation), filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        filename = widgets.QFileDialog.getOpenFileNames(filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0] # directory wird vom OS gewählt
         # print(filename) # debug
         anzahlBilder = anzahlBilder + len(filename) # Anzahl der Bilder aktualisieren
         mW.tableWidgetBilddaten.setRowCount(anzahlBilder) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
@@ -908,6 +924,10 @@ if __name__ == '__main__':
     mW.comboBoxBPMSensor.activated.connect(mW_comboBoxBPMSensor)
     mW.comboBoxBPMBPM.activated.connect(mW_comboBoxBPMBPM)
     mW.pushButtonBPMNeuerSensor.clicked.connect(mW_pushButtonBPMNeuerSensor)
+    mW.pushButtonBPMSensorLaden.clicked.connect(mW_pushButtonBPMSensorLaden)
+    mW.pushButtonBPMSensorSpeichern.clicked.connect(mW_pushButtonBPMSensorSpeichern)
+    mW.pushButtonBPMVorschau.pressed.connect(mW_pushButtonBPMVorschau)
+    mW.pushButtonBPMVorschau.released.connect(mW_pushButtonBPMVorschau_released)
     mW.pushButtonBPMSensorLoeschen.clicked.connect(mW_pushButtonBPMSensorLoeschen)
     mW.pushButtonBPMBPMLoeschen.clicked.connect(mW_pushButtonBPMBPMLoeschen)
 
@@ -1033,7 +1053,7 @@ if __name__ == '__main__':
             if np.shape(cfg.Global_BPM_Multi) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
             #Vorschau anzeigen...
-            cv2.imshow("image",vorschauBild)
+            cv2.imshow("Gefundene Pixelfehler",vorschauBild)
             cv2.waitKey(1)
             
             exportPath = exP.exportPicturesEasy(pPath=Speichern.dir_path, pImagename="bpmVorschau.png", pImage=vorschauBild)

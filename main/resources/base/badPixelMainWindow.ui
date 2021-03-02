@@ -93,6 +93,13 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
+             <widget class="QPushButton" name="pushButtonBPMVorschau">
+              <property name="text">
+               <string>BMP Vorschau</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="pushButtonBPMSensorLoeschen">
               <property name="text">
                <string>Ausgewählter Sensor löschen</string>
