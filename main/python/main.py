@@ -289,6 +289,7 @@ if __name__ == '__main__':
         # Aktuelle Tab speichern
         global aktuellerTab
         global DATA
+        global sensorList
         aktuellerTab = mW.tabWidget.currentIndex()
         DATA=Speichern.Read_json() #Lesen zu Beginn #-1 Abfangen?!
         # Tab-Widget
