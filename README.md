@@ -12,12 +12,15 @@ Ein plattformunabhängiges Python-Programm mit GUI, welches Bildfehler (Bad-Pixe
 
 ### Mit folgenden Befehlen können alle notwendigen Bibliotheken installiert werden
 pip install numpy
+pip install PyQt5
+pip install matplotlib
 
+Für Windows:
 pip install opencv-python-headless 
 
-pip install PyQt5
+Für macOS:
+pip install opencv-python
 
-pip install matplotlib
 
 ### Erstellen einer ausführbaren Datei und eines Installers (platformunabhängig)
 Für das Erstellen einer ausführbaren Datei und eines Installers wird das fman-build-system verwendet. Ein einführendes Tutorial ist unter folgender Adresse zu finden: https://github.com/mherrmann/fbs-tutorial
