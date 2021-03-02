@@ -960,9 +960,6 @@ if __name__ == '__main__':
     ### Fortschritt Fenster
     fortschritt.pushButtonOeffnen.clicked.connect(fortschritt_pushButtonOeffnen)
     
-    
-    print(eK.labelGradientFensterbreite.text())
-    
     #### QT UI anzeigen####
     mW.show()
 
