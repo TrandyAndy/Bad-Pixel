@@ -12,7 +12,9 @@ Ein plattformunabhängiges Python-Programm mit GUI, welches Bildfehler (Bad-Pixe
 
 ### Mit folgenden Befehlen können alle notwendigen Bibliotheken installiert werden
 pip install numpy
+
 pip install PyQt5
+
 pip install matplotlib
 
 Für Windows:
