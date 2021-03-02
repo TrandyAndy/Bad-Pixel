@@ -396,9 +396,21 @@ if __name__ == '__main__':
             updateTextBPM()
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLaden():
-        pass
+        dirname = widgets.QFileDialog.getExistingDirectory()
+        if dirname == "":  # wenn  auf abbrechen gedrückt wird
+            return
+        backValue = openMessageBox(icon=widgets.QMessageBox.Warning, text="Achtung Ihre alten Sensoren werden überschrieben.", informativeText="Wenn sie Ihre alten Sensoren weiterhin behalten wollen, müssen Sie diese erst exportieren. Ist dies der Fall, hier auf Abbrechen oder Cancel klicken. ", windowTitle="Achtung Ihre alten Sensoren werden überschrieben.",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
+        if backValue == widgets.QMessageBox.Ok:
+            print("Andy ist dran")
+            # Hier Andy Sachen laden
+        print(dirname)
     def mW_pushButtonBPMSensorSpeichern():
-        pass
+        dirname = widgets.QFileDialog.getExistingDirectory()
+        if dirname == "":  # wenn  auf abbrechen gedrückt wird
+            return
+        # hier muss die Datei kopiert werden
+        openMessageBox(icon=widgets.QMessageBox.Information, text="Ihre Daten wurden erfolgreich gespeichert.", informativeText="Die Daten wurden unter " + dirname + " gespeichert.", windowTitle="Speichern erfolgreich",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        print(dirname)
     def mW_pushButtonBPMVorschau():
         akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
         #temp Ende
