@@ -12,8 +12,11 @@ Ein plattformunabhängiges Python-Programm mit GUI, welches Bildfehler (Bad-Pixe
 
 ### Mit folgenden Befehlen können alle notwendigen Bibliotheken installiert werden
 pip install numpy
+
 pip install opencv-python-headless 
+
 pip install PyQt5
+
 pip install matplotlib
 
 ### Erstellen einer ausführbaren Datei und eines Installers (platformunabhängig)
