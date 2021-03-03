@@ -305,6 +305,7 @@ if __name__ == '__main__':
             mW.pushButtonMainBack.setVisible(False)
         # Tab: Sensor/BPM
         sensorList=Speichern.WelcheSensorenGibtEs(DATA)[1]
+        mW.comboBoxBPMSensor.clear()
         mW.comboBoxBPMSensor.addItems(sensorList)
         mW.comboBoxBPMSensor.setCurrentText(DATA["last_GenutzterSensor"])
         updateTextBPM() # Text auf dem erstem Tab aktualisieren
