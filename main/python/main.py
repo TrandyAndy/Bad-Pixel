@@ -25,6 +25,7 @@ import threading
 import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
 from datetime import datetime
+from shutil import copy as Kopieren
 import copy
 import cv2
 # lokale Bibliotheken
@@ -459,12 +460,14 @@ if __name__ == '__main__':
         if backValue == widgets.QMessageBox.Ok:
             print("Andy ist dran")
             # Hier Andy Sachen laden
+            Kopieren(dirname,Speichern.dir_path) #ist ein Einzeiler
         print(dirname)
     def mW_pushButtonBPMSensorSpeichern():
         dirname = widgets.QFileDialog.getExistingDirectory()
         if dirname == "":  # wenn  auf abbrechen gedrückt wird
             return
         # hier muss die Datei kopiert werden
+        Kopieren(Speichern.dir_path,dirname)
         openMessageBox(icon=widgets.QMessageBox.Information, text="Ihre Daten wurden erfolgreich gespeichert.", informativeText="Die Daten wurden unter " + dirname + " gespeichert.", windowTitle="Speichern erfolgreich",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         print(dirname)
     def mW_pushButtonBPMVorschau():
