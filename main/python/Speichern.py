@@ -6,6 +6,7 @@ import PyQt5.QtCore as core
 import json 
 from datetime import date
 import config as cfg
+from natsort import os_sorted   # für das Sortieren der BPM nach dem Alphabet
 
 def BPM_Save(BPM, Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
@@ -172,4 +173,24 @@ def SensorLoschen(Name,Data):
     print("Nicht gefunden")
     return -1
 
-
+def WelcheBPMGibtEs(Name):
+    global dir_path
+    if os.path.isdir(dir_path):   #os.path.exists(dirname): # wenn der Pfad überhaupt existiert
+        files = os.listdir(dir_path) 
+        files = os_sorted(files)
+        files.reverse()
+        # print(files) debug
+        bpmFiles = []
+        for aktuellesFile in files:
+            if aktuellesFile.find(Name) != -1:  # Wenn der Name im Dateinahme vorkommt
+                bpmFiles.append(aktuellesFile)
+        #print(bpmFiles)         # debug
+        #print(len(bpmFiles))    # debug
+        return bpmFiles
+#WelcheBPMGibtEs("test")
+def BPM_Read_Selected(BPM_Name):
+    Datei_path = os.path.join(dir_path, BPM_Name)
+    BPM = imP.importFunction(Datei_path)
+    # print(BPM) debug
+    return BPM[0]
+BPM_Read_Selected("Igel_V2.png")

@@ -17,6 +17,8 @@ pip install PyQt5
 
 pip install matplotlib
 
+pip install natsort
+
 Für Windows:
 pip install opencv-python-headless 
 

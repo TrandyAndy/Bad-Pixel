@@ -307,6 +307,7 @@ if __name__ == '__main__':
         mW.comboBoxBPMSensor.addItems(sensorList)
         mW.comboBoxBPMSensor.setCurrentText(DATA["last_GenutzterSensor"])
         updateTextBPM() # Text auf dem erstem Tab aktualisieren
+        mW_comboBoxBPMSensor() # Comboboxes aktualisieren
         # Tab: Algorithmus - GroupBox Pixelfehler finden enablen
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             mW.groupBoxSuchen.setEnabled(True)
@@ -367,27 +368,68 @@ if __name__ == '__main__':
             mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
             mW.textEditBPM.insertPlainText("Erstelldatum:\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
     
+    def showBPM():
+        global flagBPMVorschau
+        if flagBPMVorschau == True:
+            cv2.destroyAllWindows()
+            if mW.comboBoxBPMBPM.count() != 0:     # wenn's eine BPM gibt diese auch anzeigen
+                akutelleBPM = Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
+                akutelleBPM = akutelleBPM.astype(np.uint8) # weil es sonst ein 16 Bit Bild ist
+                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMBPM.currentText()
+                cv2.imshow(textWindow, akutelleBPM)
+            else:   # Wenns noch keine gibt.
+                print("keine BPM")  
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+
+    
+        """
+            #akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+            akutelleBPM = Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
+            if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
+                print("keine BPM")
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            else:
+                akutelleBPM = akutelleBPM.astype(np.uint8)
+                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMBPM.currentText() # weil es sonst ein 16 Bit Bild ist
+                cv2.imshow(textWindow, akutelleBPM)
+            """
+
+
     def mW_comboBoxBPMSensor():     # wird aufgerufen, wenn ein neues Element ausgewählt wird
         #print("mW_comboBoxBPMSensor") # debug
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
         #mW.textEditBPM.setText("Hallo Julian")
+        mW.comboBoxBPMBPM.clear()
+        bpmList=Speichern.WelcheBPMGibtEs(mW.comboBoxBPMSensor.currentText())
+        mW.comboBoxBPMBPM.addItems(bpmList)
+        if len(bpmList) <= 0:
+            setEnabledBPM(False)
+        else:
+            setEnabledBPM(True)
         updateTextBPM()
+
+        showBPM()
+        """
         global flagBPMVorschau
         if flagBPMVorschau == True:
             cv2.destroyAllWindows()
-            akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-            #temp Ende
-            if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
-                print("keine BPM")
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-            else:   # wenn's eine BPM gibt diese auch anzeigen
+            if len(bpmList) > 0: # wenn's eine BPM gibt diese auch anzeigen
+                akutelleBPM = Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
+                #akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
                 akutelleBPM = akutelleBPM.astype(np.uint8) # weil es sonst ein 16 Bit Bild ist
-                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMSensor.currentText()
+                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMBPM.currentText()
                 cv2.imshow(textWindow, akutelleBPM)
-            
-
+            else:   # Wenns noch keine gibt.
+                print("keine BPM")  
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        """
         #mW.textEditBPM.setText(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"])
     def mW_comboBoxBPMBPM():
+        showBPM()
+        #mW.comboBoxBPMBPM.
+        #bpmList=Speichern.WelcheBPMGibtEs(mW.comboBoxBPMSensor.currentText())
+        #mW.comboBoxBPMBPM.addItems(bpmList)
+        #mW.comboBoxBPMBPM.setCurrentText(DATA["last_GenutzterSensor"])
         #print("mW_comboBoxBPMBPM")
         pass
     def mW_pushButtonBPMNeuerSensor():
@@ -407,6 +449,7 @@ if __name__ == '__main__':
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
             DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
             updateTextBPM()
+            mW_comboBoxBPMSensor() # Update alle ComboBoxes
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLaden():
         dirname = widgets.QFileDialog.getExistingDirectory()
@@ -429,19 +472,23 @@ if __name__ == '__main__':
         if flagBPMVorschau == False:
             mW.pushButtonBPMVorschau.setText("BPM-Vorschau aus")
             flagBPMVorschau = True
-            akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-            #temp Ende
+            showBPM()
+            """
+            #akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+            akutelleBPM = Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
             if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
                 print("keine BPM")
                 openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             else:
                 akutelleBPM = akutelleBPM.astype(np.uint8)
-                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMSensor.currentText()
+                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMBPM.currentText() # weil es sonst ein 16 Bit Bild ist
                 cv2.imshow(textWindow, akutelleBPM)
+            """
         else:
             mW.pushButtonBPMVorschau.setText("BPM-Vorschau an")
             cv2.destroyAllWindows()
             flagBPMVorschau = False
+
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
         currentText = mW.comboBoxBPMSensor.currentText()
