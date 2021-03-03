@@ -25,8 +25,7 @@ import threading
 import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
 from datetime import datetime
-from shutil import copy as Kopieren
-from shutil import copytree
+import shutil
 import copy
 import cv2
 # lokale Bibliotheken
@@ -460,20 +459,26 @@ if __name__ == '__main__':
             return
         backValue = openMessageBox(icon=widgets.QMessageBox.Warning, text="Achtung Ihre alten Sensoren werden überschrieben.", informativeText="Wenn sie Ihre alten Sensoren weiterhin behalten wollen, müssen Sie diese erst exportieren. Ist dies der Fall, hier auf Abbrechen oder Cancel klicken. ", windowTitle="Achtung Ihre alten Sensoren werden überschrieben.",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
         if backValue == widgets.QMessageBox.Ok:
-            print("Andy ist dran")
             # Hier Andy Sachen laden
-            Kopieren(dirname,Speichern.dir_path) #ist ein Einzeiler
+            #Kopieren(dirname,Speichern.dir_path) #ist ein Einzeiler
+            files = os.listdir(Speichern.dir_path)
+            for aktuellesFile in files:
+                os.remove(os.path.join(Speichern.dir_path, aktuellesFile))
+            files = os.listdir(dirname)
+            for aktuellesFile in files:
+                path = os.path.join(dirname, aktuellesFile)
+                shutil.copy(path,Speichern.dir_path)
+            uiSetup()
         print(dirname)
     def mW_pushButtonBPMSensorSpeichern():
         dirname = widgets.QFileDialog.getExistingDirectory()
         if dirname == "":  # wenn  auf abbrechen gedrückt wird
-            return
-        # hier muss die Datei kopiert werden
-        #Kopieren(Speichern.dir_path,dirname)
+            return  # Funktion verlassen
+        # hier wird der Ordner  kopiert
         aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
-        destination = copytree(Speichern.dir_path, os.path.join(dirname, "Bad-Pixel-Map " + aktuelleZeit))
+        destination = shutil.copytree(Speichern.dir_path, os.path.join(dirname, "Bad-Pixel-Map " + aktuelleZeit))  # Weil der Zielordner nicht existieren darf
         openMessageBox(icon=widgets.QMessageBox.Information, text="Ihre Daten wurden erfolgreich gespeichert.", informativeText="Die Daten wurden unter " + destination + " gespeichert.", windowTitle="Speichern erfolgreich",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-        print(dirname)
+        # print(dirname)    # debug
     def mW_pushButtonBPMVorschau():
         global flagBPMVorschau
         if flagBPMVorschau == False:
@@ -514,7 +519,7 @@ if __name__ == '__main__':
         #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
         mW.comboBoxBPMBPM.setEnabled(flag)
 
-    setEnabledBPM(False)   
+    #setEnabledBPM(False)   
 
     ### Tab Bilddaten
     def mW_pushButtonBilddatenOrdnerDurchsuchen():   # Ordner importieren
@@ -1180,6 +1185,7 @@ if __name__ == '__main__':
             ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt,args=(BAD_Ges,12))
             ID_T.start()
             #exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= "Vorschau", pImage= vorschauBild, pZeit= "aktuelleZeit") #Debug Vorschau
+            mW_comboBoxBPMSensor()  # Tab 1 updaten
 
     timer = core.QTimer()
     timer.timeout.connect(Prozess)
