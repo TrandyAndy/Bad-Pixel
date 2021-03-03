@@ -52,6 +52,7 @@ if __name__ == '__main__':
     bildDatenDunkel = 0       # hier werden die importierten Bilder gespeichert, 2D-Array: [Zeilen][Spalten]
     DATA = 0            # Die Daten für die Speicherung der Config Datei
     mittelwertBilder = 0    # Mittelwert aller importierten Bilder
+    flagBPMVorschau = False # Flag für die Anzeige der BPM-Vorschau auf dem ersten Tab
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
@@ -364,7 +365,7 @@ if __name__ == '__main__':
             anzahlPixelfehler = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]
             mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t" + str(anzahlPixelfehler) + "\n")
             mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
-            mW.textEditBPM.insertPlainText("Erstelldatum:\t\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
+            mW.textEditBPM.insertPlainText("Erstelldatum:\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
     
     def mW_comboBoxBPMSensor():
         # print("mW_comboBoxBPMSensor") # debug
@@ -412,18 +413,23 @@ if __name__ == '__main__':
         openMessageBox(icon=widgets.QMessageBox.Information, text="Ihre Daten wurden erfolgreich gespeichert.", informativeText="Die Daten wurden unter " + dirname + " gespeichert.", windowTitle="Speichern erfolgreich",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         print(dirname)
     def mW_pushButtonBPMVorschau():
-        akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-        #temp Ende
-        if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
-            print("keine BPM")
-            openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        global flagBPMVorschau
+        if flagBPMVorschau == False:
+            mW.pushButtonBPMVorschau.setText("BPM-Vorschau aus")
+            flagBPMVorschau = True
+            akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+            #temp Ende
+            if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
+                print("keine BPM")
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            else:
+                akutelleBPM = akutelleBPM.astype(np.uint8)
+                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMSensor.currentText()
+                cv2.imshow(textWindow, akutelleBPM)
         else:
-            akutelleBPM = akutelleBPM.astype(np.uint8)
-            textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMSensor.currentText()
-            cv2.imshow(textWindow, akutelleBPM)
-            #cv2.destroyAllWindows()
-    def mW_pushButtonBPMVorschau_released():
-        cv2.destroyAllWindows()
+            mW.pushButtonBPMVorschau.setText("BPM-Vorschau an")
+            cv2.destroyAllWindows()
+            flagBPMVorschau = False
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
         currentText = mW.comboBoxBPMSensor.currentText()
@@ -940,8 +946,8 @@ if __name__ == '__main__':
     mW.pushButtonBPMNeuerSensor.clicked.connect(mW_pushButtonBPMNeuerSensor)
     mW.pushButtonBPMSensorLaden.clicked.connect(mW_pushButtonBPMSensorLaden)
     mW.pushButtonBPMSensorSpeichern.clicked.connect(mW_pushButtonBPMSensorSpeichern)
-    mW.pushButtonBPMVorschau.pressed.connect(mW_pushButtonBPMVorschau)
-    mW.pushButtonBPMVorschau.released.connect(mW_pushButtonBPMVorschau_released)
+    mW.pushButtonBPMVorschau.clicked.connect(mW_pushButtonBPMVorschau)
+    #mW.pushButtonBPMVorschau.released.connect(mW_pushButtonBPMVorschau_released)
     mW.pushButtonBPMSensorLoeschen.clicked.connect(mW_pushButtonBPMSensorLoeschen)
     mW.pushButtonBPMBPMLoeschen.clicked.connect(mW_pushButtonBPMBPMLoeschen)
 
