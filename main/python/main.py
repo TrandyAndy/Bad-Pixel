@@ -26,6 +26,7 @@ import platform     # für das Öffnen des File Explores
 import subprocess   # für das Öffnen des File Explores
 from datetime import datetime
 from shutil import copy as Kopieren
+from shutil import copytree
 import copy
 import cv2
 # lokale Bibliotheken
@@ -467,8 +468,10 @@ if __name__ == '__main__':
         if dirname == "":  # wenn  auf abbrechen gedrückt wird
             return
         # hier muss die Datei kopiert werden
-        Kopieren(Speichern.dir_path,dirname)
-        openMessageBox(icon=widgets.QMessageBox.Information, text="Ihre Daten wurden erfolgreich gespeichert.", informativeText="Die Daten wurden unter " + dirname + " gespeichert.", windowTitle="Speichern erfolgreich",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        #Kopieren(Speichern.dir_path,dirname)
+        aktuelleZeit = str(datetime.now())[:-7].replace(":","-")    # aktuelle Zeit speichern
+        destination = copytree(Speichern.dir_path, os.path.join(dirname, "Bad-Pixel-Map " + aktuelleZeit))
+        openMessageBox(icon=widgets.QMessageBox.Information, text="Ihre Daten wurden erfolgreich gespeichert.", informativeText="Die Daten wurden unter " + destination + " gespeichert.", windowTitle="Speichern erfolgreich",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         print(dirname)
     def mW_pushButtonBPMVorschau():
         global flagBPMVorschau
