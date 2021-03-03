@@ -368,7 +368,8 @@ if __name__ == '__main__':
             anzahlPixelfehler = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]
             mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t" + str(anzahlPixelfehler) + "\n")
             mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
-            mW.textEditBPM.insertPlainText("Erstelldatum:\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
+            mW.textEditBPM.insertPlainText("Sensors Erstelldatum:\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
+            mW.textEditBPM.insertPlainText("Letzte Änderung:\t" +  str( Speichern.getModTimeBPM(mW.comboBoxBPMBPM.currentText()) ) + "\n")
     
     def showBPM():
         global flagBPMVorschau
@@ -428,12 +429,12 @@ if __name__ == '__main__':
         #mW.textEditBPM.setText(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"])
     def mW_comboBoxBPMBPM():
         showBPM()
+        updateTextBPM()
         #mW.comboBoxBPMBPM.
         #bpmList=Speichern.WelcheBPMGibtEs(mW.comboBoxBPMSensor.currentText())
         #mW.comboBoxBPMBPM.addItems(bpmList)
         #mW.comboBoxBPMBPM.setCurrentText(DATA["last_GenutzterSensor"])
         #print("mW_comboBoxBPMBPM")
-        pass
     def mW_pushButtonBPMNeuerSensor():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
         # filename = widgets.QFileDialog.getOpenFileNames() [0]      

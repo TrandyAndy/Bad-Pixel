@@ -7,6 +7,7 @@ import json
 from datetime import date
 import config as cfg
 from natsort import os_sorted   # für das Sortieren der BPM nach dem Alphabet
+import datetime
 
 def BPM_Save(BPM, Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
@@ -193,4 +194,10 @@ def BPM_Read_Selected(BPM_Name):
     BPM = imP.importFunction(Datei_path)
     # print(BPM) debug
     return BPM[0]
-BPM_Read_Selected("Igel_V2.png")
+#BPM_Read_Selected("Igel_V2.png")
+
+def getModTimeBPM(BPM_Name):
+    Datei_path = os.path.join(dir_path, BPM_Name)
+    timestamp = os.path.getmtime(Datei_path)
+    value = datetime.datetime.fromtimestamp(timestamp)
+    return value.strftime('%Y-%m-%d %H:%M:%S')
