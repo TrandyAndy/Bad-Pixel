@@ -26,6 +26,7 @@ pip install opencv-python
 
 ### Erstellen einer ausführbaren Datei und eines Installers (platformunabhängig)
 Für das Erstellen einer ausführbaren Datei und eines Installers wird das fman-build-system verwendet. Ein einführendes Tutorial ist unter folgender Adresse zu finden: https://github.com/mherrmann/fbs-tutorial
+Den Hinweis mit der zu verwendeten Python Version ernst nehmen! 
 
 ### GUI bearbeiten
 Anstatt das umfangreiche QT Studio zu downloaden, kann auch unter folgender Adresse eine abgespeckte Version runtergeladen werden: https://build-system.fman.io/qt-designer-download
