@@ -263,6 +263,8 @@ if __name__ == '__main__':
         # print(aktuellerTab)   # Debug      
     def mW_pushButtonMainForward():
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
+        if aktuellerTab == 0:
+            cv2.destroyAllWindows()
         if aktuellerTab >= 3:
             startClicked()
             return
@@ -445,8 +447,9 @@ if __name__ == '__main__':
         #print("Ordnerdialog geöffnet", filename)
         if nB.exec() == widgets.QDialog.Accepted:
             global sensorList
-            if nB.lineEditNeueBPM.text() in sensorList:
+            if nB.lineEditNeueBPM.text().lower() in sensorList:
                 print("So einen Sensor gibt es schon")   # debug
+                openMessageBox(icon=widgets.QMessageBox.Warning, text="Achtung diesen Sensor gibt es schon!", informativeText="Es gibt bereits einen Sensor mit dem selben Namen. Bitte wählen Sie einen anderen Namen für den neuen Sensor.", windowTitle="Achtung diesen Sensor gibt es schon!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                 return
             #sensorList.append(nB.lineEditNeueBPM.text())
             Speichern.SensorAnlegen(nB.lineEditNeueBPM.text(), DATA)
