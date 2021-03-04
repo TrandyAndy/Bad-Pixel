@@ -8,6 +8,7 @@ from datetime import date
 import config as cfg
 from natsort import os_sorted   # für das Sortieren der BPM nach dem Alphabet
 import datetime
+import numpy as np
 
 def BPM_Save(BPM, Sensor_Name):
     #Rücklesen wie viele BPMs es gibt Aus Dateiname
@@ -201,3 +202,8 @@ def getModTimeBPM(BPM_Name):
     timestamp = os.path.getmtime(Datei_path)
     value = datetime.datetime.fromtimestamp(timestamp)
     return value.strftime('%Y-%m-%d %H:%M:%S')
+
+def getFehleranzahlBPM(BPM_Name):
+    bpmMap = BPM_Read_Selected(BPM_Name)
+    fehleranzahl = np.count_nonzero(bpmMap)
+    return fehleranzahl
