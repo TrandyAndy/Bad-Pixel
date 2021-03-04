@@ -443,6 +443,9 @@ if __name__ == '__main__':
         #print("Ordnerdialog geöffnet", filename)
         if nB.exec() == widgets.QDialog.Accepted:
             global sensorList
+            if nB.lineEditNeueBPM.text() in sensorList:
+                print("So einen Sensor gibt es schon")   # debug
+                return
             #sensorList.append(nB.lineEditNeueBPM.text())
             Speichern.SensorAnlegen(nB.lineEditNeueBPM.text(), DATA)
             sensorList=Speichern.WelcheSensorenGibtEs(DATA)[1]
