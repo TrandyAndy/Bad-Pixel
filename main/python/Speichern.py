@@ -211,10 +211,26 @@ def getFehleranzahlBPM(BPM_Name):
     return fehleranzahl
 
 def deleteBPM(BPM_Name):
+    global dir_path
     Datei_path = os.path.join(dir_path, BPM_Name)
     os.remove(Datei_path)
-    pass
 
 def deleteAllBPM(Sensor_Name):
-
-    pass
+    global dir_path
+    if os.path.isdir(dir_path):   #os.path.exists(dirname): # wenn der Pfad überhaupt existiert
+        files = os.listdir(dir_path) 
+        #files = os_sorted(files)
+        #files.reverse()
+        # print(files) debug
+        bpmFiles = []
+        if Sensor_Name == "":  # alle Sensoren wurden gelöscht
+            return   # keine BPM anzeigen
+        for aktuellesFile in files:
+            if aktuellesFile.find(Sensor_Name) == 0:  # Wenn der Name am Anfang steht
+                print(aktuellesFile.find("_V",len(Sensor_Name)))
+                print(len(Sensor_Name))
+                if aktuellesFile.find("_V",len(Sensor_Name)) == len(Sensor_Name) :  # Kommt nach dem Sensorname gleich die Nummerierung
+                    print("wird gelöscht")
+                    os.remove(os.path.join(dir_path,aktuellesFile))
+        #print(bpmFiles)         # debug
+        #print(len(bpmFiles))    # debug

@@ -135,6 +135,8 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
 def importFunction(pImportPath, pExport = False, pExportPath="", pZeit=""): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
     aktuelleZeit = pZeit   # aktuelles Datum und Zeit
     bild = cv2.imread(pImportPath, flags= -1)
+    if np.shape(bild) == ():
+        return ( np.zeros( (1, 512, 512), dtype=np.uint16) ) 
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
     if np.shape(bildDaten[0]) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
         bildDaten[0] = bild

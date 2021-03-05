@@ -484,6 +484,7 @@ if __name__ == '__main__':
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
             DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
+            mW_comboBoxBPMSensor()
             updateTextBPM()
             mW_comboBoxBPMSensor() # Update alle ComboBoxes
         print("NeueBPM geöffnet")   # debug
@@ -542,12 +543,15 @@ if __name__ == '__main__':
         if currentText == "": # es gibt kein Sensor
             openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt keine Sensoren",informativeText="Es gibt keinen Sensor der gelöscht werden kann.",windowTitle="Es gibt keine Sensoren",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         else:
-            del sensorList[aktuellerIndex]
-            mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
-            Speichern.SensorLoschen(currentText,DATA)
-            mW_comboBoxBPMSensor()
-            showBPM()
-            updateTextBPM()
+            backValue = openMessageBox(icon=widgets.QMessageBox.Warning, text="Achtung der Sensor und alle dessen BPM werden gelöscht", informativeText="Möchten Sie den Sensor und alle dessen BPM löschen, dann drücken Sie bitte \"OK\" ", windowTitle="Achtung der Sensor und alle dessen BPM werden gelöscht",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
+            if backValue == widgets.QMessageBox.Ok:
+                del sensorList[aktuellerIndex]
+                mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
+                Speichern.SensorLoschen(currentText,DATA)
+                Speichern.deleteAllBPM(currentText)
+                mW_comboBoxBPMSensor()
+                showBPM()
+                updateTextBPM()
 
         """
         if aktuellerIndex == 0:
