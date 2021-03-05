@@ -20,10 +20,10 @@ pip install matplotlib
 pip install natsort
 
 Für Windows:
-pip install opencv-python-headless 
+pip install opencv-python 
 
 Für macOS:
-pip install opencv-python
+pip install opencv-python-headless
 
 
 ### Erstellen einer ausführbaren Datei und eines Installers (platformunabhängig)
