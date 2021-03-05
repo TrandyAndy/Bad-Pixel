@@ -209,3 +209,12 @@ def getFehleranzahlBPM(BPM_Name):
     bpmMap = BPM_Read_Selected(BPM_Name)
     fehleranzahl = np.count_nonzero(bpmMap)
     return fehleranzahl
+
+def deleteBPM(BPM_Name):
+    Datei_path = os.path.join(dir_path, BPM_Name)
+    os.remove(Datei_path)
+    pass
+
+def deleteAllBPM(Sensor_Name):
+
+    pass

@@ -559,7 +559,10 @@ if __name__ == '__main__':
         """    
         pass
     def mW_pushButtonBPMBPMLoeschen():
-        pass
+        Speichern.deleteBPM(mW.comboBoxBPMBPM.currentText())
+        mW_comboBoxBPMSensor()
+        showBPM()
+        updateTextBPM()
     def setEnabledBPM(flag):
         mW.labelBPMchoose.setEnabled(flag)
         #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
