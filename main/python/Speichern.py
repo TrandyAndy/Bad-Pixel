@@ -183,8 +183,10 @@ def WelcheBPMGibtEs(Name):
         files.reverse()
         # print(files) debug
         bpmFiles = []
+        if Name == "":  # alle Sensoren wurden gelöscht
+            return bpmFiles # keine BPM anzeigen
         for aktuellesFile in files:
-            if aktuellesFile.find(Name) != -1:  # Wenn der Name im Dateinahme vorkommt
+            if aktuellesFile.find(Name) == 0:  # Wenn der Name im Dateinahme vorkommt
                 bpmFiles.append(aktuellesFile)
         #print(bpmFiles)         # debug
         #print(len(bpmFiles))    # debug

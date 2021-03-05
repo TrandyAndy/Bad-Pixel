@@ -36,7 +36,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="labelSensorChoose">
               <property name="text">
                <string>Sensor auswählen:</string>
               </property>

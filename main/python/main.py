@@ -80,7 +80,14 @@ if __name__ == '__main__':
         Speichern.Write_json(DATA) #Schreiben am Ende   # Julian: eigentlich unnötig, da startClicked einem Forward Klick entspricht
         
         # Check BPM is valid
-
+        if DATA["Sensors"] == [] and mW.checkBoxRohbilderSpeichern.isChecked() == False:    # wenn es keine Sensoren gibt
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Sie müssen hierfür zuerst einen Sensor erstellen",informativeText="Für die Suche und der Korrektur muss zuerst ein Sensor erstellt werden.",windowTitle="Sie müssen hierfür zuerst einen Sensor erstellen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            mW.tabWidget.setCurrentIndex(0)
+            return False
+        elif mW.checkBoxAlgorithmusSuchen.isChecked() == True or mW.checkBoxAlgorithmusKorrigieren.isChecked() == True: # wenn etwas außer Rohbilder angehakt wurde
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Sie müssen hierfür zuerst einen Sensor erstellen",informativeText="Für die Suche und der Korrektur muss zuerst ein Sensor erstellt werden.",windowTitle="Sie müssen hierfür zuerst einen Sensor erstellen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            mW.tabWidget.setCurrentIndex(0)
+            return False
         # Check Bilddaten are valid
         if mW.tableWidgetBilddaten.rowCount() == 0:
             openMessageBox(icon=widgets.QMessageBox.Information, text="Keine Bilder importiert",informativeText="Bitte importieren Sie Bilder.",windowTitle="Keine Bilder importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
@@ -328,11 +335,14 @@ if __name__ == '__main__':
             # print("not Checked") # debug
         mW.checkBoxBilddaten.setVisible(False) # noch nicht implementiert
         # Werte Suchen Laden
-        eS.horizontalSliderSchwellwertHot.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"])
-        eS.horizontalSliderSchwellwertDead.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"])
-        eS.horizontalSliderMovingFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"])
-        eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
-        eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
+        if DATA["Sensors"] == []:
+            print("Keine Sensoren") # debug
+        else:
+            eS.horizontalSliderSchwellwertHot.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"])
+            eS.horizontalSliderSchwellwertDead.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"])
+            eS.horizontalSliderMovingFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fensterbreite_advWindow"])
+            eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
+            eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
         # Einstellungen Suchen
         eS_horizontalSliderSchwellwertHot()
         eS_horizontalSliderSchwellwertDead()
@@ -347,20 +357,35 @@ if __name__ == '__main__':
         eK.line_3.setVisible(False)             # nicht implementier
         eK.pushButtonVorschau.setVisible(False) # nicht implementier
         # Werte Korrekur Laden
-        eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
-        eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
+        if DATA["Sensors"] == []:
+            print("Keine Sensoren") # debug
+        else:
+            eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
+            eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
         # Fortschritt Fenster
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
     ############ Ende Allgemeine Funktionen ########################################################################################
     #### ######## Funktionen von dem ab Sensor / BPM ########################################################################################
     def updateTextBPM():
         mW.textEditBPM.clear()
+        if mW.comboBoxBPMSensor.currentText() == "":    # wenn es keinen Sensor gibt
+            print("Es gibt kein Sensor!")
+            setEnabledBPM(False)
+            mW.textEditBPM.insertPlainText("Herzlich willkomen zum Bad-Pixel-Programm \n\n")
+            mW.textEditBPM.insertPlainText("Sie haben noch keinen Sensor erstellt.\n")
+            mW.textEditBPM.insertPlainText("Drücken Sie hierfür bitte den Knopf \"Neuer Sensor erstellen ...\"\n")
+            mW.textEditBPM.insertPlainText("Außerdem können Sie üben den Knopf \"Sensoren laden ...\" bereits erstellte Sensoren inportieren.\n\n")
+            mW.textEditBPM.insertPlainText("Viel Spaß mit dem Programm wünschen Andreas B. und Julian S.")
+            setEnabledSensor(False)
+            return
+        setEnabledSensor(True)
         lokalBPM=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
         aufloesung = np.shape(lokalBPM)
         #print("Rückgabe aufloesung: ", aufloesung) # Diese Zeile macht ein bug unter mac OS, Programm öffnet und schlißet sich sofort wieder. 
         if aufloesung == ():  # noch keine BBM vorhanden
             mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
             mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
+            
         else:
             zeilen, spalten = aufloesung
             mW.textEditBPM.insertPlainText("Name des Sensors:\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
@@ -514,12 +539,24 @@ if __name__ == '__main__':
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
         currentText = mW.comboBoxBPMSensor.currentText()
         print(aktuellerIndex)
+        if currentText == "": # es gibt kein Sensor
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt keine Sensoren",informativeText="Es gibt keinen Sensor der gelöscht werden kann.",windowTitle="Es gibt keine Sensoren",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+        else:
+            del sensorList[aktuellerIndex]
+            mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
+            Speichern.SensorLoschen(currentText,DATA)
+            mW_comboBoxBPMSensor()
+            showBPM()
+            updateTextBPM()
+
+        """
         if aktuellerIndex == 0:
             pass
         else:
             del sensorList[aktuellerIndex]
             mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
             Speichern.SensorLoschen(currentText,DATA)
+        """    
         pass
     def mW_pushButtonBPMBPMLoeschen():
         pass
@@ -527,7 +564,10 @@ if __name__ == '__main__':
         mW.labelBPMchoose.setEnabled(flag)
         #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
         mW.comboBoxBPMBPM.setEnabled(flag)
-
+    def setEnabledSensor(flag):
+        mW.labelSensorChoose.setEnabled(flag)
+        #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
+        mW.comboBoxBPMSensor.setEnabled(flag)
     #setEnabledBPM(False)   
 
     ### Tab Bilddaten
@@ -702,6 +742,10 @@ if __name__ == '__main__':
             mW.groupBoxKorrigieren.setEnabled(False)
             #print("not Checked")
     def mW_pushButtonAlgorithmusSuchenEinstellungen():
+        if DATA["Sensors"] == []:    # wenn es keine Sensoren gibt
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Sie müssen hierfür zuerst einen Sensor erstellen",informativeText="Für die Einstellungen muss zuerst ein Sensor erstellt werden.",windowTitle="Sie müssen hierfür zuerst einen Sensor erstellen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            mW.tabWidget.setCurrentIndex(0)
+            return
         #Laden
         eS.horizontalSliderSchwellwertHot.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_oben"])
         eS.horizontalSliderSchwellwertDead.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Schwellwert_unten"])
@@ -722,6 +766,10 @@ if __name__ == '__main__':
             eS.horizontalSliderMovingSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_advWindow"])
             eS.horizontalSliderDynamicSchwellwert.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Faktor_Dynamik"])
     def mW_pushButtonAlgorithmusKorrigierenEinstellungen():
+        if DATA["Sensors"] == []:    # wenn es keine Sensoren gibt
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Sie müssen hierfür zuerst einen Sensor erstellen",informativeText="Für die Einstellungen muss zuerst ein Sensor erstellt werden.",windowTitle="Sie müssen hierfür zuerst einen Sensor erstellen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            mW.tabWidget.setCurrentIndex(0)
+            return
         eK.horizontalSliderNachbarFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Nachbar"])
         eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
         Methode=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_korrekturmethode"]
