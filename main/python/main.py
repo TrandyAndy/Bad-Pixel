@@ -4,7 +4,7 @@
  * @Email: diegruppetg@gmail.com
  * @Date: 2020-10-16 12:09:24
  * @Last Modified by: JLS666
- * @Last Modified time: 2020-10-16 13:05:43
+ * @Last Modified time: 2021-03-05 22:42:34
  * @Description: Main des Projektes, primär ermöglicht diese Datei die GUI
  */
 """
@@ -228,7 +228,7 @@ if __name__ == '__main__':
 
         fortschritt.progressBar.setValue(0)
         if fortschritt.exec() == widgets.QDialog.Rejected: #Abbrechen
-            print("Gecancelt gedrückt") # hier muss dann der Prozess gestoppt werden. 
+            print("Gecancelt gedrueckt") # hier muss dann der Prozess gestoppt werden. 
             cfg.killFlagThreads=True #alle Treads killen
             cfg.Ladebalken=0
             timer.stop() #Prozess ist damit abgeschalten.
@@ -394,7 +394,7 @@ if __name__ == '__main__':
         setEnabledSensor(True)
         lokalBPM=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
         aufloesung = np.shape(lokalBPM)
-        #print("Rückgabe aufloesung: ", aufloesung) # Diese Zeile macht ein bug unter mac OS, Programm öffnet und schlißet sich sofort wieder. 
+        #print("Rueckgabe aufloesung: ", aufloesung) # Diese Zeile macht ein bug unter mac OS, Programm öffnet und schlißet sich sofort wieder. Lag an dem ü
         if aufloesung == ():  # noch keine BBM vorhanden
             mW.textEditBPM.insertPlainText("Name des Sensors:\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
             mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
@@ -493,7 +493,7 @@ if __name__ == '__main__':
                     openFFKWindow()
                     return False  
                 """
-            #print("Läuft")
+            #print("Laeuft")
         else:   # wenn Abbrechen geklickt wird
             mW.checkBoxAlgorithmusFFK.setChecked(False)
             # alle Tabellen sollen gelöscht werden
@@ -504,7 +504,7 @@ if __name__ == '__main__':
     ############ Ende Allgemeine Funktionen ########################################################################################
     #### ######## Funktionen von dem ab Sensor / BPM ########################################################################################
     
-
+    
     def mW_comboBoxBPMSensor():     # wird aufgerufen, wenn ein neues Element ausgewählt wird
         #print("mW_comboBoxBPMSensor") # debug
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
@@ -578,7 +578,7 @@ if __name__ == '__main__':
     def mW_pushButtonBPMSensorLoeschen():
         aktuellerIndex = mW.comboBoxBPMSensor.currentIndex()
         currentText = mW.comboBoxBPMSensor.currentText()
-        print(aktuellerIndex)
+        # print(aktuellerIndex) # debug
         if currentText == "": # es gibt kein Sensor
             openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt keine Sensoren",informativeText="Es gibt keinen Sensor der gelöscht werden kann.",windowTitle="Es gibt keine Sensoren",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         else:
@@ -1022,7 +1022,7 @@ if __name__ == '__main__':
             subprocess.Popen(["open", path])
         else:
             subprocess.Popen(["xdg-open", path])
-        #print("Speicherort im File Explorer öffnen")   # debug
+        #print("Speicherort im File Explorer oeffnen")   # debug
 
     """ GUI-Elemente mit Funktionen verbinden:___________________________________________________________________________________ """   
     #### UI Aktionen #### 
@@ -1149,12 +1149,7 @@ if __name__ == '__main__':
     myImage = 0
     def Prozess(): #Hauptprozess nach Start
         global mittelwertBilder
-        if cfg.LadebalkenMax != 0:
-            fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
-        else:
-            fortschritt.progressBar.setValue(100)
-        print("ladebalken = ",cfg.Ladebalken)
-
+        
         #Vorschau Live__________
         if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): 
             vorschauBild = copy.copy(mittelwertBilder) #Bild erstellen
@@ -1175,6 +1170,12 @@ if __name__ == '__main__':
             fortschritt.label.setScaledContents(True)
             fortschritt.label.resize(pixmap.width(), pixmap.height())
             """
+
+        if cfg.LadebalkenMax != 0:
+            fortschritt.progressBar.setValue(int(cfg.Ladebalken/cfg.LadebalkenMax*100))
+        else:
+            fortschritt.progressBar.setValue(100)
+        print("ladebalken = ",cfg.Ladebalken)
    
         #Abfrage Fertig_________
         FertigFlag=False
@@ -1194,7 +1195,7 @@ if __name__ == '__main__':
                 #BPM Speichern vill auch am Ende.
                 Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
                 Fehlerzahl=cfg.fehlerSammler["aMW"]+cfg.fehlerSammler["MPPC"]+cfg.fehlerSammler["dC"]
-                print("BPM enthält ",Fehlerzahl," Pixel")
+                print("BPM enthaelt ",Fehlerzahl," Pixel")
                 DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=Fehlerzahl #anzahl an pixeln.
                 DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+anzahlBilder
                 #Abschließend noch Speichern in JSON!

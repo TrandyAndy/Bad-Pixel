@@ -47,7 +47,7 @@ def verpixeln (D2_Bild, AnzPixel=100, lineEnable=False,Cluster=False, minAbweich
             
 
 def cluster (D2_Bild, Durchmesser=8, Anz=1, Dichte=1/3):
-    print("Cluster wird erzeugt Anzahl ist verfälscht")
+    print("Cluster wird erzeugt Anzahl ist verfaelscht")
     hoehe, breite = np.shape(D2_Bild)
     r.seed(D2_Bild[1,1]+Anz+Durchmesser)
     BPM=np.zeros((hoehe,breite))

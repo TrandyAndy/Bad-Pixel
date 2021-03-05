@@ -168,11 +168,11 @@ def SensorAnlegen(Name,Data):
 def SensorLoschen(Name,Data):
     #Prüfen ob vorhanden:
     for i in range(len(Data["Sensors"])):
-        if Name ==Data["Sensors"][i]["Sensor_Name"]:
+        if Name == Data["Sensors"][i]["Sensor_Name"]:
             del Data["Sensors"][i]
-            print("gelöscht")
+            # print("geloescht") # verursachen Bugs unter Mac OS. WTF? Lag an ö
             return 0
-    print("Nicht gefunden")
+    # print("Nicht gefunden") 
     return -1
 
 def WelcheBPMGibtEs(Name):
@@ -222,7 +222,7 @@ def deleteAllBPM(Sensor_Name):
         files = os.listdir(dir_path) 
         #files = os_sorted(files)
         #files.reverse()
-        # print(files) debug
+        #print(files) debug
         bpmFiles = []
         if Sensor_Name == "":  # alle Sensoren wurden gelöscht
             return   # keine BPM anzeigen
@@ -231,7 +231,7 @@ def deleteAllBPM(Sensor_Name):
                 # print(aktuellesFile.find("_V",len(Sensor_Name))) # debug
                 #print(len(Sensor_Name)) # debug
                 if aktuellesFile.find("_V",len(Sensor_Name)) == len(Sensor_Name) :  # Kommt nach dem Sensorname gleich die Nummerierung
-                    print("wird gelöscht")
+                    # print("wird gelöscht") # Achtung Bug unter Mac
                     os.remove(os.path.join(dir_path,aktuellesFile))
         #print(bpmFiles)         # debug
         #print(len(bpmFiles))    # debug

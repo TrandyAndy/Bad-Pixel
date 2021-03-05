@@ -201,7 +201,7 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     Fehler=0
     for i in range(len(c)):
         if c[i]>1.2: # passiet nur im Fehlerfall 2 falsche bilder
-            print(i, c[i]," Falsches Bild gewählt")
+            print(i, c[i]," Falsches Bild gewaehlt")
             cfg.errorCode=-4
             Fehler=Fehler+1
             c[i]=0.2

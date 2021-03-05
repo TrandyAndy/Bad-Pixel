@@ -33,6 +33,9 @@ Den Hinweis mit der zu verwendeten Python Version ernst nehmen!
 ### GUI bearbeiten
 Anstatt das umfangreiche QT Studio zu downloaden, kann auch unter folgender Adresse eine abgespeckte Version runtergeladen werden: https://build-system.fman.io/qt-designer-download
 
+### Lebenstipps
+Anscheinend mag der Mac keine prints mit Umlauten, er stürtzt dann einfach ab. (nur in der ausführbaren Datei)
+
 ## Versionen
 
 0.1 &nbsp;&nbsp;&nbsp;&nbsp;Erste Version.

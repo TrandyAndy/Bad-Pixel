@@ -101,7 +101,7 @@ def SensorLoschen(Name,Data):
     for i in range(len(Data["Sensors"])):
         if Name ==Data["Sensors"][i]["Sensor_Name"]:
             del Data["Sensors"][i]
-            print("gelöscht")
+            print("geloescht")
             return 0
     print("Nicht gefunden")
     return -1 """
