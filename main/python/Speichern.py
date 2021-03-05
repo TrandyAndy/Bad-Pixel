@@ -187,7 +187,8 @@ def WelcheBPMGibtEs(Name):
             return bpmFiles # keine BPM anzeigen
         for aktuellesFile in files:
             if aktuellesFile.find(Name) == 0:  # Wenn der Name im Dateinahme vorkommt
-                bpmFiles.append(aktuellesFile)
+                if aktuellesFile.find("_V",len(Name)) == len(Name) :  # Kommt nach dem Sensorname gleich die Nummerierung
+                    bpmFiles.append(aktuellesFile)
         #print(bpmFiles)         # debug
         #print(len(bpmFiles))    # debug
         return bpmFiles
@@ -227,8 +228,8 @@ def deleteAllBPM(Sensor_Name):
             return   # keine BPM anzeigen
         for aktuellesFile in files:
             if aktuellesFile.find(Sensor_Name) == 0:  # Wenn der Name am Anfang steht
-                print(aktuellesFile.find("_V",len(Sensor_Name)))
-                print(len(Sensor_Name))
+                # print(aktuellesFile.find("_V",len(Sensor_Name))) # debug
+                #print(len(Sensor_Name)) # debug
                 if aktuellesFile.find("_V",len(Sensor_Name)) == len(Sensor_Name) :  # Kommt nach dem Sensorname gleich die Nummerierung
                     print("wird gelöscht")
                     os.remove(os.path.join(dir_path,aktuellesFile))
