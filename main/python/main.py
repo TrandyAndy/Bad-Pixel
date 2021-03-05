@@ -84,7 +84,7 @@ if __name__ == '__main__':
             openMessageBox(icon=widgets.QMessageBox.Information, text="Sie müssen hierfür zuerst einen Sensor erstellen",informativeText="Für die Suche und der Korrektur muss zuerst ein Sensor erstellt werden.",windowTitle="Sie müssen hierfür zuerst einen Sensor erstellen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             mW.tabWidget.setCurrentIndex(0)
             return False
-        elif mW.checkBoxAlgorithmusSuchen.isChecked() == True or mW.checkBoxAlgorithmusKorrigieren.isChecked() == True: # wenn etwas außer Rohbilder angehakt wurde
+        elif DATA["Sensors"] == [] and ( mW.checkBoxAlgorithmusSuchen.isChecked() == True or mW.checkBoxAlgorithmusKorrigieren.isChecked() == True): # wenn etwas außer Rohbilder angehakt wurde und kein Sensor gibt
             openMessageBox(icon=widgets.QMessageBox.Information, text="Sie müssen hierfür zuerst einen Sensor erstellen",informativeText="Für die Suche und der Korrektur muss zuerst ein Sensor erstellt werden.",windowTitle="Sie müssen hierfür zuerst einen Sensor erstellen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
             mW.tabWidget.setCurrentIndex(0)
             return False
@@ -271,7 +271,10 @@ if __name__ == '__main__':
     def mW_pushButtonMainForward():
         global aktuellerTab     # ohne diese Zeile kommt darunter eine Fehlermeldung
         if aktuellerTab == 0:
+            global flagBPMVorschau
             cv2.destroyAllWindows()
+            flagBPMVorschau = False
+            mW.pushButtonBPMVorschau.setText("BPM-Vorschau an")
         if aktuellerTab >= 3:
             startClicked()
             return
@@ -1242,7 +1245,9 @@ if __name__ == '__main__':
                 DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]=DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]+anzahlBilder
                 #Abschließend noch Speichern in JSON!
             else: #laden
-                BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
+                # BAD_Ges=Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())        # Alter Stand, wo es nur eine BPM pro Sensor gibt
+                BAD_Ges=Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
+                #print(mW.comboBoxBPMBPM.currentText())
                 if np.shape(BAD_Ges) ==(): #Wenns noch keine gibt.
                     fortschritt.textEdit.insertPlainText("Es gibt noch keinen Datensatz. Suchen Erforderlich!\n")
                     return
