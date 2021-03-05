@@ -109,7 +109,7 @@
             <item>
              <widget class="QPushButton" name="pushButtonBPMBPMLoeschen">
               <property name="text">
-               <string>Gewälte BPM löschen</string>
+               <string>Gewählte BPM löschen</string>
               </property>
              </widget>
             </item>

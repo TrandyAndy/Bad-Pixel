@@ -320,8 +320,9 @@ if __name__ == '__main__':
         mW.comboBoxBPMSensor.clear()
         mW.comboBoxBPMSensor.addItems(sensorList)
         mW.comboBoxBPMSensor.setCurrentText(DATA["last_GenutzterSensor"])
-        mW_comboBoxBPMSensor() # Comboboxes aktualisieren
+        updateBPM()     # Comboboxes aktualisieren
         updateTextBPM() # Text auf dem erstem Tab aktualisieren
+        showBPM()
         # Tab: Algorithmus - GroupBox Pixelfehler finden enablen
         if mW.checkBoxAlgorithmusSuchen.isChecked():
             mW.groupBoxSuchen.setEnabled(True)
@@ -367,8 +368,17 @@ if __name__ == '__main__':
             eK.horizontalSliderGradientFensterbreite.setValue(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["last_Fenster_Gradient"])
         # Fortschritt Fenster
         fortschritt.buttonBox.button(widgets.QDialogButtonBox.Ok).setEnabled(False) # Okay Button disable
-    ############ Ende Allgemeine Funktionen ########################################################################################
-    #### ######## Funktionen von dem ab Sensor / BPM ########################################################################################
+
+    def updateBPM():
+        mW.comboBoxBPMBPM.clear()
+        bpmList=Speichern.WelcheBPMGibtEs(mW.comboBoxBPMSensor.currentText())
+        mW.comboBoxBPMBPM.addItems(bpmList)
+        if len(bpmList) <= 0:
+            setEnabledBPM(False)
+        else:
+            setEnabledBPM(True)
+        
+
     def updateTextBPM():
         mW.textEditBPM.clear()
         if mW.comboBoxBPMSensor.currentText() == "":    # wenn es keinen Sensor gibt
@@ -400,7 +410,6 @@ if __name__ == '__main__':
             anzahlPixelfehler = Speichern.getFehleranzahlBPM(mW.comboBoxBPMBPM.currentText())
             mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t\t" + str(anzahlPixelfehler) + "\n")
             mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
-            
             mW.textEditBPM.insertPlainText("Letzte Änderung:\t\t" +  str( Speichern.getModTimeBPM(mW.comboBoxBPMBPM.currentText()) ) + "\n")
     
     def showBPM():
@@ -416,57 +425,95 @@ if __name__ == '__main__':
                 print("keine BPM")  
                 openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
 
+    def setEnabledBPM(flag):
+        mW.labelBPMchoose.setEnabled(flag)
+        #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
+        mW.comboBoxBPMBPM.setEnabled(flag)
     
-        """
-            #akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-            akutelleBPM = Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
-            if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
-                print("keine BPM")
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-            else:
-                akutelleBPM = akutelleBPM.astype(np.uint8)
-                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMBPM.currentText() # weil es sonst ein 16 Bit Bild ist
-                cv2.imshow(textWindow, akutelleBPM)
-            """
+    def setEnabledSensor(flag):
+        mW.labelSensorChoose.setEnabled(flag)
+        #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
+        mW.comboBoxBPMSensor.setEnabled(flag)
+  
 
+    def openFFKWindow():
+        global anzahlBilderHell
+        global anzahlBilderDunkel
+        if fF.exec() == widgets.QDialog.Accepted:
+            if anzahlBilderHell == 0:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Hellbilder importiert ",informativeText="Bitte importieren Sie Hellbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openFFKWindow()
+                return False
+            if anzahlBilderDunkel == 0:
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Dunkelbilder importiert ",informativeText="Bitte importieren Sie Dunkelbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openFFKWindow()
+                return False  
+            for aktuelleZeile in range(fF.tableWidgetHell.rowCount()):
+                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
+                if fF.tableWidgetHell.item(0, 1).text() != fF.tableWidgetHell.item(aktuelleZeile, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
+                if fF.tableWidgetHell.item(0, 3).text() != fF.tableWidgetHell.item(aktuelleZeile, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
+                """
+                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+                """
+                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != fF.tableWidgetDunkel.item(0, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflöung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Auslösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                if fF.tableWidgetHell.item(aktuelleZeile, 3).text() != fF.tableWidgetDunkel.item(0, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+            
+            for aktuelleZeile in range(fF.tableWidgetDunkel.rowCount()):
+                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
+                if fF.tableWidgetDunkel.item(0, 1).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 1).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
+                if fF.tableWidgetDunkel.item(0, 3).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 3).text():
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False
+                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
+                """
+                if fF.tableWidgetDunkel.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openFFKWindow()
+                    return False  
+                """
+            #print("Läuft")
+        else:   # wenn Abbrechen geklickt wird
+            mW.checkBoxAlgorithmusFFK.setChecked(False)
+            # alle Tabellen sollen gelöscht werden
+            fF.tableWidgetHell.setRowCount(0)
+            anzahlBilderHell = 0
+            fF.tableWidgetDunkel.setRowCount(0)
+            anzahlBilderDunkel = 0
+    ############ Ende Allgemeine Funktionen ########################################################################################
+    #### ######## Funktionen von dem ab Sensor / BPM ########################################################################################
+    
 
     def mW_comboBoxBPMSensor():     # wird aufgerufen, wenn ein neues Element ausgewählt wird
         #print("mW_comboBoxBPMSensor") # debug
         DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
-        #mW.textEditBPM.setText("Hallo Julian")
-        mW.comboBoxBPMBPM.clear()
-        bpmList=Speichern.WelcheBPMGibtEs(mW.comboBoxBPMSensor.currentText())
-        mW.comboBoxBPMBPM.addItems(bpmList)
-        if len(bpmList) <= 0:
-            setEnabledBPM(False)
-        else:
-            setEnabledBPM(True)
+        updateBPM()
         updateTextBPM()
-
         showBPM()
-        """
-        global flagBPMVorschau
-        if flagBPMVorschau == True:
-            cv2.destroyAllWindows()
-            if len(bpmList) > 0: # wenn's eine BPM gibt diese auch anzeigen
-                akutelleBPM = Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
-                #akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-                akutelleBPM = akutelleBPM.astype(np.uint8) # weil es sonst ein 16 Bit Bild ist
-                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMBPM.currentText()
-                cv2.imshow(textWindow, akutelleBPM)
-            else:   # Wenns noch keine gibt.
-                print("keine BPM")  
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-        """
-        #mW.textEditBPM.setText(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"])
     def mW_comboBoxBPMBPM():
-        showBPM()
         updateTextBPM()
-        #mW.comboBoxBPMBPM.
-        #bpmList=Speichern.WelcheBPMGibtEs(mW.comboBoxBPMSensor.currentText())
-        #mW.comboBoxBPMBPM.addItems(bpmList)
-        #mW.comboBoxBPMBPM.setCurrentText(DATA["last_GenutzterSensor"])
-        #print("mW_comboBoxBPMBPM")
+        showBPM()
     def mW_pushButtonBPMNeuerSensor():
         # Ordner auswählen: getExistingDirectory(), Datei auswählen: getOpenFileName(), Dateien auswählen: filename = widgets.QFileDialog.getOpenFileNames() [0]      
         # filename = widgets.QFileDialog.getOpenFileNames() [0]      
@@ -477,7 +524,7 @@ if __name__ == '__main__':
             global sensorList
             if nB.lineEditNeueBPM.text().lower() in sensorList:
                 print("So einen Sensor gibt es schon")   # debug
-                openMessageBox(icon=widgets.QMessageBox.Warning, text="Achtung diesen Sensor gibt es schon!", informativeText="Es gibt bereits einen Sensor mit dem selben Namen. Bitte wählen Sie einen anderen Namen für den neuen Sensor.", windowTitle="Achtung diesen Sensor gibt es schon!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                openMessageBox(icon=widgets.QMessageBox.Information, text="Achtung diesen Sensor gibt es schon!", informativeText="Es gibt bereits einen Sensor mit dem selben Namen. Bitte wählen Sie einen anderen Namen für den neuen Sensor.", windowTitle="Achtung diesen Sensor gibt es schon!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                 return
             #sensorList.append(nB.lineEditNeueBPM.text())
             Speichern.SensorAnlegen(nB.lineEditNeueBPM.text(), DATA)
@@ -487,15 +534,15 @@ if __name__ == '__main__':
             mW.comboBoxBPMSensor.addItem(sensorList[-1])    # -1 letzes Elemt 
             mW.comboBoxBPMSensor.setCurrentIndex( len(sensorList) - 1) # -1 da Informatiker ab 0 zählen
             DATA["last_GenutzterSensor"]=mW.comboBoxBPMSensor.currentText()
-            mW_comboBoxBPMSensor()
+            updateBPM()
             updateTextBPM()
-            mW_comboBoxBPMSensor() # Update alle ComboBoxes
+            showBPM()
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLaden():
         dirname = widgets.QFileDialog.getExistingDirectory()
         if dirname == "":  # wenn  auf abbrechen gedrückt wird
             return
-        backValue = openMessageBox(icon=widgets.QMessageBox.Warning, text="Achtung Ihre alten Sensoren werden überschrieben.", informativeText="Wenn sie Ihre alten Sensoren weiterhin behalten wollen, müssen Sie diese erst exportieren. Ist dies der Fall, hier auf Abbrechen oder Cancel klicken. ", windowTitle="Achtung Ihre alten Sensoren werden überschrieben.",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
+        backValue = openMessageBox(icon=widgets.QMessageBox.Information, text="Achtung Ihre alten Sensoren werden überschrieben.", informativeText="Wenn sie Ihre alten Sensoren weiterhin behalten wollen, müssen Sie diese erst exportieren. Ist dies der Fall, hier auf Abbrechen oder Cancel klicken. ", windowTitle="Achtung Ihre alten Sensoren werden überschrieben.",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
         if backValue == widgets.QMessageBox.Ok:
             # Hier Andy Sachen laden
             #Kopieren(dirname,Speichern.dir_path) #ist ein Einzeiler
@@ -523,17 +570,6 @@ if __name__ == '__main__':
             mW.pushButtonBPMVorschau.setText("BPM-Vorschau aus")
             flagBPMVorschau = True
             showBPM()
-            """
-            #akutelleBPM = Speichern.BPM_Read(mW.comboBoxBPMSensor.currentText())
-            akutelleBPM = Speichern.BPM_Read_Selected(mW.comboBoxBPMBPM.currentText())
-            if np.shape(akutelleBPM) == (): #Wenns noch keine gibt.
-                print("keine BPM")
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt noch keine Bad-Pixel-Map (BPM) für diesen Sensor",informativeText="Sie müssen erst Pixelfehler suchen, damit eine BPM erstellt wird.",windowTitle="Keine BPM vorhanden!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-            else:
-                akutelleBPM = akutelleBPM.astype(np.uint8)
-                textWindow =  "Bad-Pixel-Map von " + mW.comboBoxBPMBPM.currentText() # weil es sonst ein 16 Bit Bild ist
-                cv2.imshow(textWindow, akutelleBPM)
-            """
         else:
             mW.pushButtonBPMVorschau.setText("BPM-Vorschau an")
             cv2.destroyAllWindows()
@@ -546,39 +582,21 @@ if __name__ == '__main__':
         if currentText == "": # es gibt kein Sensor
             openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt keine Sensoren",informativeText="Es gibt keinen Sensor der gelöscht werden kann.",windowTitle="Es gibt keine Sensoren",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
         else:
-            backValue = openMessageBox(icon=widgets.QMessageBox.Warning, text="Achtung der Sensor und alle dessen BPM werden gelöscht", informativeText="Möchten Sie den Sensor und alle dessen BPM löschen, dann drücken Sie bitte \"OK\" ", windowTitle="Achtung der Sensor und alle dessen BPM werden gelöscht",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
+            backValue = openMessageBox(icon=widgets.QMessageBox.Information, text="Achtung der Sensor und alle dessen BPM werden gelöscht", informativeText="Möchten Sie den Sensor und alle dessen BPM löschen, dann drücken Sie bitte \"OK\" ", windowTitle="Achtung der Sensor und alle dessen BPM werden gelöscht",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
             if backValue == widgets.QMessageBox.Ok:
                 del sensorList[aktuellerIndex]
                 mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
                 Speichern.SensorLoschen(currentText,DATA)
                 Speichern.deleteAllBPM(currentText)
-                mW_comboBoxBPMSensor()
-                showBPM()
+                updateBPM()
                 updateTextBPM()
-
-        """
-        if aktuellerIndex == 0:
-            pass
-        else:
-            del sensorList[aktuellerIndex]
-            mW.comboBoxBPMSensor.removeItem(aktuellerIndex)
-            Speichern.SensorLoschen(currentText,DATA)
-        """    
-        pass
+                showBPM()
     def mW_pushButtonBPMBPMLoeschen():
         Speichern.deleteBPM(mW.comboBoxBPMBPM.currentText())
-        mW_comboBoxBPMSensor()
-        showBPM()
+        updateBPM()
         updateTextBPM()
-    def setEnabledBPM(flag):
-        mW.labelBPMchoose.setEnabled(flag)
-        #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
-        mW.comboBoxBPMBPM.setEnabled(flag)
-    def setEnabledSensor(flag):
-        mW.labelSensorChoose.setEnabled(flag)
-        #mW.labelBPMChoose.setText(core.QStandardPaths.writableLocation(core.QStandardPaths.AppDataLocation))
-        mW.comboBoxBPMSensor.setEnabled(flag)
-    #setEnabledBPM(False)   
+        showBPM()
+    
 
     ### Tab Bilddaten
     def mW_pushButtonBilddatenOrdnerDurchsuchen():   # Ordner importieren
@@ -802,71 +820,7 @@ if __name__ == '__main__':
             eK.radioButtonMedian.setChecked(Methode==cfg.Methoden.NMFC)
             eK.radioButtonMittelwert.setChecked(Methode==cfg.Methoden.NARC)
             eK.radioButtonReplacement.setChecked(Methode==cfg.Methoden.NSRC)
-    def openFFKWindow():
-        global anzahlBilderHell
-        global anzahlBilderDunkel
-        if fF.exec() == widgets.QDialog.Accepted:
-            if anzahlBilderHell == 0:
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Hellbilder importiert ",informativeText="Bitte importieren Sie Hellbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                openFFKWindow()
-                return False
-            if anzahlBilderDunkel == 0:
-                openMessageBox(icon=widgets.QMessageBox.Information, text="Sie haben keine Dunkelbilder importiert ",informativeText="Bitte importieren Sie Dunkelbilder",windowTitle="Nichts importiert",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                openFFKWindow()
-                return False  
-            for aktuelleZeile in range(fF.tableWidgetHell.rowCount()):
-                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
-                if fF.tableWidgetHell.item(0, 1).text() != fF.tableWidgetHell.item(aktuelleZeile, 1).text():
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False
-                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
-                if fF.tableWidgetHell.item(0, 3).text() != fF.tableWidgetHell.item(aktuelleZeile, 3).text():
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False
-                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
-                """
-                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Hellbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False  
-                """
-                if fF.tableWidgetHell.item(aktuelleZeile, 1).text() != fF.tableWidgetDunkel.item(0, 1).text():
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflöung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Auslösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False
-                if fF.tableWidgetHell.item(aktuelleZeile, 3).text() != fF.tableWidgetDunkel.item(0, 3).text():
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder aus der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False  
-            
-            for aktuelleZeile in range(fF.tableWidgetDunkel.rowCount()):
-                # ...ob die Auflösung der Bilder identisch ist, Rohbilder können auch mit verschieden Auflösungen exportiert werden.
-                if fF.tableWidgetDunkel.item(0, 1).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 1).text():
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Auflösung der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Auflösung",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False
-                # ...ob die Farbtiefe der Bilder identisch ist, Rohbilder können auch mit verschieden Farbtiefen exportiert werden.
-                if fF.tableWidgetDunkel.item(0, 3).text() != fF.tableWidgetDunkel.item(aktuelleZeile, 3).text():
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Die Farbtiefe der importierten Bilder ist unterschiedlich",informativeText="Bitte entfernen Sie die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur.",windowTitle="Falsche Farbtiefe",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False
-                # ...ob die Auflösung der Bilder und der BPM identisch sind, Rohbilder können trotzdem exportiert werden.
-                """
-                if fF.tableWidgetDunkel.item(aktuelleZeile, 1).text() != "": # todo: Überprüfen ob die Auflösung der Bilder und der BPM identisch sind, Format: "rows x cols", Beachte: wenn es noch keine gibt, muss es übersprungen werden
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Auslösung der Bad-Pixel-Map und der importierten Bilder sind unterschiedlich",informativeText="Die Auflösung des Bildes aus der " + str(aktuelleZeile) + " Zeile ist nicht mit der Auflösung der Bad-Pixel identisch. Bitte die falschen Bilder bei den Dunkelbildern von der Flatfield-Korrektur löschen oder einen anderen Sensor auswählen.",windowTitle="Falsche Auflösung BPM oder Bilder",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    openFFKWindow()
-                    return False  
-                """
-            #print("Läuft")
-        else:   # wenn Abbrechen geklickt wird
-            mW.checkBoxAlgorithmusFFK.setChecked(False)
-            # alle Tabellen sollen gelöscht werden
-            fF.tableWidgetHell.setRowCount(0)
-            anzahlBilderHell = 0
-            fF.tableWidgetDunkel.setRowCount(0)
-            anzahlBilderDunkel = 0
+    
 
     def mW_checkBoxAlgorithmusFFK():
         if mW.checkBoxAlgorithmusFFK.isChecked():
@@ -1254,7 +1208,8 @@ if __name__ == '__main__':
             ID_T=threading.Thread(name="Korrektur",target=KorrekturExportFkt,args=(BAD_Ges,12))
             ID_T.start()
             #exP.exportPictures(pPath= mW.lineEditSpeicherort.text(), pImagename= "Vorschau", pImage= vorschauBild, pZeit= "aktuelleZeit") #Debug Vorschau
-            mW_comboBoxBPMSensor()  # Tab 1 updaten
+            updateBPM()  # Tab 1 updaten
+            updateTextBPM()
 
     timer = core.QTimer()
     timer.timeout.connect(Prozess)
@@ -1262,16 +1217,3 @@ if __name__ == '__main__':
 
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()        # für das fbs
     sys.exit(exit_code)
-
-
-""" Experimente: ___________________________________________________________________________________________
-    sensorList = ["Bitte Ihren Sensor auswählen"]
-    sensorList.append("CT1")
-    sensorList.append("CT2")
-    bpmList = ["Bitte die BPM auswählen"]
-    bpmList.append("BPM vom 27.02.20")
-    bpmList.append("BPM vom 28.02.20")
-    mW.comboBoxBPMSensor.addItems(sensorList)
-    mW.comboBoxBPMChoose.addItems(bpmList)
-Experimente Ende """
-
