@@ -30,7 +30,7 @@ def HotPixelFinder(D2_Bild, Schwelle=0.99):
     #print("Hot Pixel: " , Zaehler)
     if Zaehler>hohe*breite*Lichtschutz: #Überbelichtungsschutz 
         Zaehler=-1
-        #print("Überbelichtet")
+        #print("Ueberbelichtet")
     return BPM, Zaehler
 
 # Dead Pixel finder:
@@ -51,7 +51,7 @@ def DeadPixelFinder(D2_Bild, Schwelle=0.01):
 
 def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
     Bilderanzahl, hohe, breite=np.shape(D3_Bilder) 
-    print(Bilderanzahl," Bilder prüfen...")
+    print(Bilderanzahl," Bilder pruefen...")
     BPM_D=np.zeros((hohe,breite))
     BPM_H=np.zeros((hohe,breite))
     Ungueltig=np.zeros((hohe,breite))
@@ -77,7 +77,7 @@ def MultiPicturePixelCompare(D3_Bilder,GrenzeHot=0.99,GrenzeDead=0.01):
             UberLicht=UberLicht+1
         BPM_H=BPM_H+BPM_Hot
    #Auswertung
-    print(UberLicht," Bilder Überbelichtet, ",UnterLicht," Bilder zu Dunkel")
+    print(UberLicht," Bilder Ueberbelichtet, ",UnterLicht," Bilder zu Dunkel")
     BPM_D=(BPM_D-int(0.3*(Bilderanzahl-UnterLicht)))>0 #Digit + mehr als 30%
     BPM_H=(BPM_H-int(0.3*(Bilderanzahl-UberLicht)))>0
     BPM=np.logical_or(BPM_D,BPM_H)
@@ -106,7 +106,7 @@ def bottom(x):
     else:
         return x
 
-def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur sagt 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
+def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor aus Literatur= 3  (BildSerie2 70µA ist Faktor 2,5-3,5)
     Anz, hoehe, breite = np.shape(D3_Bild)
     #print(hoehe,breite)
     BPM=np.zeros((hoehe,breite))
@@ -114,7 +114,7 @@ def advancedMovingWindow(D3_Bild, Fensterbreite=6, Faktor=3): #Faktor literatur 
         D2_Bild=D3_Bild[i]
         quadrat=int(Fensterbreite/2) #+1
         for y in range(breite):
-            if cfg.killFlagThreads == True: #kill Tread / aMW zu langsam für abbruch nach Bild.
+            if cfg.killFlagThreads == True: #kill Tread / aMW zu langsam für Abbruch nach Bild.
                 cfg.errorCode=-1
                 return 
             for x in range(hoehe):

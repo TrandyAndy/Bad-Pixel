@@ -3,36 +3,36 @@ import config as cfg
 import numpy as np
 
 def verpixeln (D2_Bild, AnzPixel=100, lineEnable=False,Cluster=False, minAbweichung=20):
-    hoehe, breite = np.shape(D2_Bild)
-    r.seed(D2_Bild[1,1]+AnzPixel)
-    BPM=np.zeros((hoehe,breite))
-    for i in range(AnzPixel):
+    hoehe, breite = np.shape(D2_Bild)   #Bild Dimensionen
+    r.seed(D2_Bild[1,1]+AnzPixel)       #Zufallsgenerator 
+    BPM=np.zeros((hoehe,breite))        #Leer Bild erstellen
+    for i in range(AnzPixel):           
         x=r.randint(0,breite-1)
-        y=r.randint(0,hoehe-1)
-        grey=r.randint(0,2**cfg.Farbtiefe)
+        y=r.randint(0,hoehe-1)          #Zufall Position
+        grey=r.randint(0,2**cfg.Farbtiefe) #Zufall Grauwert
         if(abs(D2_Bild[x,y]-grey)>2**cfg.Farbtiefe*minAbweichung/100):
-            D2_Bild[x,y]=grey
-            BPM[x,y]=100
+            D2_Bild[x,y]=grey           #Pixel einfügen
+            BPM[x,y]=100                #Fehler in perfekter BPM vermerken
         else:
             i -=1
 
-    if(lineEnable):
+    if lineEnable:
         print("Es werden Linienfehler erzeugt")
         for v in range(lineEnable):
-            length=r.randint(10,int(breite/3))
-            dir=r.choice(['X','Y'])
-            x=r.randint(0,breite-1)
+            length=r.randint(10,int(breite/3))      #Zufällige Länge der Linie
+            dir=r.choice(['X','Y'])                 #Zufällige Richtung
+            x=r.randint(0,breite-1)                 #Zufällige Startposition
             y=r.randint(0,hoehe-1)
             if(dir=='X'):
-                x=r.randint(0,breite-length)
+                x=r.randint(0,breite-length)        #Linie vollständig im Bild enthalten
             else:
                 y=r.randint(0,breite-length)
 
-            grey=r.randint(0,2**cfg.Farbtiefe)
+            grey=r.randint(0,2**cfg.Farbtiefe)      #Zufall Grauwert
             if(abs(D2_Bild[x,y]-grey)>2**cfg.Farbtiefe*minAbweichung/100):
                 if(dir=='X'):
                     D2_Bild[x:x+length,y]=grey
-                    BPM[x:x+length,y]=100
+                    BPM[x:x+length,y]=100           #BPM schreiben
                 else:
                     D2_Bild[x,y:y+length]=grey
                     BPM[x,y:y+length]=100
@@ -47,7 +47,7 @@ def verpixeln (D2_Bild, AnzPixel=100, lineEnable=False,Cluster=False, minAbweich
             
 
 def cluster (D2_Bild, Durchmesser=8, Anz=1, Dichte=1/3):
-    print("Cluster wird erzeugt Anzahl ist verfälscht")
+    print("Cluster wird erzeugt Anzahl ist verfaelscht")
     hoehe, breite = np.shape(D2_Bild)
     r.seed(D2_Bild[1,1]+Anz+Durchmesser)
     BPM=np.zeros((hoehe,breite))

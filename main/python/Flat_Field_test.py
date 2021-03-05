@@ -43,4 +43,4 @@ if True:
 
 """ Audgabe der Bilder Plots und Ergebnisse:______________________________________________________________________________________ """
 
-cv2.imwrite("_korriegiert Flatfield.png", GOOD, [cv2.IMWRITE_PNG_COMPRESSION,0])
+cv2.imwrite("_korriegiert Flatfield.png", GOOD)

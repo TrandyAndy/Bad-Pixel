@@ -49,7 +49,7 @@ def hisImportFunction2(pImportPath, pExport = False):                        # F
         #plt.show()
         if pExport == True:
             cv2.imshow('image', im)                                             # Array als Bild anzeigen
-            cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
+            cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im)     # Array als PNG speichern ohne Kompression
             print("Ihre Datei wurden unter", pathWithoutExtension+"_"+str(index)+".png gespeichert")
             cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird      
     if pExport == True:
@@ -97,7 +97,7 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
             else:
                 os.mkdir(dirName)
             fileName = os.path.splitext(os.path.basename(pImportPath))[0] +  "_original_" + str(index) + ".png"
-            cv2.imwrite(os.path.join(dirName, fileName), im, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+            cv2.imwrite(os.path.join(dirName, fileName), im)    # Array als PNG speichern ohne Kompression
     #if pExport == True:
         #cv2.destroyAllWindows()                                                 # Alle Fenster schließen    
     
@@ -119,7 +119,7 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
             else:
                 os.mkdir(dirName)
             fileName = os.path.splitext(os.path.basename(pImportPath))[0] +  "_original_mittelwert.png"
-            cv2.imwrite(os.path.join(dirName, fileName), ergMeanImage[0], [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+            cv2.imwrite(os.path.join(dirName, fileName), ergMeanImage[0])    # Array als PNG speichern ohne Kompression
             """
             cv2.imshow("Mittelwert",ergMeanImage)
             cv2.imwrite(pathWithoutExtension+ "_mittelwert.png",ergMeanImage, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
@@ -135,6 +135,8 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
 def importFunction(pImportPath, pExport = False, pExportPath="", pZeit=""): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
     aktuelleZeit = pZeit   # aktuelles Datum und Zeit
     bild = cv2.imread(pImportPath, flags= -1)
+    if np.shape(bild) == ():
+        return ( np.zeros( (1, 512, 512), dtype=np.uint16) ) 
     bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
     if np.shape(bildDaten[0]) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
         bildDaten[0] = bild
@@ -153,7 +155,7 @@ def importFunction(pImportPath, pExport = False, pExportPath="", pZeit=""): #vil
         #cv2.imshow('image', bild)                                             # Array als Bild anzeigen
         #cv2.imwrite(os.path.splitext(os.path.basename(pImportPath)) [0] + "importiertesBild.png",bild, [cv2.IMWRITE_PNG_COMPRESSION,0])     # Array als PNG speichern ohne Kompression
         #cv2.imwrite(os.path.join(pExportPath, "Originalbilder", os.path.basename(pImportPath)) + "_Original.png", bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
-        cv2.imwrite(os.path.join(dirName, fileName), bild, [cv2.IMWRITE_PNG_COMPRESSION,0])    # Array als PNG speichern ohne Kompression
+        cv2.imwrite(os.path.join(dirName, fileName), bild)    # Array als PNG speichern ohne Kompression
         
         #cv2.waitKey()
         #cv2.destroyAllWindows()      

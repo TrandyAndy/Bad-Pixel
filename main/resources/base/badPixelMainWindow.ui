@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
+    <width>624</width>
     <height>607</height>
    </rect>
   </property>
@@ -36,7 +36,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="labelSensorChoose">
               <property name="text">
                <string>Sensor auswählen:</string>
               </property>
@@ -66,25 +66,50 @@
            </layout>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButtonBPMNeuerSensor">
-            <property name="text">
-             <string>Neuer Sensor erstellen ...</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QPushButton" name="pushButtonBPMNeuerSensor">
+              <property name="text">
+               <string>Neuer Sensor erstellen ...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonBPMSensorLaden">
+              <property name="text">
+               <string>Sensoren laden ...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonBPMSensorSpeichern">
+              <property name="text">
+               <string>Sensoren exportieren ...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
+             <widget class="QPushButton" name="pushButtonBPMVorschau">
+              <property name="text">
+               <string>BPM-Vorschau an</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="pushButtonBPMSensorLoeschen">
               <property name="text">
-               <string>Ausgewählter Sensor löschen</string>
+               <string>Gewählter Sensor löschen</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushButtonBPMBPMLoeschen">
               <property name="text">
-               <string>Ausgewälte BPM löschen</string>
+               <string>Gewählte BPM löschen</string>
               </property>
              </widget>
             </item>
@@ -92,6 +117,11 @@
           </item>
           <item>
            <widget class="QTextEdit" name="textEditBPM">
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
             <property name="verticalScrollBarPolicy">
              <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
@@ -102,8 +132,8 @@
              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -380,20 +410,6 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="Line" name="line_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="checkBoxAlgorithmusFFK">
-               <property name="text">
-                <string>zusätzlich Flat-Field-Korrektur</string>
-               </property>
-              </widget>
-             </item>
-             <item>
               <layout class="QHBoxLayout" name="horizontalLayout_8">
                <item>
                 <spacer name="horizontalSpacer_2">
@@ -416,6 +432,20 @@ p, li { white-space: pre-wrap; }
                 </widget>
                </item>
               </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBoxAlgorithmusFFK">
+               <property name="text">
+                <string>zusätzlich Flat-Field-Korrektur</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -494,7 +524,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>590</width>
+     <width>624</width>
      <height>22</height>
     </rect>
    </property>

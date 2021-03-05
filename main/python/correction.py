@@ -20,7 +20,7 @@ import copy
 
 def nachbar(Bild, BPM):  #Mittelwert der beiden Nachbarn
     if(np.shape(Bild) != np.shape(BPM)):
-        print("Digga schau das die Dimensionen passen!")
+        print("Dimensionen passen nicht!")
         return -1
     hoehe, breite = np.shape(Bild)
     flatImage=np.uint(Bild.reshape(-1))
@@ -37,17 +37,16 @@ def nachbar(Bild, BPM):  #Mittelwert der beiden Nachbarn
 
 # Nachbar
 def nachbar2(Bild, BPM, Methode=cfg.Methoden.NMFC, Fester=4):  # Fenster um BadPixel
-    if(np.shape(Bild) != np.shape(BPM)):
-        print("Digga schau das die Dimensionen passen!")
+    if(np.shape(Bild) != np.shape(BPM)):            #Bildgröße Prüfen
+        print("Dimensionen passen nicht!")
         return -1
-    hoehe, breite = np.shape(Bild)
-    Q_halbe=int(Fester/2)
+    hoehe, breite = np.shape(Bild)                  #Bildgröße Speichern
+    Q_halbe=int(Fester/2)               
     beautiful=copy.copy(Bild)
-    for z in range(hoehe):
+    for z in range(hoehe):                          #Schleife durch alle Bildpunkte
         for s in range(breite):
-            if BPM[z,s] !=0:
-                #Fester aufspannen.
-                oben=z-Q_halbe
+            if BPM[z,s] !=0:                                
+                oben=z-Q_halbe                      #Fester aufspannen.
                 if oben<0:
                     oben=0
                 unten=z+Q_halbe
@@ -58,8 +57,8 @@ def nachbar2(Bild, BPM, Methode=cfg.Methoden.NMFC, Fester=4):  # Fenster um BadP
                 rechts=s+Q_halbe
                 if rechts>breite:
                     rechts=breite
-                Fenster=Bild[oben:unten,links:rechts]
-                beautiful[z,s]=Methoden(Fenster,Methode)
+                Fenster=Bild[oben:unten,links:rechts]   #Fenster herrauskopieren
+                beautiful[z,s]=Methoden(Fenster,Methode)#An gewünschte Korrekturmethode übergeben.
     return beautiful
 
 """ #NARC=0 NMFC=1 NSRC=2
@@ -69,7 +68,7 @@ AR=Average Relacement
 
 def neigborhood(Bild, BPM, Methode=0):
     if(np.shape(Bild) != np.shape(BPM)):
-        print("Digga schau das die Dimensionen passen!")
+        print("Dimensionen passen nicht!")
         return -1
     hoehe, breite = np.shape(Bild)
         
@@ -79,15 +78,15 @@ def neigborhood(Bild, BPM, Methode=0):
 
 def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
     if(np.shape(Bild) != np.shape(BPM)):
-        print("Digga schau das die Dimensionen passen!")
+        print("Dimensionen passen nicht!")
         return -1
     hoehe, breite = np.shape(Bild)
     Richtung=-1
     beautiful=copy.copy(Bild)
     l=int(Laenge/2)
-    for z in range(hoehe):
+    for z in range(hoehe):                  #Bild Iterationsschleife
         for s in range(breite):
-            if BPM[z,s] !=0:
+            if BPM[z,s] !=0:                #Fehlstellen erkennen
                 #Gradienten legen
                 vertikal=beautiful[bottom(z-l):top(z+l,hoehe),s]
                 horizontal=beautiful[z,bottom(s-l):top(s+l,breite)]
@@ -106,7 +105,7 @@ def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
                         Low=Gradient[i]
                         Richtung=i
                 #Grauwert berechnen
-                if Richtung==0:
+                if Richtung==0:               #Gradient[0]=vertikal
                     Grau=Methoden(vertikal,Methode)
                 elif Richtung==1:
                     Grau=Methoden(horizontal,Methode)
@@ -116,15 +115,15 @@ def Gradient(Bild, BPM, Methode=cfg.Methoden.NMFC, Laenge=10):
                     Grau=Methoden(nordwest,Methode)
                 else:
                     print("Error")
-                beautiful[z,s]=Grau  #Oder mit dem Korregierten Teil weiterarbeiten.
+                beautiful[z,s]=Grau  #Oder mit dem Korrigierten Teil weiterarbeiten.
     return beautiful
                 
 
 def Methoden(Pixels, Methode):
-    if Methode==cfg.Methoden.NMFC.value:
+    if Methode==cfg.Methoden.NMFC.value:   #NMFC
         return np.median(Pixels)
     elif Methode==cfg.Methoden.NARC.value: #NARC
-        return np.mean(Pixels) #ohne den Bad ist schwer
+        return np.mean(Pixels) #ohne den Bad-Pixel ist es Schwer
     elif Methode==cfg.Methoden.NSRC.value: #NSRC
         flatPixels=(np.reshape(Pixels,-1))
         l=len(flatPixels)
@@ -149,7 +148,7 @@ def bottom(x,Min=0):
 
 """ def Nagao(Bild, BPM):
     if(np.shape(Bild) != np.shape(BPM)):
-        print("Digga schau das die Dimensionen passen!")
+        print("Dimensionen passen nicht!")
         return -1
     hoehe, breite = np.shape(Bild)
     Q_Fenster=2
@@ -172,7 +171,7 @@ def bottom(x,Min=0):
     
     großBild=Bild
     v_rand=np.ones([:(Q_Fenster*breite)]).reshape(Q_Fenster,breite)
-    h_rand=np-ones([:(Q_Fenster*(heohe+Q_Fenster))]).reshape((heohe+Q_Fenster),Q_Fenster)
+    h_rand=np.ones([:(Q_Fenster*(heohe+Q_Fenster))]).reshape((heohe+Q_Fenster),Q_Fenster)
     np.vstack([großBild,v_rand])
     np.hstack([großBild,h_rand])
     beautiful=Bild
@@ -189,7 +188,7 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     #Wiki: New=(Input-Dark)/(Flat_Field-Dark) Dark=ohne X-Ray; Flat_Field=ohne Bauteil
     # Gain und Dunkelstrom
     if(np.shape(Bild) != np.shape(Hell_Mittel_Bild) or np.shape(Bild) != np.shape(Dunkel_Mittel_Bild)):
-        print("Digga schau das die Dimensionen passen!")
+        print("Dimensionen passen nicht!")
         return -1
     hoehe, breite = np.shape(Bild)
     a= Bild-Dunkel_Mittel_Bild
@@ -202,7 +201,7 @@ def Flatfield(Bild, Hell_Mittel_Bild, Dunkel_Mittel_Bild):
     Fehler=0
     for i in range(len(c)):
         if c[i]>1.2: # passiet nur im Fehlerfall 2 falsche bilder
-            print(i, c[i]," Falsches Bild gewählt")
+            print(i, c[i]," Falsches Bild gewaehlt")
             cfg.errorCode=-4
             Fehler=Fehler+1
             c[i]=0.2
