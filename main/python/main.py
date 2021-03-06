@@ -410,10 +410,10 @@ if __name__ == '__main__':
         if aufloesung == ():  # noch keine BBM vorhanden
             if platform.system() == "Windows":
                 mW.textEditBPM.insertPlainText("Name des Sensors:\t\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
-                mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
+                mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste (Bad-Pixel-Map) angelegt.")
             else:
                 mW.textEditBPM.insertPlainText("Name des Sensors:\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
-                mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
+                mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste (Bad-Pixel-Map) angelegt.")
         else:
             zeilen, spalten = aufloesung
             
@@ -563,6 +563,7 @@ if __name__ == '__main__':
             updateBPM()
             updateTextBPM()
             showBPM()
+            Speichern.Write_json(DATA) #Schreiben am Ende
         print("NeueBPM geöffnet")   # debug
     def mW_pushButtonBPMSensorLaden():
         dirname = widgets.QFileDialog.getExistingDirectory()
@@ -582,6 +583,7 @@ if __name__ == '__main__':
                 path = os.path.join(dirname, aktuellesFile)
                 shutil.copy(path,Speichern.dir_path)
             uiSetup()
+            Speichern.Write_json(DATA) #Schreiben am Ende
         print(dirname)
     def mW_pushButtonBPMSensorSpeichern():
         dirname = widgets.QFileDialog.getExistingDirectory()
@@ -619,6 +621,7 @@ if __name__ == '__main__':
                 updateBPM()
                 updateTextBPM()
                 showBPM()
+                Speichern.Write_json(DATA) #Schreiben am Ende
     def mW_pushButtonBPMBPMLoeschen():
         if mW.comboBoxBPMBPM.currentText() == "":    # wenn es keine BPM gibt
             openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt keine BPM zum Löschen", informativeText="Sie müssen hierfür erst mit einem Sensor eine BPM erzeugen.", windowTitle="Es gibt keine BPM zum Löschen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
@@ -627,8 +630,7 @@ if __name__ == '__main__':
         updateBPM()
         updateTextBPM()
         showBPM()
-    
-
+        Speichern.Write_json(DATA) #Schreiben am Ende
     ### Tab Bilddaten
     def mW_pushButtonBilddatenOrdnerDurchsuchen():   # Ordner importieren
         if DATA["Import_Pfad"]==" ":
