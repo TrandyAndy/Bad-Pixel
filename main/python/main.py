@@ -54,6 +54,7 @@ if __name__ == '__main__':
     DATA = 0            # Die Daten für die Speicherung der Config Datei
     mittelwertBilder = 0    # Mittelwert aller importierten Bilder
     flagBPMVorschau = False # Flag für die Anzeige der BPM-Vorschau auf dem ersten Tab
+    BAD_Ges = 0 # für das Speichern der BAD Pixel Map
 
     """ Laden der Gui-UI-Dateien:___________________________________________________________________________________ """
     app = widgets.QApplication(sys.argv)
@@ -249,8 +250,11 @@ if __name__ == '__main__':
             cfg.killFlagThreads=False
             cv2.destroyAllWindows()
         else:
-            updateTextBPM() # Text auf dem erstem Tab aktualisieren
+            Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern
             cv2.destroyAllWindows()
+            updateBPM() 
+            updateTextBPM() # Text auf dem erstem Tab aktualisieren
+            showBPM()
         print("startClicked")   # Debug
     def msgButtonClick():
         print("message")
@@ -1190,6 +1194,7 @@ if __name__ == '__main__':
 
     def Prozess(): #Hauptprozess nach Start
         global mittelwertBilder
+        global BAD_Ges
         vorschauBild = 0
         #Vorschau Live__________
         if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): 
@@ -1241,7 +1246,7 @@ if __name__ == '__main__':
                 fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
                 BAD_Ges=detection.Mapping(cfg.Global_BPM_Moving,cfg.Global_BPM_Multi,cfg.Global_BPM_Dynamik)*100 #Digital*100
                 #BPM Speichern vill auch am Ende.
-                Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
+                # Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern    #Nur wenn alles gut war!  und wenn Pixel gesucht wurden.
                 Fehlerzahl=cfg.fehlerSammler["aMW"]+cfg.fehlerSammler["MPPC"]+cfg.fehlerSammler["dC"]
                 print("BPM enthaelt ",Fehlerzahl," Pixel")
                 DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]=Fehlerzahl #anzahl an pixeln.
