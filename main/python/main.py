@@ -1124,8 +1124,8 @@ if __name__ == '__main__':
     eS.pushButtonVorschau.clicked.connect(eS_pushButtonVorschau)
 
     eS.groupBoxSchwellwert.setToolTip("Hinweise für die Einstellung des Schwellwertfilters: \nJe weiter rechts der Schieberegler ist, \ndesto mehr Pixelfehler werden erkannt. \nEmpfohlener Wert ist 0,95 für helle Pixel bzw. 0,05 für dunkle Pixel.")
-    eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
     eS.groupBoxDynamic.setToolTip("Hinweise für die Einstellung des Dynamic-Check: \nAchtung ein Schwellwert über 0,1 ist Lebensmüde!")
+    eS.groupBoxMoving.setToolTip("Hinweise für die Einstellung des Moving-Window: \nGroße Fensterbreiten haben einen hohen Rechenaufwand.\nJe geringer der Schwellwert ist, desto mehr Fehler werden entdeckt. Empfohlene Fensterbreite 7\nEmpfohlener Schwellwert 3,5")
 
     ### Einstellungen Korrektur
     eK.horizontalSliderNachbarFensterbreite.valueChanged.connect(eK_horizontalSliderNachbarFensterbreite)
@@ -1188,11 +1188,9 @@ if __name__ == '__main__':
         cfg.fehlerSammler["MPPC"]=0
         cfg.fehlerSammler["dC"]=0
 
-    once = False
-    myImage = 0
     def Prozess(): #Hauptprozess nach Start
         global mittelwertBilder
-        
+        vorschauBild = 0
         #Vorschau Live__________
         if (cfg.Ladebalken > 0 and mW.checkBoxAlgorithmusSuchen.isChecked()): 
             vorschauBild = copy.copy(mittelwertBilder) #Bild erstellen
@@ -1204,7 +1202,7 @@ if __name__ == '__main__':
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
             #Vorschau anzeigen...
             cv2.imshow("Gefundene Pixelfehler",vorschauBild)
-            cv2.waitKey(1)
+            #cv2.waitKey(1)
             
             exportPath = exP.exportPicturesEasy(pPath=Speichern.dir_path, pImagename="bpmVorschau.png", pImage=vorschauBild)
             pixmap = gui.QPixmap(exportPath)
@@ -1231,6 +1229,13 @@ if __name__ == '__main__':
 
         if FertigFlag:              
             timer.stop()
+            if np.shape(cfg.Global_BPM_Dynamik) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Dynamik,pBild=vorschauBild,bgr = 2)#Dynamic =rot
+            if np.shape(cfg.Global_BPM_Moving) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
+            if np.shape(cfg.Global_BPM_Multi) != ():
+                vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
+            cv2.imshow("Gefundene Pixelfehler",vorschauBild)    # so kommt beim Mac immer alle Fehler der BPM
             #Zusammenfassen + Speichern oder Laden
             if mW.checkBoxAlgorithmusSuchen.isChecked():
                 fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
