@@ -568,7 +568,9 @@ if __name__ == '__main__':
         dirname = widgets.QFileDialog.getExistingDirectory()
         if dirname == "":  # wenn  auf abbrechen gedrückt wird
             return
-        backValue = openMessageBox(icon=widgets.QMessageBox.Information, text="Achtung Ihre alten Sensoren werden überschrieben.", informativeText="Wenn sie Ihre alten Sensoren weiterhin behalten wollen, müssen Sie diese erst exportieren. Ist dies der Fall, hier auf Abbrechen oder Cancel klicken. ", windowTitle="Achtung Ihre alten Sensoren werden überschrieben.",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
+        backValue = widgets.QMessageBox.Ok  # für das untere If
+        if mW.comboBoxBPMSensor.currentText() != "":   # wenn es keinen Sensor gibt, soll die Message box nicht angzeigt werden
+            backValue = openMessageBox(icon=widgets.QMessageBox.Information, text="Achtung Ihre alten Sensoren werden überschrieben.", informativeText="Wenn sie Ihre alten Sensoren weiterhin behalten wollen, müssen Sie diese erst exportieren. Ist dies der Fall, hier auf Abbrechen oder Cancel klicken. ", windowTitle="Achtung Ihre alten Sensoren werden überschrieben.",standardButtons=widgets.QMessageBox.Ok | widgets.QMessageBox.Cancel,pFunction=msgButtonClick)
         if backValue == widgets.QMessageBox.Ok:
             # Hier Andy Sachen laden
             #Kopieren(dirname,Speichern.dir_path) #ist ein Einzeiler
@@ -618,6 +620,9 @@ if __name__ == '__main__':
                 updateTextBPM()
                 showBPM()
     def mW_pushButtonBPMBPMLoeschen():
+        if mW.comboBoxBPMBPM.currentText() == "":    # wenn es keine BPM gibt
+            openMessageBox(icon=widgets.QMessageBox.Information, text="Es gibt keine BPM zum Löschen", informativeText="Sie müssen hierfür erst mit einem Sensor eine BPM erzeugen.", windowTitle="Es gibt keine BPM zum Löschen",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+            return
         Speichern.deleteBPM(mW.comboBoxBPMBPM.currentText())
         updateBPM()
         updateTextBPM()
