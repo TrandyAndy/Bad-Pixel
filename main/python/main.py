@@ -389,7 +389,10 @@ if __name__ == '__main__':
 
     def updateTextBPM():
         mW.textEditBPM.clear()
-        mW.textEditBPM.setFontPointSize(11)
+        if platform.system() == "Windows":
+            mW.textEditBPM.setFontPointSize(11)
+        else:
+            mW.textEditBPM.setFontPointSize(15)
         if mW.comboBoxBPMSensor.currentText() == "":    # wenn es keinen Sensor gibt
             print("Es gibt kein Sensor!")
             setEnabledBPM(False)
@@ -405,22 +408,34 @@ if __name__ == '__main__':
         aufloesung = np.shape(lokalBPM)
         #print("Rueckgabe aufloesung: ", aufloesung) # Diese Zeile macht ein bug unter mac OS, Programm öffnet und schlißet sich sofort wieder. Lag an dem ü
         if aufloesung == ():  # noch keine BBM vorhanden
-            mW.textEditBPM.insertPlainText("Name des Sensors:\t\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
-            mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
-            
+            if platform.system() == "Windows":
+                mW.textEditBPM.insertPlainText("Name des Sensors:\t\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+                mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
+            else:
+                mW.textEditBPM.insertPlainText("Name des Sensors:\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+                mW.textEditBPM.insertPlainText("\nEs wurde noch keine Pixelfehler-Liste angelegt.")
         else:
             zeilen, spalten = aufloesung
-            mW.textEditBPM.insertPlainText("Name des Sensors:\t\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
-            mW.textEditBPM.insertPlainText("Sensor Auflösung:\t\t\t" + str(zeilen) + " x " + str(spalten) + "\n")
-            mW.textEditBPM.insertPlainText("Sensors Erstelldatum:\t\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
+            
             geleseneBilder = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_Bilder"]
-            mW.textEditBPM.insertPlainText("Gelesene Bilder des Sensors:\t" + str(geleseneBilder) + "\n")
             #anzahlPixelfehler = DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Anz_PixelFehler"]
             anzahlPixelfehler = Speichern.getFehleranzahlBPM(mW.comboBoxBPMBPM.currentText())
-            mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t\t\t" + str(anzahlPixelfehler) + "\n")
-            mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t\t\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
-            mW.textEditBPM.insertPlainText("Letzte Änderung:\t\t\t" +  str( Speichern.getModTimeBPM(mW.comboBoxBPMBPM.currentText()) ) + "\n")
-    
+            if platform.system() == "Windows":
+                mW.textEditBPM.insertPlainText("Name des Sensors:\t\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+                mW.textEditBPM.insertPlainText("Sensor Auflösung:\t\t\t" + str(zeilen) + " x " + str(spalten) + "\n")
+                mW.textEditBPM.insertPlainText("Sensors Erstelldatum:\t\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
+                mW.textEditBPM.insertPlainText("Gelesene Bilder des Sensors:\t" + str(geleseneBilder) + "\n")
+                mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t\t\t" + str(anzahlPixelfehler) + "\n")
+                mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t\t\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
+                mW.textEditBPM.insertPlainText("Letzte Änderung:\t\t\t" +  str( Speichern.getModTimeBPM(mW.comboBoxBPMBPM.currentText()) ) + "\n")
+            else:
+                mW.textEditBPM.insertPlainText("Name des Sensors:\t\t" + DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Sensor_Name"] + "\n")
+                mW.textEditBPM.insertPlainText("Sensor Auflösung:\t\t" + str(zeilen) + " x " + str(spalten) + "\n")
+                mW.textEditBPM.insertPlainText("Sensors Erstelldatum:\t\t" +  str(DATA["Sensors"][int(mW.comboBoxBPMSensor.currentIndex())]["Erstell_Datum"]) + "\n")
+                mW.textEditBPM.insertPlainText("Gelesene Bilder des Sensors:\t" + str(geleseneBilder) + "\n")
+                mW.textEditBPM.insertPlainText("Anzahl Pixelfehler:\t\t" + str(anzahlPixelfehler) + "\n")
+                mW.textEditBPM.insertPlainText("Anteil Pixelfehler:\t\t" + str( round(anzahlPixelfehler/(spalten * zeilen)*100, 2)) + " % \n")
+                mW.textEditBPM.insertPlainText("Letzte Änderung:\t\t" +  str( Speichern.getModTimeBPM(mW.comboBoxBPMBPM.currentText()) ) + "\n")
     def showBPM():
         global flagBPMVorschau
         if flagBPMVorschau == True:
