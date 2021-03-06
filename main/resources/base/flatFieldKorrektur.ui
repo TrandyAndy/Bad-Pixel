@@ -189,6 +189,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="pushButtonGespeicherteBilder">
+     <property name="text">
+      <string>Gespeicherte Bilder anzeigen</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
