@@ -403,7 +403,7 @@ if __name__ == '__main__':
             mW.textEditBPM.insertPlainText("Herzlich willkomen zum Bad-Pixel-Programm \n\n")
             mW.textEditBPM.insertPlainText("Sie haben noch keinen Sensor erstellt.\n")
             mW.textEditBPM.insertPlainText("Drücken Sie hierfür bitte den Knopf \"Neuer Sensor erstellen ...\"\n")
-            mW.textEditBPM.insertPlainText("Außerdem können Sie üben den Knopf \"Sensoren laden ...\" bereits erstellte Sensoren inportieren.\n\n")
+            mW.textEditBPM.insertPlainText("Außerdem können Sie üben den Knopf \"Sensoren laden ...\" bereits erstellte Sensoren importieren.\n\n")
             mW.textEditBPM.insertPlainText("Viel Spaß mit dem Programm wünschen Andreas B. und Julian S.")
             setEnabledSensor(False)
             return
