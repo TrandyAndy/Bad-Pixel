@@ -90,22 +90,22 @@ InitConfigData ={
     "Autor": "Julian und Andy",
     "Datum" : str(date.today()), 
     "Sensors" : [
-        {
-            "Sensor_Name" : "",
-            "Erstell_Datum" : "1995-01-01",
-            "Anz_Bilder" : 0, 
-            "Anz_PixelFehler" : 0, 
-	        "last_Fensterbreite_advWindow" : 88,
-            "last_Faktor_advWindow" : 3,
-            "last_Schwellwert_oben" : 99,
-            "last_Schwellwert_unten" : 1,
-            "last_Faktor_Dynamik" : 8,
-            "last_korrekturmethode" : 3, #int(cfg.Methoden.NSRC),
-            "last_Fenster_Nachbar" : 5,
-            "last_Fenster_Gradient" : 5,
-            "Flat_Field_vorhanden" : False,
-            "Aenderungs_Datum" : str(date.today())
-        }
+        # {
+        #     "Sensor_Name" : "",
+        #     "Erstell_Datum" : "1995-01-01",
+        #     "Anz_Bilder" : 0, 
+        #     "Anz_PixelFehler" : 0, 
+	    #     "last_Fensterbreite_advWindow" : 88,
+        #     "last_Faktor_advWindow" : 3,
+        #     "last_Schwellwert_oben" : 99,
+        #     "last_Schwellwert_unten" : 1,
+        #     "last_Faktor_Dynamik" : 8,
+        #     "last_korrekturmethode" : 3, #int(cfg.Methoden.NSRC),
+        #     "last_Fenster_Nachbar" : 5,
+        #     "last_Fenster_Gradient" : 5,
+        #     "Flat_Field_vorhanden" : False,
+        #     "Aenderungs_Datum" : str(date.today())
+        # }
     ],
     "last_GenutzterSensor" : "erzeuge einen Sensor",
     "Import_Pfad" : " ",
