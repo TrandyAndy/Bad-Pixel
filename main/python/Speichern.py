@@ -21,12 +21,15 @@ def BPM_Save(BPM, Sensor_Name):
         if DatName.find(Sensor_Name) !=-1:
             Start=DatName.find("V",len(Sensor_Name))
             Ende=DatName.find(".",len(Sensor_Name))
-            sZahl=DatName[Start+1:Ende]
-            #print(sZahl)
-            Zahl=int(sZahl)
-            if(Zahl>Nr):
-                Nr=Zahl
-                #y=x[i]
+            if (Start < 0) or (Ende < 0):   # Wenn die Datei kein V oder . im Namen hat
+                pass
+            else: 
+                sZahl=DatName[Start+1:Ende]
+                #print(sZahl)
+                Zahl=int(sZahl)
+                if(Zahl>Nr):
+                    Nr=Zahl
+                    #y=x[i]
     if len(x)>300:
         print("Speicher voll")
         return -1
@@ -47,12 +50,15 @@ def BPM_Read(Sensor_Name):
         if DatName.find(Sensor_Name) !=-1:
             Start=DatName.find("V",len(Sensor_Name))
             Ende=DatName.find(".",len(Sensor_Name))
-            sZahl=DatName[Start+1:Ende]
-            #print(sZahl)
-            Zahl=int(sZahl)
-            if(Zahl>Nr):
-                Nr=Zahl
-                #y=x[i]
+            if (Start < 0) or (Ende < 0):   # Wenn die Datei keiin V oder . im Namen hat
+                pass
+            else:   # wenn die Datei ein V und . im Namen hat
+                sZahl=DatName[Start+1:Ende]
+                #print(sZahl)
+                Zahl=int(sZahl)
+                if(Zahl>Nr):
+                    Nr=Zahl
+                    #y=x[i]
     if Nr==0:
         print("Kein Korrekturdatensatz vorhanden, muss Erstellt werden") #Error Meldungen in GUI?
         return -1
@@ -231,7 +237,35 @@ def deleteAllBPM(Sensor_Name):
                 # print(aktuellesFile.find("_V",len(Sensor_Name))) # debug
                 #print(len(Sensor_Name)) # debug
                 if aktuellesFile.find("_V",len(Sensor_Name)) == len(Sensor_Name) :  # Kommt nach dem Sensorname gleich die Nummerierung
-                    # print("wird gelöscht") # Achtung Bug unter Mac
+                    # print("wird geloescht") # Achtung Bug unter Mac
                     os.remove(os.path.join(dir_path,aktuellesFile))
         #print(bpmFiles)         # debug
         #print(len(bpmFiles))    # debug
+
+def saveFFK(Sensor_Name, Hellbild, Dunkelbild):
+    if os.path.isdir(dir_path):   #os.path.exists(dirname): # wenn der Pfad überhaupt existiert
+        filePath = os.path.join(dir_path, Sensor_Name + "_FFK_Hellbild.png")
+        cv2.imwrite(filePath, Hellbild)
+        filePath = os.path.join(dir_path, Sensor_Name + "_FFK_Dunkelbild.png")
+        cv2.imwrite(filePath, Dunkelbild)
+def loadFFK(Sensor_Name, flagShow=False):
+    Hellbild = []
+    Dunkelbild = []
+    if os.path.isdir(dir_path):   #os.path.exists(dirname): # wenn der Pfad überhaupt existiert
+        files = os.listdir(dir_path)
+        for aktuellesFile in files:
+            if aktuellesFile.find(Sensor_Name) == 0:  # Wenn der Name am Anfang steht
+                if aktuellesFile.find("_FFK_Hellbild.png",len(Sensor_Name)) == len(Sensor_Name) :  # Kommt nach dem Sensorname gleich _FFK_Hellbild.png
+                    Hellbild = imP.importFunction(os.path.join(dir_path,aktuellesFile)) [0]
+                    if flagShow:
+                        cv2.imshow("FFK_Hellbild",Hellbild)
+                    print("Hellbild") # debug
+                elif aktuellesFile.find("_FFK_Dunkelbild.png",len(Sensor_Name)) == len(Sensor_Name) : # Kommt nach dem Sensorname gleich _FFK_Dunkelbild.png
+                    Dunkelbild = imP.importFunction(os.path.join(dir_path,aktuellesFile)) [0]
+                    print("Dunkelbild") # debug
+                    if flagShow:
+                        winname = "FFK_Dunkelbild"
+                        cv2.namedWindow(winname)        # Create a named window
+                        cv2.moveWindow(winname, 512,0)  # Move it to (40,30)
+                        cv2.imshow(winname,Dunkelbild)
+    return Hellbild, Dunkelbild

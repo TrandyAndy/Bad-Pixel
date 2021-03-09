@@ -184,7 +184,14 @@
    <item>
     <widget class="QRadioButton" name="radioButtonGespeicherteBilder">
      <property name="text">
-      <string>Gespeicherte Bilder verwenden</string>
+      <string>Zuletzt benutzte Bilder verwenden</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonGespeicherteBilder">
+     <property name="text">
+      <string>Zuletzt benutzte Bilder anzeigen</string>
      </property>
     </widget>
    </item>
