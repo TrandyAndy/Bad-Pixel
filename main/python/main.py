@@ -1240,7 +1240,8 @@ if __name__ == '__main__':
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
             if np.shape(cfg.Global_BPM_Multi) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
-            cv2.imshow("Gefundene Pixelfehler",vorschauBild)    # so kommt beim Mac immer alle Fehler der BPM
+            if mW.checkBoxAlgorithmusSuchen.isChecked():
+                cv2.imshow("Gefundene Pixelfehler",vorschauBild)    # so kommt beim Mac immer alle Fehler der BPM
             #Zusammenfassen + Speichern oder Laden
             if mW.checkBoxAlgorithmusSuchen.isChecked():
                 fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
