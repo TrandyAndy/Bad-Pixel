@@ -91,6 +91,7 @@ InitConfigData ={
     "Datum" : str(date.today()), 
     "Sensors" : [
         {
+            """
             "Sensor_Name" : "X-0815",
             "Erstell_Datum" : "1995-01-01",
             "Anz_Bilder" : 0, 
@@ -105,6 +106,7 @@ InitConfigData ={
             "last_Fenster_Gradient" : 5,
             "Flat_Field_vorhanden" : False,
             "Aenderungs_Datum" : str(date.today())
+            """
         }
     ],
     "last_GenutzterSensor" : "erzeuge einen Sensor",
