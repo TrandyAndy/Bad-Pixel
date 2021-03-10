@@ -188,7 +188,7 @@ if __name__ == '__main__':
                 # FFK Bilder speichern
                 Speichern.saveFFK(mW.comboBoxBPMSensor.currentText(), bildDatenHell, bildDatenDunkel)
             else:   # Bilder sollen geladen werden
-                bildDatenHell, bildDatenDunkel = Speichern.loadFFK()
+                bildDatenHell, bildDatenDunkel = Speichern.loadFFK(mW.comboBoxBPMSensor.currentText())
                 if bildDatenHell == []:
                     print("Fehler")
                 if bildDatenDunkel == []:
