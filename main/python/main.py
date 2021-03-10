@@ -188,7 +188,7 @@ if __name__ == '__main__':
                 # FFK Bilder speichern
                 Speichern.saveFFK(mW.comboBoxBPMSensor.currentText(), bildDatenHell, bildDatenDunkel)
             else:   # Bilder sollen geladen werden
-                bildDatenHell, bildDatenDunkel = Speichern.loadFFK()
+                bildDatenHell, bildDatenDunkel = Speichern.loadFFK(mW.comboBoxBPMSensor.currentText())
                 if bildDatenHell == []:
                     print("Fehler")
                 if bildDatenDunkel == []:
@@ -552,7 +552,7 @@ if __name__ == '__main__':
         #print("Ordnerdialog geöffnet", filename)
         if nB.exec() == widgets.QDialog.Accepted:
             global sensorList
-            if nB.lineEditNeueBPM.text().lower() in sensorList:
+            if nB.lineEditNeueBPM.text() in sensorList:
                 print("So einen Sensor gibt es schon")   # debug
                 openMessageBox(icon=widgets.QMessageBox.Information, text="Achtung diesen Sensor gibt es schon!", informativeText="Es gibt bereits einen Sensor mit dem selben Namen. Bitte wählen Sie einen anderen Namen für den neuen Sensor.", windowTitle="Achtung diesen Sensor gibt es schon!",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                 return
@@ -1240,7 +1240,8 @@ if __name__ == '__main__':
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Moving,pBild=vorschauBild,bgr = 0)#MovingW = blau
             if np.shape(cfg.Global_BPM_Multi) != ():
                 vorschauBild=telemetry.markPixelsVirtuell(bpm=cfg.Global_BPM_Multi,pBild=vorschauBild,bgr = 1) #Multi=grün
-            cv2.imshow("Gefundene Pixelfehler",vorschauBild)    # so kommt beim Mac immer alle Fehler der BPM
+            if mW.checkBoxAlgorithmusSuchen.isChecked():
+                cv2.imshow("Gefundene Pixelfehler",vorschauBild)    # so kommt beim Mac immer alle Fehler der BPM
             #Zusammenfassen + Speichern oder Laden
             if mW.checkBoxAlgorithmusSuchen.isChecked():
                 fortschritt.textEdit.insertPlainText("Pixelfehler-Suche ist abgeschlossen.\n")
