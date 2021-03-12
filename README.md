@@ -9,11 +9,12 @@ Ein plattformunabhängiges Python-Programm mit GUI, welches Bildfehler (Bad-Pixe
 * **OpenCV für Python** - [Link](https://pypi.org/project/opencv-python-headless/) (Für den Import, Export und Anzeigen von Bildern)
 * **PyQt 5** - [Link](https://pypi.org/project/PyQt5/) (für die grafische Benutzeroberfläche)
 * **matplotlib** - [Link](https://matplotlib.org) (Für das Anzeigen von Diagrammen)
+* **Fman Build System** - [Link](https://build-system.fman.io) (Für die Erstellung des Installers und der Exe)
 
 ### Mit folgenden Befehlen können alle notwendigen Bibliotheken installiert werden
-pip install numpy
+pip install fbs PyQt5==5.9.2
 
-pip install PyQt5
+pip install numpy
 
 pip install matplotlib
 
