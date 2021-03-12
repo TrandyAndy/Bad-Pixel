@@ -32,9 +32,9 @@ Für das Erstellen einer ausführbaren Datei und eines Installers wird das fman-
 Den Hinweis mit der zu verwendeten Python Version ernst nehmen! 
 
 #### Probleme unter Windows lösen
-Die Erstellung der EXE mit dem Befehl <fbs freeze> führt unter Windows zu Fehlern. Folgende Sachen müssen noch getätigt werden, damit es funktioniert:
+Die Erstellung der EXE mit dem Befehl "fbs freeze" führt unter Windows zu Fehlern. Folgende Sachen müssen noch getätigt werden, damit es funktioniert:
 * Sicherstellen das die Python Version 3.5 oder 3.6 verwendet wird.
-* Installation von pypiwin32 mit <pip install pypiwin32>
+* Installation von pypiwin32 mit "pip install pypiwin32"
 * Fehlende DLL "msvcr100.dll" installieren z.B. unter https://www.chip.de/downloads/msvcr100.dll_143094992.html
 
 
