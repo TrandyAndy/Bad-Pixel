@@ -37,6 +37,8 @@ Die Erstellung der EXE mit dem Befehl "fbs freeze" führt unter Windows zu Fehle
 * Installation von pypiwin32 mit "pip install pypiwin32"
 * Für Windows 10 64 Bit: Fehlende DLL "msvcr100.dll" installieren z.B. von https://www.chip.de/downloads/msvcr100.dll_143094992.html Die Datei unter C:\Windows\System32 einfügen.
 * Für Windows 10 32 Bit: Fehlende DLL "msvcr110.dll" installieren z.B. von https://www.chip.de/downloads/msvcr110.dll_143095169.html Die Datei unter C:\Windows\System32 einfügen.
+* Für Windows 10 32 Bit: Fehlende DLL "msvcp110.dll" installieren z.B. von https://praxistipps.chip.de/msvcp110-dll-fehlt-was-tun_13586 Die Datei unter C:\Windows\System32 einfügen.
+    * https://de.dll-files.com/api-ms-win-crt-multibyte-l1-1-0.dll.html
 
 
 ### GUI bearbeiten
