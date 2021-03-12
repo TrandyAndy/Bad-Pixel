@@ -35,7 +35,8 @@ Den Hinweis mit der zu verwendeten Python Version ernst nehmen!
 Die Erstellung der EXE mit dem Befehl "fbs freeze" führt unter Windows zu Fehlern. Folgende Sachen müssen noch getätigt werden, damit es funktioniert:
 * Sicherstellen das die Python Version 3.5 oder 3.6 verwendet wird.
 * Installation von pypiwin32 mit "pip install pypiwin32"
-* Fehlende DLL "msvcr100.dll" installieren z.B. unter https://www.chip.de/downloads/msvcr100.dll_143094992.html
+* Für Windows 10 64 Bit: Fehlende DLL "msvcr100.dll" installieren z.B. von https://www.chip.de/downloads/msvcr100.dll_143094992.html Die Datei unter C:\Windows\System32 einfügen.
+* Für Windows 10 32 Bit: Fehlende DLL "msvcr110.dll" installieren z.B. von https://www.chip.de/downloads/msvcr110.dll_143095169.html Die Datei unter C:\Windows\System32 einfügen.
 
 
 ### GUI bearbeiten
