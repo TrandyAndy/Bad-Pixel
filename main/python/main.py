@@ -675,7 +675,10 @@ if __name__ == '__main__':
                     rows, cols, anzahlHisBilder, farbtiefe = imP.getAufloesungUndAnzahlUndFarbtiefe(os.path.join(dirname,imageFiles[index]))
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-                    mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+                    if type(farbtiefe) == str:
+                        mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
+                    else:
+                        mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
                     mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(imageFiles))) ,4, widgets.QTableWidgetItem( str(os.path.join(dirname,imageFiles[index])) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
                     # zentrieren
                     mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(imageFiles))), 1).setTextAlignment(core.Qt.AlignCenter)
@@ -709,7 +712,10 @@ if __name__ == '__main__':
             # print(data, imP.np.shape(data))
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-            mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+            if type(farbtiefe) == str:
+                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
+            else:
+                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
             mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
             mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
             mW.tableWidgetBilddaten.item((index + (anzahlBilder - len(filename))), 2).setTextAlignment(core.Qt.AlignCenter)
@@ -899,7 +905,10 @@ if __name__ == '__main__':
             # print(data, imP.np.shape(data))
             fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
             fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-            fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+            if type(farbtiefe) == str:
+                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
+            else:
+                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
             fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
             
             fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
@@ -947,7 +956,10 @@ if __name__ == '__main__':
             # print(data, imP.np.shape(data))
             fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
             fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
-            fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+            if type(farbtiefe) == str:
+                        mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
+            else:
+                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
             fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
             
             fF.tableWidgetDunkel.item((index + (anzahlBilderDunkel - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)

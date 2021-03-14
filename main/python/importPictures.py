@@ -5,24 +5,52 @@
  * @Date: 2020-06-15 17:48:37
  * @Last Modified by: JLS666
  * @Last Modified time: 2020-10-14 23:25:37
- * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren, To-Do: Datei in OpenCV Format importieren
+ * @Description: Python Programm um ein oder mehrere Bilder des Formats his zu importieren
  */
  """
 
+#########################################################################################################
+# HIS-File Aufbau:  100 Byte großer Header, danach unkomprimiertes Bild im Rohformat, z.B. in uint16
+#                   Der 9. uint16 im Header: Anzahl der Pixel in der Breite
+#                   Der 10. uint16 im Header: Anzahl der Pixel in der Höhe
+#                   Der 11. uint16 im Header: Anzahl der Bilder in der Bildserie
+#                   Über die Dateigröße kann die Farbtiefe berechnet werden          
+#########################################################################################################
+
 import os                                                                   # Für die Path-Manipulation
 import numpy as np                                                          # Für Arrays
-import cv2                                                                  # Import OpenCV
-from datetime import datetime
-
+import cv2                                                                  # Import und Export OpenCV
+from datetime import datetime                                               # Für das Auslesen des aktuellen Datum und Zeit
 
 def getNumberImages(pImportPath, rows, cols):                               # Funktion: Die Anzahl der Bilder in der Datei bestimmten, Rückgabewert: Anzahl Bilder
     file = open(pImportPath,'rb')                                           # File erneut öffnen, da ansonsten der "Cursor" falsch liegt
     data = np.fromfile(file,dtype=np.uint16)                                # komplettes File einlesen
     numberImages = (np.size(data) - 50) / (rows*cols)                       # Die Anzahl der Bilder bestimmen: die Größe des uint16 Arrays bestimmen, dann minus 50 Elemten (der Header der Datei) und dann geteilt durch die Pixel-Anzahl eines Bildes
     file.close()                                                            # File schließen
-    return numberImages                                                    # Die Anzahl der Bilder zurückgeben
+    return numberImages                                                     # Die Anzahl der Bilder zurückgeben
 
-def hisImportFunction2(pImportPath, pExport = False):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
+def getFarbtiefe(pImportPath):                                              # Funktion: Farbtiefe einer HIS-Datei bestimmten, Rückgabewert: Farbtiefe im Format uint16 oder uint8
+    file = open(pImportPath,'rb')                                           # File erneut öffnen, da ansonsten der "Cursor" falsch liegt
+    data = np.fromfile(file,dtype=np.uint16)                                # komplettes File einlesen
+    cols = int(np.take(data, 8))                                            # Breite auslesen
+    rows = int(np.take(data, 9))                                            # Höhe auslesen
+    numberImages = int(np.take(data, 10))                                   # Anzahl der Bilder auslesen
+    farbtiefe = (np.size(data) - 50) * 16 / (rows * cols * numberImages)    # Die Anzahl der Bilder bestimmen: die Größe des uint16 Arrays bestimmen, dann minus 50 Elemten (der Header der Datei) und dann geteilt durch die Pixel-Anzahl eines Bildes
+    file.close()                                                            # File schließen
+    if int(farbtiefe) == 16:                                                # 16 Bit pro Pixel?
+        tempVar = np.zeros(1,dtype=np.uint16)                               # Für einheitiger Rückgabetyp
+        farbtiefe = tempVar.dtype                                           # Für einheitiger Rückgabetyp
+    elif int(farbtiefe) == 8:                                               # 8 Bit pro Pixel?
+        tempVar = np.zeros(1,dtype=np.uint8)                                # Für einheitiger Rückgabetyp
+        farbtiefe = tempVar.dtype                                           # Für einheitiger Rückgabetyp
+    else:                                                                   # Keine 8 oder 16 Bit pro Pixel?
+        farbtiefe = "FEHLER"                                                # Datei gibt keinen Sinn
+    return farbtiefe                                                        # Farbtiefe 
+
+
+
+
+def hisImportFunction2(pImportPath, pExport = False):                       # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
     pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
     print("\n\n*************************************************************")
     print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
@@ -199,6 +227,27 @@ def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPa
    
 def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
     dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
+    if dateiEndung == ".his":                                                       # Eine his-Datei
+        fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
+        data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
+        rows = int(np.take(data, 8))                                            # Reihen bestimmen, in int konvertieren, ansonsten overflow Error bei der Funktion fromfile()
+        cols = int(np.take(data, 9))                                            # Spalten bestimmen
+        anzahl = int(np.take(data, 10))                                         # Anzahl der Bilder aus der HIS Datei auslesen.
+        fd.close()                                                              # File schließen
+        farbtiefe = getFarbtiefe(pImportPath)
+        # anzahl = getNumberImages(pImportPath, rows, cols)                                                     
+        # farbtiefe = data.dtype.name
+        # farbtiefe = data.dtype
+    elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
+        bild = cv2.imread(pImportPath, flags= -1)                               # Bilder mit OpenCV einlesen
+        cols = np.shape(bild)[0]                                                # Reihenanzahl bestimmen 
+        rows = np.shape(bild)[1]                                                # Spaltenanzahl bestimmen
+        anzahl = 1
+        farbtiefe = bild.dtype
+    return rows, cols, anzahl, farbtiefe
+
+def getAufloesungUndAnzahlUndFarbtiefe2(pImportPath):
+    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
     if dateiEndung == ".his": # Eine his-Datei
         fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
         data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
@@ -264,3 +313,9 @@ print("\n-----------------\n", meineListe)
 pass
 
 """
+
+#data = np.fromfile("/Users/julian/Desktop/Mittelwert.his",dtype=np.uint16)
+#print(getFarbtiefe("/Users/julian/Desktop/Mittelwert.his"))
+#print(getAufloesungUndAnzahlUndFarbtiefe2("/Users/julian/Desktop/Mittelwert.his"))
+#data[9] = 256
+#data.tofile("/Users/julian/Desktop/Mittelwert2.his")
