@@ -50,41 +50,6 @@ def getFarbtiefe(pImportPath):                                              # Fu
 
 
 
-def hisImportFunction2(pImportPath, pExport = False):                       # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
-    pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
-    print("\n\n*************************************************************")
-    print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
-    print("*************************************************************\n")
-    fileName, fileExtension = os.path.splitext(os.path.basename(pImportPath))# Dateinamen und Dateiendung extrahieren    
-    print("Die Datei", fileName, "wird jetzt eingelesen.")
-    fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
-    data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
-    rows = int(np.take(data, 8))                                            # Reihen bestimmen, in int konvertieren, ansonsten overflow Error bei der Funktion fromfile()
-    cols = int(np.take(data, 9))                                            # Spalten bestimmen
-    numberImages = int(getNumberImages(pImportPath, rows, cols))            # Anzahl der Bilder in der Datei bestimmen
-    print("Ihre Datei hat", rows, "Reihen und", cols, "Spalten und besteht aus", numberImages, "Bild(ern)")
-
-    for index in range(numberImages):                                       # Alle Bilder anzeigen und speichern
-        f = np.fromfile(fd, dtype=np.uint16, count=rows*cols)               # Pixel lesen und in einem ein dimensionales Array speichern
-        im = f.reshape((rows, cols)) 
-                                              # Array in zwei dimensionales Array mit rows x cols erstellen
-        #np.savetxt("foo.csv", im, delimiter=";")
-
-        #for testValue in np.nditer(f):
-        #    if testValue >= 60000:
-        #        print("Sehr schwarz hier!")
-        #plt.plot(im)
-        #plt.show()
-        if pExport == True:
-            cv2.imshow('image', im)                                             # Array als Bild anzeigen
-            cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im)     # Array als PNG speichern ohne Kompression
-            print("Ihre Datei wurden unter", pathWithoutExtension+"_"+str(index)+".png gespeichert")
-            cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird      
-    if pExport == True:
-        cv2.destroyAllWindows()                                                 # Alle Fenster schließen    
-    fd.close()                                                              # File schließen
-    return im
-
 
 def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExportPath = "", pZeit=""):                        # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
     aktuelleZeit = pZeit   # aktuelles Datum und Zeit
@@ -163,9 +128,9 @@ def hisImportFunction(pImportPath, pExport = False, pMittelwert = False, pExport
 def importFunction(pImportPath, pExport = False, pExportPath="", pZeit=""): #vill noch ne fehlermeldung Wenn der Path kein Link enthält!?
     aktuelleZeit = pZeit   # aktuelles Datum und Zeit
     bild = cv2.imread(pImportPath, flags= -1)
-    if np.shape(bild) == ():
+    if np.shape(bild) == ():    # wenn das Lesen nicht erfoglreich war
         return ( np.zeros( (1, 512, 512), dtype=np.uint16) ) 
-    bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=np.uint16)
+    bildDaten = np.zeros( (1, np.shape(bild)[0], np.shape(bild)[1]), dtype=bild.dtype)
     if np.shape(bildDaten[0]) == np.shape(bild):    # Wenn die Array eine andere Größe besitzen, d.h. wenn es kein Farbbild ist
         bildDaten[0] = bild
     else:
@@ -189,13 +154,7 @@ def importFunction(pImportPath, pExport = False, pExportPath="", pZeit=""): #vil
         #cv2.destroyAllWindows()      
     return bildDaten
    
-def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
-    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower()
-    if dateiEndung == ".his": # Eine his-Datei
-        bildDaten = hisImportFunction(pImportPath, pExport)
-    elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
-        bildDaten = importFunction(pImportPath, pExport)
-    return bildDaten
+
    
 def importUIFunction(pImportPath, pMittelwert = True, pExport = False, pExportPath="", pMittelwertGesamt = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
     #bildDaten = []
@@ -240,29 +199,9 @@ def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
         # farbtiefe = data.dtype
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
         bild = cv2.imread(pImportPath, flags= -1)                               # Bilder mit OpenCV einlesen
-        cols = np.shape(bild)[0]                                                # Reihenanzahl bestimmen 
-        rows = np.shape(bild)[1]                                                # Spaltenanzahl bestimmen
+        rows = np.shape(bild)[0]                                                # Reihenanzahl bestimmen 
+        cols = np.shape(bild)[1]                                                # Spaltenanzahl bestimmen
         anzahl = 1
-        farbtiefe = bild.dtype
-    return rows, cols, anzahl, farbtiefe
-
-def getAufloesungUndAnzahlUndFarbtiefe2(pImportPath):
-    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
-    if dateiEndung == ".his": # Eine his-Datei
-        fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
-        data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
-        rows = int(np.take(data, 8))                                            # Reihen bestimmen, in int konvertieren, ansonsten overflow Error bei der Funktion fromfile()
-        cols = int(np.take(data, 9))                                            # Spalten bestimmen
-        fd.close()        
-        anzahl = getNumberImages(pImportPath, rows, cols)                                                     # File schließen
-        #farbtiefe = data.dtype.name
-        farbtiefe = data.dtype
-    elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
-        bild = cv2.imread(pImportPath, flags= -1)
-        rows = np.shape(bild)[0]
-        cols = np.shape(bild)[1]
-        anzahl = 1
-        #farbtiefe = bild.dtype.name
         farbtiefe = bild.dtype
     return rows, cols, anzahl, farbtiefe
 
@@ -314,8 +253,72 @@ pass
 
 """
 
-#data = np.fromfile("/Users/julian/Desktop/Mittelwert.his",dtype=np.uint16)
-#print(getFarbtiefe("/Users/julian/Desktop/Mittelwert.his"))
-#print(getAufloesungUndAnzahlUndFarbtiefe2("/Users/julian/Desktop/Mittelwert.his"))
-#data[9] = 256
-#data.tofile("/Users/julian/Desktop/Mittelwert2.his")
+# deprecated/veraltete Funktionen
+"""
+def getAufloesungUndAnzahlUndFarbtiefe2(pImportPath):
+    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower() # kleinschreiben, weil manche OS (Windows) Dateieindungen Groß schreiben
+    if dateiEndung == ".his": # Eine his-Datei
+        fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
+        data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
+        rows = int(np.take(data, 8))                                            # Reihen bestimmen, in int konvertieren, ansonsten overflow Error bei der Funktion fromfile()
+        cols = int(np.take(data, 9))                                            # Spalten bestimmen
+        fd.close()        
+        anzahl = getNumberImages(pImportPath, rows, cols)                                                     # File schließen
+        #farbtiefe = data.dtype.name
+        farbtiefe = data.dtype
+    elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
+        bild = cv2.imread(pImportPath, flags= -1)
+        rows = np.shape(bild)[0]
+        cols = np.shape(bild)[1]
+        anzahl = 1
+        #farbtiefe = bild.dtype.name
+        farbtiefe = bild.dtype
+    return rows, cols, anzahl, farbtiefe
+
+
+def importUIFunctionAlt(pImportPath, pExport = False): # Rückgabe Bild-Array und Auflösung Breite und Höhe
+    dateiEndung = (os.path.splitext(os.path.basename(pImportPath)) [1]).lower()
+    if dateiEndung == ".his": # Eine his-Datei
+        bildDaten = hisImportFunction(pImportPath, pExport)
+    elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
+        bildDaten = importFunction(pImportPath, pExport)
+    return bildDaten
+
+
+def hisImportFunction2(pImportPath, pExport = False):                       # Funktion: Bilder im HIS-Format importieren, Übergabewert: Path zum Bild
+    pathWithoutExtension = os.path.splitext(pImportPath) [0]                # Pfad ohne Dateiendung erzeugen, .his wird entfernt
+    print("\n\n*************************************************************")
+    print("Funktion zum Einlesen von HIS-Dateien aufgerufen")
+    print("*************************************************************\n")
+    fileName, fileExtension = os.path.splitext(os.path.basename(pImportPath))# Dateinamen und Dateiendung extrahieren    
+    print("Die Datei", fileName, "wird jetzt eingelesen.")
+    fd = open(pImportPath,'rb')                                             # Das Bild öffnen im "rb"-Modus: read binary
+    data = np.fromfile(fd,dtype=np.uint16, count=50)                        # Den Header 50 mal mit unsinged int 16 Bit einlesen (erste 100 Bytes)
+    rows = int(np.take(data, 8))                                            # Reihen bestimmen, in int konvertieren, ansonsten overflow Error bei der Funktion fromfile()
+    cols = int(np.take(data, 9))                                            # Spalten bestimmen
+    numberImages = int(getNumberImages(pImportPath, rows, cols))            # Anzahl der Bilder in der Datei bestimmen
+    print("Ihre Datei hat", rows, "Reihen und", cols, "Spalten und besteht aus", numberImages, "Bild(ern)")
+
+    for index in range(numberImages):                                       # Alle Bilder anzeigen und speichern
+        f = np.fromfile(fd, dtype=np.uint16, count=rows*cols)               # Pixel lesen und in einem ein dimensionales Array speichern
+        im = f.reshape((rows, cols)) 
+                                              # Array in zwei dimensionales Array mit rows x cols erstellen
+        #np.savetxt("foo.csv", im, delimiter=";")
+
+        #for testValue in np.nditer(f):
+        #    if testValue >= 60000:
+        #        print("Sehr schwarz hier!")
+        #plt.plot(im)
+        #plt.show()
+        if pExport == True:
+            cv2.imshow('image', im)                                             # Array als Bild anzeigen
+            cv2.imwrite(pathWithoutExtension+"_"+str(index)+'_beta.png',im)     # Array als PNG speichern ohne Kompression
+            print("Ihre Datei wurden unter", pathWithoutExtension+"_"+str(index)+".png gespeichert")
+            cv2.waitKey()                                                       # Warten bis eine Taste gedrückt wird      
+    if pExport == True:
+        cv2.destroyAllWindows()                                                 # Alle Fenster schließen    
+    fd.close()                                                              # File schließen
+    return im
+
+
+"""
