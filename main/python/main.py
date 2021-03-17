@@ -694,19 +694,19 @@ if __name__ == '__main__':
                             tempPath = aktuellesFile.lower()
                             if tempPath.find("ä") != -1:
                                 #print("Es befindet sich ein ä im Datei- oder Pfadname") # debug
-                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ä im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + aktuellesFile, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ä im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + dirname + "/" + aktuellesFile, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                                 return
                             if tempPath.find("ö") != -1:
                                 #print("Es befindet sich ein ö im Datei- oder Pfadname") # debug
-                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ö im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + aktuellesFile,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ö im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + dirname + "/" + aktuellesFile, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                                 return
                             if tempPath.find("ü") != -1:
                                 #print("Es befindet sich ein ü im Datei- oder Pfadname") # debug
-                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ü im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + aktuellesFile,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ü im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + dirname + "/" + aktuellesFile, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                                 return
                             if tempPath.find("ß") != -1:
                                 #print("Es befindet sich ein ß im Datei- oder Pfadname") # debug
-                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ß im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad: ist " + aktuellesFile,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                                openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ß im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad: ist " + dirname + "/" + aktuellesFile, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                                 return
                         # Valide Daten check zu Ende
 
@@ -755,19 +755,19 @@ if __name__ == '__main__':
                 tempPath = file.lower()
                 if tempPath.find("ä") != -1:
                     #print("Es befindet sich ein ä im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ä im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + index, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ä im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                     return
                 if tempPath.find("ö") != -1:
                     #print("Es befindet sich ein ö im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ö im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + index,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ö im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                     return
                 if tempPath.find("ü") != -1:
                     #print("Es befindet sich ein ü im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ü im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + index,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ü im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                     return
                 if tempPath.find("ß") != -1:
                     #print("Es befindet sich ein ß im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ß im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad: ist " + index,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ß im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad: ist " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                     return
         # Valide Daten check zu Ende
 
