@@ -48,7 +48,7 @@ Anstatt das umfangreiche QT Studio zu downloaden, kann auch unter folgender Adre
 
 ### Lebenstipps
 * Anscheinend mag der Mac keine prints mit Umlauten, er stürtzt dann einfach ab. (nur in der ausführbaren Datei)
-* OpenCV unter Windows mag keine Umlaute (Ä, Ö, Ü) im Pfad und im Dateinamen, kann dann die Bilder nicht importieren
+* OpenCV unter Windows mag keine Umlaute (Ä, Ö, Ü) im Pfad oder im Dateinamen, kann dann die Bilder nicht importieren
 
 ## Versionen
 
