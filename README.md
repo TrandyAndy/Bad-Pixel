@@ -47,7 +47,8 @@ Die Erstellung der EXE mit dem Befehl "fbs freeze" führt unter Windows zu Fehle
 Anstatt das umfangreiche QT Studio zu downloaden, kann auch unter folgender Adresse eine abgespeckte Version runtergeladen werden: https://build-system.fman.io/qt-designer-download
 
 ### Lebenstipps
-Anscheinend mag der Mac keine prints mit Umlauten, er stürtzt dann einfach ab. (nur in der ausführbaren Datei)
+* Anscheinend mag der Mac keine prints mit Umlauten, er stürtzt dann einfach ab. (nur in der ausführbaren Datei)
+* OpenCV unter Windows mag keine Umlaute (Ä, Ö, Ü) im Pfad und im Dateinamen, kann dann die Bilder nicht importieren
 
 ## Versionen
 
