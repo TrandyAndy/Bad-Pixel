@@ -31,6 +31,11 @@ pip install opencv-python-headless
 Für das Erstellen einer ausführbaren Datei und eines Installers wird das fman-build-system verwendet. Ein einführendes Tutorial ist unter folgender Adresse zu finden: https://github.com/mherrmann/fbs-tutorial
 Den Hinweis mit der zu verwendeten Python Version ernst nehmen! 
 
+Getestete und Funktionierende PyQt5 Versionen
+* 5.9.2
+* 5.10.1
+* 5.11.3 (gibt Fehler raus, funktioniert aber)
+
 #### Probleme unter Windows lösen
 Die Erstellung der EXE mit dem Befehl "fbs freeze" führt unter Windows zu Fehlern. Folgende Sachen müssen noch getätigt werden, damit es funktioniert:
 * Sicherstellen das die Python Version 3.5 oder 3.6 verwendet wird.
