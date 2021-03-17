@@ -44,7 +44,9 @@ def getFarbtiefe(pImportPath):                                              # Fu
         tempVar = np.zeros(1,dtype=np.uint8)                                # Für einheitiger Rückgabetyp
         farbtiefe = tempVar.dtype                                           # Für einheitiger Rückgabetyp
     else:                                                                   # Keine 8 oder 16 Bit pro Pixel?
-        farbtiefe = "FEHLER"                                                # Datei gibt keinen Sinn
+        tempVar = np.zeros(1,dtype=np.int64)                                # Für einheitiger Rückgabetyp
+        farbtiefe = tempVar.dtype                                           # Datei gibt keinen Sinn
+        print("Fehler, unbekanntes HIS Format")                             # debug Ausgabe
     return farbtiefe                                                        # Farbtiefe 
 
 
@@ -199,10 +201,18 @@ def getAufloesungUndAnzahlUndFarbtiefe(pImportPath):
         # farbtiefe = data.dtype
     elif dateiEndung == ".png" or dateiEndung == ".jpg" or dateiEndung == ".jpeg" or dateiEndung == ".tif" or dateiEndung == ".tiff":
         bild = cv2.imread(pImportPath, flags= -1)                               # Bilder mit OpenCV einlesen
-        rows = np.shape(bild)[0]                                                # Reihenanzahl bestimmen 
-        cols = np.shape(bild)[1]                                                # Spaltenanzahl bestimmen
-        anzahl = 1
-        farbtiefe = bild.dtype
+        if bild is None:
+            print("Fehler beim imread")
+            rows = 0
+            cols = 0
+            anzahl = 0
+            tempVar = np.zeros(1,dtype=np.int64)                                # Für einheitiger Rückgabetyp
+            farbtiefe = tempVar.dtype                                           # Datei gibt keinen Sinn
+        else:
+            rows = np.shape(bild)[0]                                                # Reihenanzahl bestimmen 
+            cols = np.shape(bild)[1]                                                # Spaltenanzahl bestimmen
+            anzahl = 1
+            farbtiefe = bild.dtype
     return rows, cols, anzahl, farbtiefe
 
 def checkGreyimage(pImportPath):
