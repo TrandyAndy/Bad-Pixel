@@ -686,9 +686,6 @@ if __name__ == '__main__':
                         #anzahlBilderLocal = anzahlBilderLocal + 1
                         imageFiles.append(aktuellesFile)
 
-
-
-
                         # Sind die Daten valide? Umlaute usw. nur für Windows erforderlich
                         if platform.system() == "Windows": 
                             tempPath = aktuellesFile.lower()
@@ -709,7 +706,6 @@ if __name__ == '__main__':
                                 openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ß im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad: ist " + aktuellesFile,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
                                 return
                         # Valide Daten check zu Ende
-
                         
                 if len(imageFiles) <= 0:
                     openMessageBox(icon=widgets.QMessageBox.Information, text="Keine Bilder im aktuellen Verzeichnis",informativeText="Das Verzeichnis: \"" + dirname + "\" enthält keine gültigen Bilddateien. Es sind nur Bilder im PNG, JPG, TIF und HIS Format kompatibel. Bitte ändern Sie den eingegebenen Pfad.",windowTitle="Keine Bilder im Verzeichnis",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
