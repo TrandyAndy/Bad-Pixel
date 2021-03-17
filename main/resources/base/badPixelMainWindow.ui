@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
-    <height>607</height>
+    <width>656</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -524,8 +524,8 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>624</width>
-     <height>22</height>
+     <width>656</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>
