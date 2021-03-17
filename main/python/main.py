@@ -303,6 +303,11 @@ if __name__ == '__main__':
     def mW_tabWidget():
         global aktuellerTab
         aktuellerTab = mW.tabWidget.currentIndex()
+        if aktuellerTab != 0:   # BPM Vorschau deaktivieren
+            global flagBPMVorschau
+            cv2.destroyAllWindows()
+            flagBPMVorschau = False
+            mW.pushButtonBPMVorschau.setText("BPM-Vorschau an")
         # print(aktuellerTab)   # debug
         if aktuellerTab >= 3:
             mW.pushButtonMainForward.setText("Start")
