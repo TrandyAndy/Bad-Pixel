@@ -44,8 +44,7 @@ def getFarbtiefe(pImportPath):                                              # Fu
         tempVar = np.zeros(1,dtype=np.uint8)                                # Für einheitiger Rückgabetyp
         farbtiefe = tempVar.dtype                                           # Für einheitiger Rückgabetyp
     else:                                                                   # Keine 8 oder 16 Bit pro Pixel?
-        tempVar = np.zeros(1,dtype=np.int64)                                # Für einheitiger Rückgabetyp
-        farbtiefe = tempVar.dtype                                           # Datei gibt keinen Sinn
+        farbtiefe = "FEHLER"                                                # Datei gibt keinen Sinn
         print("Fehler, unbekanntes HIS Format")                             # debug Ausgabe
     return farbtiefe                                                        # Farbtiefe 
 

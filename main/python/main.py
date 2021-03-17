@@ -250,7 +250,8 @@ if __name__ == '__main__':
             cfg.killFlagThreads=False
             cv2.destroyAllWindows()
         else:
-            Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern
+            if mW.checkBoxAlgorithmusSuchen.isChecked():    # nur eine neue Bad Pixelmap speichern, wenn auch Fehler gesucht wurden
+                Speichern.BPM_Save(BAD_Ges*150,mW.comboBoxBPMSensor.currentText()) #BPM Speichern
             cv2.destroyAllWindows()
             updateBPM() 
             updateTextBPM() # Text auf dem erstem Tab aktualisieren
@@ -991,39 +992,18 @@ if __name__ == '__main__':
             rows, cols, anzahlHisBilder, farbtiefe = imP.getAufloesungUndAnzahlUndFarbtiefe(filename[index])
             # data = imP.importUIFunction(filename[index])
 
-            # Sind die Daten valide? Umlaute usw. nur für Windows erforderlich
-        if platform.system() == "Windows":
-            for file in filename:      
-                tempPath = file.lower()
-                if tempPath.find("ä") != -1:
-                    #print("Es befindet sich ein ä im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ä im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    return
-                if tempPath.find("ö") != -1:
-                    #print("Es befindet sich ein ö im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ö im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    return
-                if tempPath.find("ü") != -1:
-                    #print("Es befindet sich ein ü im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ü im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    return
-                if tempPath.find("ß") != -1:
-                    #print("Es befindet sich ein ß im Datei- oder Pfadname") # debug
-                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ß im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad: ist " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
-                    return
-        # Valide Daten check zu Ende
-
             # print(data, imP.np.shape(data))
             fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
             fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
             if type(farbtiefe) == str:
-                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
+                fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
             else:
-                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+                fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
             fF.tableWidgetHell.setItem( (index + (anzahlBilderHell - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
             
             fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
             fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 2).setTextAlignment(core.Qt.AlignCenter)
+            #print(fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 3))
             fF.tableWidgetHell.item((index + (anzahlBilderHell - len(filename))), 3).setTextAlignment(core.Qt.AlignCenter)
             
     def fF_pushButtonHellDelete():
@@ -1056,6 +1036,29 @@ if __name__ == '__main__':
         # file Dialog, kompatible Dateien: *.his *.png *.jpg *.jpeg *.tif *.tiff,
         # Alle Pfäde der Dateien werden in filename gespeichert
         filename = widgets.QFileDialog.getOpenFileNames(directory = DATA["Import_Pfad"], filter = "Bild-Dateien (*.his *.png *.jpg *.jpeg *.tif *.tiff)") [0]
+        
+        # Sind die Daten valide? Umlaute usw. nur für Windows erforderlich
+        if platform.system() == "Windows":
+            for file in filename:      
+                tempPath = file.lower()
+                if tempPath.find("ä") != -1:
+                    #print("Es befindet sich ein ä im Datei- oder Pfadname") # debug
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ä im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file, windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    return
+                if tempPath.find("ö") != -1:
+                    #print("Es befindet sich ein ö im Datei- oder Pfadname") # debug
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ö im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    return
+                if tempPath.find("ü") != -1:
+                    #print("Es befindet sich ein ü im Datei- oder Pfadname") # debug
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ü im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad ist: " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    return
+                if tempPath.find("ß") != -1:
+                    #print("Es befindet sich ein ß im Datei- oder Pfadname") # debug
+                    openMessageBox(icon=widgets.QMessageBox.Information, text="Es befindet sich ein ß im Datei- oder Pfadname",informativeText="Dieses Programm kann leider nicht mit Datei- oder Pfadnamen mit Umlauten arbeiten.  Bitte bennen Sie denjenigen Ordner oder Datei um.  Ihr importierter Pfad: ist " + file,windowTitle="Umlaut im Datei- oder Pfadname",standardButtons=widgets.QMessageBox.Ok,pFunction=msgButtonClick)
+                    return
+        # Valide Daten check zu Ende
+        
         # print(filename) # debug
         anzahlBilderDunkel = anzahlBilderDunkel + len(filename) # Anzahl der Bilder aktualisieren
         fF.tableWidgetDunkel.setRowCount(anzahlBilderDunkel) # Soviele Zeilen in der Tabelle aktivieren, wie es Bilder gibt.
@@ -1068,9 +1071,9 @@ if __name__ == '__main__':
             fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,1, widgets.QTableWidgetItem( str(rows) + " x " + str(cols) ) )# Die Auflösung aller markierten Bilder in die erste Spalte schreiben
             fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,2, widgets.QTableWidgetItem( str( int(anzahlHisBilder)) ) )
             if type(farbtiefe) == str:
-                        mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
+                fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe  ) )
             else:
-                mW.tableWidgetBilddaten.setItem( (index + (anzahlBilder - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
+                fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,3, widgets.QTableWidgetItem(  farbtiefe.name ) )
             fF.tableWidgetDunkel.setItem( (index + (anzahlBilderDunkel - len(filename))) ,4, widgets.QTableWidgetItem( str(filename[index]) ) )# Die Pfade aller Bilder in die dritten Spalte schreiben
             
             fF.tableWidgetDunkel.item((index + (anzahlBilderDunkel - len(filename))), 1).setTextAlignment(core.Qt.AlignCenter)
